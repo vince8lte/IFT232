@@ -1,6 +1,7 @@
 package GUI;
 
 import java.awt.Frame;
+import java.awt.Graphics;
 import java.awt.Image;
 
 import javax.swing.ImageIcon;
@@ -40,7 +41,7 @@ public class ChessGame extends JFrame {
         {
             for (int Y = 0; Y < pieces[X].length; ++Y)
             {
-                pieces[X][Y] = new Piece("ressources/pictures/pionb.jpg");
+                pieces[X][Y] = new Piece("");
             }            
         }
         
@@ -49,7 +50,7 @@ public class ChessGame extends JFrame {
     
     public void afficher()
     {
-      
+      /*
         for (int X = 0; X < pieces.length; ++X)
         {
             for (int Y = 0; Y < pieces[X].length; ++Y)
@@ -64,7 +65,7 @@ public class ChessGame extends JFrame {
                                            Image.SCALE_DEFAULT))));                       
             }            
         }
-        
+        */
         
     }
     
