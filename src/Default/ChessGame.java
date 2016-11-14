@@ -13,7 +13,7 @@ public class ChessGame extends Frame {
     public ChessGame()
     {
         background = new JPanel();
-        this.add(new JLabel(new ImageIcon("src/pictures/board.png")));
+        this.add(new JLabel(new ImageIcon("src/pictures/chessboard.jpg")));
     }
     
 	public static void main(String[] args) {	    
