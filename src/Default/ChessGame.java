@@ -1,12 +1,24 @@
 package Default;
 
-public class ChessGame {
+import java.awt.Frame;
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
-		
-		System.out.println("Hello World");
+public class ChessGame extends Frame {
+    
+    private JPanel background;
+    
+    public ChessGame()
+    {
+        background = new JPanel();
+        this.add(new JLabel(new ImageIcon("src/pictures/board.png")));
+    }
+    
+	public static void main(String[] args) {	    
+	    ChessGame tata = new ChessGame();
+	    tata.setVisible(true);
 	}
 
 }
