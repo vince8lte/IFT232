@@ -8,6 +8,10 @@ public class Piece
     {      
         this.imgURL = imgURL;
     }
+    public void setImgUrl(String url)
+    {
+        imgURL=url;
+    }
     
     public String getImgUrl()
     {

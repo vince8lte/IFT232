@@ -11,7 +11,6 @@ import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -20,6 +19,7 @@ import javax.swing.JPanel;
 import classes.Piece;
 
 public class ChessGame extends JPanel implements ComponentListener {
+    
     private JFrame window;
     
     private Image background;
@@ -27,6 +27,11 @@ public class ChessGame extends JPanel implements ComponentListener {
     private Image piece;
     private Image scaledPiece;
     private int x,y;
+    
+    //conserve la position du premier clic
+    private int positionX;
+    private int positionY;
+
     
     private double squareSizeX;
     private double squareSizeY;
@@ -37,6 +42,8 @@ public class ChessGame extends JPanel implements ComponentListener {
     
     public ChessGame(int x, int y)
     {
+        positionX=-1;
+        positionY=-1;
         // Initialisation de la fenêtre
         window = new JFrame();
         window.setSize(x, y);
@@ -48,10 +55,29 @@ public class ChessGame extends JPanel implements ComponentListener {
         window.setVisible(true);
         window.addComponentListener(this);
         addMouseListener(new MouseAdapter() {
+            
             @Override
             public void mouseClicked(MouseEvent e) {
-                // Logique pour sélectionner un pion et le déplacer à faire
-                // On a accès aux variables privées de ChessGame ici
+                //on recupère la position dans le board
+                int positionx = (int)((e.getX()-borderSizeX)/squareSizeX);
+                int positiony = (int)((e.getY()-borderSizeY)/squareSizeY);
+               
+                //si on a pas cliquer
+                if(positionX==-1 && positionY==-1){
+                    if(pieces[positionx][positiony].getImgUrl()!=""){
+                        positionX=positionx;
+                        positionY=positiony;
+                        System.out.println("piece cliquer");
+                    }         
+                }
+                else{
+                    //le deuxième clic obtient le contenue du premier clic
+                    pieces[positionx][positiony]=pieces[positionX][positionY];
+                    
+                    pieces[positionX][positionY].setImgUrl("");
+                    positionX=-1;positionY=-1;
+                    paintComponent(window.getGraphics());
+                }
             }
         });
         
@@ -65,6 +91,12 @@ public class ChessGame extends JPanel implements ComponentListener {
         {
             pieces[X][0] = new Piece("ressources/pictures/pionb.png");
             pieces[X][1] = new Piece("ressources/pictures/pionb.png");
+
+            pieces[X][2] = new Piece("");
+            pieces[X][3] = new Piece("");
+            pieces[X][4] = new Piece("");
+            pieces[X][5] = new Piece("");
+            
             pieces[X][6] = new Piece("ressources/pictures/pionn.png");
             pieces[X][7] = new Piece("ressources/pictures/pionn.png");
         }
@@ -74,6 +106,7 @@ public class ChessGame extends JPanel implements ComponentListener {
     
     @Override
     protected void paintComponent(Graphics g) {
+        
         super.paintComponent(g);
         g.drawImage(scaledBackground, 0, 0, this);
         
@@ -97,6 +130,7 @@ public class ChessGame extends JPanel implements ComponentListener {
             }
         }
     }
+
 
     @Override
     public void componentResized(ComponentEvent e)
