@@ -9,9 +9,8 @@ public class Piece
         this.imgURL = imgURL;
     }
     
-    @Override
-    public String toString()
+    public String getImgUrl()
     {
-        return this.imgURL;
+        return imgURL;
     }
 }
