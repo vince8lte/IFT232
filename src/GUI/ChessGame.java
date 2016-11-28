@@ -65,6 +65,8 @@ public class ChessGame extends JPanel implements ComponentListener {
             pieces[X][0] = new Piece("");
         }
     }
+    //faire un constructeur qui recoit un nom de fichier
+    //correspondant a une sauvegarde de la matrice des pieces
     
     @Override
     protected void paintComponent(Graphics g) {
