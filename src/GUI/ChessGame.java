@@ -26,6 +26,7 @@ public class ChessGame extends JPanel implements ComponentListener {
     private Image scaledBackground;
     private Image piece;
     private Image scaledPiece;
+    private int x,y;
     
     private double squareSizeX;
     private double squareSizeY;
@@ -62,7 +63,10 @@ public class ChessGame extends JPanel implements ComponentListener {
         
         for (int X = 0; X < pieces.length; ++X)
         {
-            pieces[X][0] = new Piece("");
+            pieces[X][0] = new Piece("ressources/pictures/pionb.png");
+            pieces[X][1] = new Piece("ressources/pictures/pionb.png");
+            pieces[X][6] = new Piece("ressources/pictures/pionn.png");
+            pieces[X][7] = new Piece("ressources/pictures/pionn.png");
         }
     }
     //faire un constructeur qui recoit un nom de fichier
@@ -72,13 +76,24 @@ public class ChessGame extends JPanel implements ComponentListener {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(scaledBackground, 0, 0, this);
+        
+        borderSizeX = this.getWidth()*0.0625;
+        borderSizeY = this.getHeight()*0.0625;
+        squareSizeX = (this.getWidth()-borderSizeX*2.0)/8.0;
+        squareSizeY = (this.getHeight()-borderSizeY*2.0)/8.0;
 
-        for (int x = 0; x < pieces.length; ++x)
+        for (x = 0; x < pieces.length; ++x)
         {
-            for (int y = 0; y < pieces[x].length; ++y)
+            for (y = 0; y < pieces[x].length; ++y)
             {
                 if (pieces[x][y] != null)
-                    g.drawImage(scaledPiece, (int)(x*squareSizeX+borderSizeX), (int)(y*squareSizeY+borderSizeY), this);                     
+                {
+                    piece = new ImageIcon(pieces[x][y].getImgUrl()).getImage(); // transform it 
+                    scaledPiece = piece.getScaledInstance((int)(piece.getWidth(null)*((squareSizeX)/piece.getWidth(null))),
+                            (int)(piece.getHeight(null)*((squareSizeY)/piece.getHeight(null))), Image.SCALE_FAST);  
+                    ImageIcon newimg = new ImageIcon(scaledPiece);
+                    g.drawImage(newimg.getImage(), (int)(x*squareSizeX+borderSizeX), (int)(y*squareSizeY+borderSizeY), this);
+                }
             }
         }
     }
@@ -97,12 +112,15 @@ public class ChessGame extends JPanel implements ComponentListener {
         }
         scaledBackground = background.getScaledInstance(this.getWidth(),
                 this.getHeight(), Image.SCALE_FAST);
-        
+        /*
         if (scaledPiece == null) {
-            piece = new ImageIcon("ressources/pictures/pionn.png").getImage();
+            piece = new ImageIcon(pieces[x][y].getImgUrl()).getImage();
         }
+        
+        piece = new ImageIcon(pieces[x][y].getImgUrl()).getImage();
         scaledPiece = piece.getScaledInstance((int)(piece.getWidth(null)*((squareSizeX)/piece.getWidth(null))),
                 (int)(piece.getHeight(null)*((squareSizeY)/piece.getHeight(null))), Image.SCALE_FAST);
+        */
     }
 
     @Override
