@@ -21,7 +21,6 @@ import classes.Piece;
 public class ChessGame extends JPanel implements ComponentListener {
     
     private JFrame window;
-    
     private Image background;
     private Image scaledBackground;
     private Image piece;
@@ -32,7 +31,7 @@ public class ChessGame extends JPanel implements ComponentListener {
     private int positionX;
     private int positionY;
 
-    
+    //déclaration de la bordure et de la taille d'un carré
     private double squareSizeX;
     private double squareSizeY;
     private double borderSizeX;
@@ -54,6 +53,12 @@ public class ChessGame extends JPanel implements ComponentListener {
         window.getContentPane().add(this, BorderLayout.CENTER);
         window.setVisible(true);
         window.addComponentListener(this);
+        
+        borderSizeX = this.getWidth()*0.0625;
+        borderSizeY = this.getHeight()*0.0625;
+        squareSizeX = (this.getWidth()-borderSizeX*2.0)/8.0;
+        squareSizeY = (this.getHeight()-borderSizeY*2.0)/8.0;
+        
         addMouseListener(new MouseAdapter() {
             
             @Override
@@ -72,8 +77,8 @@ public class ChessGame extends JPanel implements ComponentListener {
                 }
                 else{
                     //le deuxième clic obtient le contenue du premier clic
-                    pieces[positionx][positiony]=pieces[positionX][positionY];
-                    
+                    Piece tempo = new Piece(pieces[positionX][positionY].getImgUrl());
+                    pieces[positionx][positiony]=tempo;
                     pieces[positionX][positionY].setImgUrl("");
                     positionX=-1;positionY=-1;
                     paintComponent(window.getGraphics());
@@ -82,7 +87,7 @@ public class ChessGame extends JPanel implements ComponentListener {
         });
         
         // Initialisation du JPanel
-        this.setPreferredSize(new Dimension(x, y));
+        // this.setPreferredSize(new Dimension(x, y));
         
         // Initialisation des pièces
         pieces = new Piece[8][8];
@@ -91,12 +96,10 @@ public class ChessGame extends JPanel implements ComponentListener {
         {
             pieces[X][0] = new Piece("ressources/pictures/pionb.png");
             pieces[X][1] = new Piece("ressources/pictures/pionb.png");
-
             pieces[X][2] = new Piece("");
             pieces[X][3] = new Piece("");
             pieces[X][4] = new Piece("");
-            pieces[X][5] = new Piece("");
-            
+            pieces[X][5] = new Piece("");      
             pieces[X][6] = new Piece("ressources/pictures/pionn.png");
             pieces[X][7] = new Piece("ressources/pictures/pionn.png");
         }
@@ -110,11 +113,6 @@ public class ChessGame extends JPanel implements ComponentListener {
         super.paintComponent(g);
         g.drawImage(scaledBackground, 0, 0, this);
         
-        borderSizeX = this.getWidth()*0.0625;
-        borderSizeY = this.getHeight()*0.0625;
-        squareSizeX = (this.getWidth()-borderSizeX*2.0)/8.0;
-        squareSizeY = (this.getHeight()-borderSizeY*2.0)/8.0;
-
         for (x = 0; x < pieces.length; ++x)
         {
             for (y = 0; y < pieces[x].length; ++y)
@@ -129,6 +127,7 @@ public class ChessGame extends JPanel implements ComponentListener {
                 }
             }
         }
+        
     }
 
 
@@ -139,21 +138,20 @@ public class ChessGame extends JPanel implements ComponentListener {
         borderSizeY = this.getHeight()*0.0625;
         squareSizeX = (this.getWidth()-borderSizeX*2.0)/8.0;
         squareSizeY = (this.getHeight()-borderSizeY*2.0)/8.0;
-        
+
         if (background == null) {
-            background = new ImageIcon("ressources/pictures/chessboard.jpg")
-                    .getImage();
+            background = new ImageIcon("ressources/pictures/chessboard.jpg").getImage();
         }
-        scaledBackground = background.getScaledInstance(this.getWidth(),
-                this.getHeight(), Image.SCALE_FAST);
+        scaledBackground = background.getScaledInstance(this.getWidth(), this.getHeight(), Image.SCALE_DEFAULT);
+       
         /*
-        if (scaledPiece == null) {
+            if (scaledPiece == null) {
+                piece = new ImageIcon(pieces[x][y].getImgUrl()).getImage();
+            }
+            
             piece = new ImageIcon(pieces[x][y].getImgUrl()).getImage();
-        }
-        
-        piece = new ImageIcon(pieces[x][y].getImgUrl()).getImage();
-        scaledPiece = piece.getScaledInstance((int)(piece.getWidth(null)*((squareSizeX)/piece.getWidth(null))),
-                (int)(piece.getHeight(null)*((squareSizeY)/piece.getHeight(null))), Image.SCALE_FAST);
+            scaledPiece = piece.getScaledInstance((int)(piece.getWidth(null)*((squareSizeX)/piece.getWidth(null))),
+                    (int)(piece.getHeight(null)*((squareSizeY)/piece.getHeight(null))), Image.SCALE_FAST);
         */
     }
 
