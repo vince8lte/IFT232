@@ -2,8 +2,16 @@ package Piece;
 
 public class Pion extends PieceSpeciale {
 
+			
 	public Pion(boolean isWhite) {
 		super(isWhite);
+        this.imgURL = "ressources/pictures/pion";
+        //Permet la construction du lien vers la bonne image de la piece
+        if(this.isWhite){
+        	this.imgURL += "b.png";
+        }else{
+        	this.imgURL += "n.png";
+        }
 	}
 
 	@Override

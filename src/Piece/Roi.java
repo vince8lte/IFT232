@@ -4,7 +4,13 @@ public class Roi extends PieceSpeciale{
 
 	public Roi(boolean isWhite) {
 		super(isWhite);
-		// TODO Auto-generated constructor stub
+        this.imgURL = "ressources/pictures/roi";
+        //Permet la construction du lien vers la bonne image de la piece
+        if(this.isWhite){
+        	this.imgURL += "b.png";
+        }else{
+        	this.imgURL += "n.png";
+        }
 	}
 
 	@Override
