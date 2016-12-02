@@ -15,6 +15,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import classes.Board;
 import classes.Piece;
@@ -39,7 +40,7 @@ public class ChessGame extends JPanel implements ComponentListener {
     public ChessGame(int x, int y)
     {
     	//initialisation du board
-    	board = new Board();
+    	this.board = new Board();
     	
         // Initialisation de la fenÃªtre
         window = new JFrame();
@@ -52,10 +53,10 @@ public class ChessGame extends JPanel implements ComponentListener {
         window.setVisible(true);
         window.addComponentListener(this);
         
-        borderSizeX = this.getWidth()*0.0625;
-        borderSizeY = this.getHeight()*0.0625;
-        squareSizeX = (this.getWidth()-borderSizeX*2.0)/8.0;
-        squareSizeY = (this.getHeight()-borderSizeY*2.0)/8.0;
+        this.borderSizeX = this.getWidth()*0.0625;
+        this.borderSizeY = this.getHeight()*0.0625;
+        this.squareSizeX = (this.getWidth()-borderSizeX*2.0)/8.0;
+        this.squareSizeY = (this.getHeight()-borderSizeY*2.0)/8.0;
         
         addMouseListener(new MouseAdapter() {
             
@@ -65,18 +66,20 @@ public class ChessGame extends JPanel implements ComponentListener {
                 int clickPosX = (int)((e.getX()-borderSizeX)/squareSizeX);
                 int clickPosY = (int)((e.getY()-borderSizeY)/squareSizeY);
                
-                //si on a pas cliquer
-                if(board.HaveSelectedPiece())
+                // si on a cliquer sur une piece
+                if(board.haveSelectedPiece())
                 {
-                	if(board.GetPieceAt(clickPosX, clickPosY) == board.getSelectedPiece())
-                		board.UnselectPiece();
+                	// Si on reclique sur la piece selectionner, on veut déselectionner la piece presentement selectionne.
+                	if(board.getPieceAt(clickPosX, clickPosY) == board.getSelectedPiece())
+                		board.unselectPiece();
                 	else
-                		board.MovePiece();
+                		board.movePiece(clickPosX, clickPosY);                	                	
                 }               
                 else {
-                	board.SelectPiece(clickPosX, clickPosY);
-                    paintComponent(window.getGraphics());
+                	board.selectPiece(clickPosX, clickPosY);
                 }
+                
+                SwingUtilities.updateComponentTreeUI(window);
             }
         });
         
@@ -94,18 +97,18 @@ public class ChessGame extends JPanel implements ComponentListener {
         super.paintComponent(g);
         g.drawImage(scaledBackground, 0, 0, this);
         
-        for (x = 0; x < board.BoardSizeX(); ++x)
+        for (x = 0; x < board.getBoardSizeX(); ++x)
         {
-            for (y = 0; y < board.BoardSizeY(); ++y)
+            for (y = 0; y < board.getBoardSizeY(); ++y)
             {
-            	Piece currentPiece = board.GetPieceAt(x, y);
+            	Piece currentPiece = board.getPieceAt(x, y);
                 if (currentPiece != null)
                 {
                     piece = new ImageIcon(currentPiece.getImgUrl()).getImage(); // transform it 
                     scaledPiece = piece.getScaledInstance((int)(piece.getWidth(null)*((squareSizeX)/piece.getWidth(null))),
-                            (int)(piece.getHeight(null)*((squareSizeY)/piece.getHeight(null))), Image.SCALE_FAST);  
+                            (int)(piece.getHeight(null)*((this.squareSizeY)/piece.getHeight(null))), Image.SCALE_FAST);  
                     ImageIcon newimg = new ImageIcon(scaledPiece);
-                    g.drawImage(newimg.getImage(), (int)(x*squareSizeX+borderSizeX), (int)(y*squareSizeY+borderSizeY), this);
+                    g.drawImage(newimg.getImage(), (int)(x*this.squareSizeX+this.borderSizeX), (int)(y*this.squareSizeY+this.borderSizeY), this);
                 }
             }
         }        
@@ -115,10 +118,10 @@ public class ChessGame extends JPanel implements ComponentListener {
     @Override
     public void componentResized(ComponentEvent e)
     {
-        borderSizeX = this.getWidth()*0.0625;
-        borderSizeY = this.getHeight()*0.0625;
-        squareSizeX = (this.getWidth()-borderSizeX*2.0)/8.0;
-        squareSizeY = (this.getHeight()-borderSizeY*2.0)/8.0;
+        this.borderSizeX = this.getWidth()*0.0625;
+        this.borderSizeY = this.getHeight()*0.0625;
+        this.squareSizeX = (this.getWidth()-borderSizeX*2.0)/8.0;
+        this.squareSizeY = (this.getHeight()-borderSizeY*2.0)/8.0;
 
         if (background == null) {
             background = new ImageIcon("ressources/pictures/chessboard.jpg").getImage();

@@ -21,17 +21,17 @@ public class Board {
     	this.boardSizeX = DEFAULT_BOARD_SIZE;
     	this.boardSizeY = DEFAULT_BOARD_SIZE;
     	
-    	Initialization();
+    	initialization();
     }
     
     public Board(int boardSizeX, int boardSizeY){
     	this.boardSizeX = boardSizeX;
     	this.boardSizeY = boardSizeY;
     	
-    	Initialization();
+    	initialization();
     }
     
-    private void Initialization()
+    private void initialization()
     {
     	posXSelect = NOT_SELECTED;
     	posYSelect = NOT_SELECTED;
@@ -52,18 +52,18 @@ public class Board {
     }
     
     
-    public int BoardSizeX()
+    public int getBoardSizeX()
     {
     	return this.boardSizeX;
     }
     
-    public int BoardSizeY()
+    public int getBoardSizeY()
     {
     	return this.boardSizeY;
     }
     
     //Retourne la piece à une position donner x et y
-	public Piece GetPieceAt(int posX, int posY)
+	public Piece getPieceAt(int posX, int posY)
 	{
 		if (posX >= 0 && posX < this.boardSizeX &&
 			posY >= 0 && posY < this.boardSizeY)
@@ -73,17 +73,17 @@ public class Board {
 	}
 	
     // Retourne si une pièce est présentement sélectionné ou pas
-    public boolean HaveSelectedPiece(){
+    public boolean haveSelectedPiece(){
     	return ((posXSelect != NOT_SELECTED) && (posYSelect != NOT_SELECTED));
     }
     
     public Piece getSelectedPiece() {
-    	return GetPieceAt(this.posXSelect, this.posYSelect);
+    	return getPieceAt(this.posXSelect, this.posYSelect);
     }
     
-    public boolean SelectPiece(int posX, int posY)
+    public boolean selectPiece(int posX, int posY)
     {
-    	if (GetPieceAt(posX, posY) != null)
+    	if (getPieceAt(posX, posY) != null)
     	{
     		this.posXSelect = posX;
     		this.posYSelect = posY;
@@ -93,14 +93,23 @@ public class Board {
     		return false;
     }
     
-    public void UnselectPiece()
+    public void unselectPiece()
     {
     	posXSelect = NOT_SELECTED;
     	posYSelect = NOT_SELECTED;
     }
     
-    public void MovePiece()
+    public void movePiece(int posX, int posY)
     {
+    	Piece pieceToMove = getPieceAt(posXSelect, posYSelect);
     	
+    	if (pieceToMove != null)
+    	{
+    		this.board[posXSelect][posYSelect] = null;
+    		this.board[posX][posY] = pieceToMove;
+    		
+    		unselectPiece();
+    	}
+    		
     }
 }

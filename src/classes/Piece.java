@@ -3,9 +3,9 @@ package classes;
 public class Piece
 {
     protected String imgURL;			//Indique l'image de la piece
-    private Boolean isWhite;		//Indique la couleur de la piece au joueur
+    private boolean isWhite;		//Indique la couleur de la piece au joueur
     
-    public Piece(Boolean isWhite)
+    public Piece(boolean isWhite)
     {      
         this.isWhite = isWhite;
         
