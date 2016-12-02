@@ -16,6 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import classes.Board;
 import classes.Piece;
 
 public class ChessGame extends JPanel implements ComponentListener {
@@ -27,9 +28,7 @@ public class ChessGame extends JPanel implements ComponentListener {
     private Image scaledPiece;
     private int x,y;
     
-    //conserve la position du premier clic
-    private int positionX;
-    private int positionY;
+    private Board board;
 
     //déclaration de la bordure et de la taille d'un carré
     private double squareSizeX;
@@ -37,12 +36,11 @@ public class ChessGame extends JPanel implements ComponentListener {
     private double borderSizeX;
     private double borderSizeY;
     
-    private Piece[][] pieces;
-    
     public ChessGame(int x, int y)
     {
-        positionX=-1;
-        positionY=-1;
+    	//initialisation du board
+    	board = new Board();
+    	
         // Initialisation de la fenêtre
         window = new JFrame();
         window.setSize(x, y);
@@ -64,24 +62,19 @@ public class ChessGame extends JPanel implements ComponentListener {
             @Override
             public void mouseClicked(MouseEvent e) {
                 //on recupère la position dans le board
-                int positionx = (int)((e.getX()-borderSizeX)/squareSizeX);
-                int positiony = (int)((e.getY()-borderSizeY)/squareSizeY);
+                int clickPosX = (int)((e.getX()-borderSizeX)/squareSizeX);
+                int clickPosY = (int)((e.getY()-borderSizeY)/squareSizeY);
                
                 //si on a pas cliquer
-                if(positionX==-1 && positionY==-1){
-                    if(pieces[positionx][positiony]!=null){
-                        positionX=positionx;
-                        positionY=positiony;
-                        System.out.println("piece cliquer");
-                    }         
-                }
-                else{
-                    //le deuxième clic obtient le contenue du premier clic
-                    //Piece tempo = 
-                    pieces[positionx][positiony]=pieces[positionX][positionY];;
-                    pieces[positionX][positionY]= null;
-                    positionX=-1;
-                    positionY=-1;
+                if(board.HaveSelectedPiece())
+                {
+                	if(board.GetPieceAt(clickPosX, clickPosY) == board.getSelectedPiece())
+                		board.UnselectPiece();
+                	else
+                		board.MovePiece();
+                }               
+                else {
+                	board.SelectPiece(clickPosX, clickPosY);
                     paintComponent(window.getGraphics());
                 }
             }
@@ -91,44 +84,31 @@ public class ChessGame extends JPanel implements ComponentListener {
         // this.setPreferredSize(new Dimension(x, y));
         
         // Initialisation des pièces
-        pieces = new Piece[8][8];
-        
-        for (int X = 0; X < pieces.length; ++X)
-        {
-            pieces[X][0] = new Piece(true);
-            pieces[X][1] = new Piece(true);
-            pieces[X][2] = null;
-            pieces[X][3] = null;
-            pieces[X][4] = null;
-            pieces[X][5] = null;      
-            pieces[X][6] = new Piece(false);
-            pieces[X][7] = new Piece(false);
-        }
+ 
     }
     //faire un constructeur qui recoit un nom de fichier
     //correspondant a une sauvegarde de la matrice des pieces
     
     @Override
-    protected void paintComponent(Graphics g) {
-        
+    protected void paintComponent(Graphics g) {        
         super.paintComponent(g);
         g.drawImage(scaledBackground, 0, 0, this);
         
-        for (x = 0; x < pieces.length; ++x)
+        for (x = 0; x < board.BoardSizeX(); ++x)
         {
-            for (y = 0; y < pieces[x].length; ++y)
+            for (y = 0; y < board.BoardSizeY(); ++y)
             {
-                if (pieces[x][y] != null)
+            	Piece currentPiece = board.GetPieceAt(x, y);
+                if (currentPiece != null)
                 {
-                    piece = new ImageIcon(pieces[x][y].getImgUrl()).getImage(); // transform it 
+                    piece = new ImageIcon(currentPiece.getImgUrl()).getImage(); // transform it 
                     scaledPiece = piece.getScaledInstance((int)(piece.getWidth(null)*((squareSizeX)/piece.getWidth(null))),
                             (int)(piece.getHeight(null)*((squareSizeY)/piece.getHeight(null))), Image.SCALE_FAST);  
                     ImageIcon newimg = new ImageIcon(scaledPiece);
                     g.drawImage(newimg.getImage(), (int)(x*squareSizeX+borderSizeX), (int)(y*squareSizeY+borderSizeY), this);
                 }
             }
-        }
-        
+        }        
     }
 
 
