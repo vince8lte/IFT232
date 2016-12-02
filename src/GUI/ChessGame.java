@@ -66,18 +66,7 @@ public class ChessGame extends JPanel implements ComponentListener {
                 int clickPosX = (int)((e.getX()-borderSizeX)/squareSizeX);
                 int clickPosY = (int)((e.getY()-borderSizeY)/squareSizeY);
                
-                // si on a cliquer sur une piece
-                if(board.haveSelectedPiece())
-                {
-                	// Si on reclique sur la piece selectionner, on veut déselectionner la piece presentement selectionne.
-                	if(board.getPieceAt(clickPosX, clickPosY) == board.getSelectedPiece())
-                		board.unselectPiece();
-                	else
-                		board.movePiece(clickPosX, clickPosY);                	                	
-                }               
-                else {
-                	board.selectPiece(clickPosX, clickPosY);
-                }
+                board.move(clickPosX, clickPosY);
                 
                 SwingUtilities.updateComponentTreeUI(window);
             }
@@ -101,10 +90,10 @@ public class ChessGame extends JPanel implements ComponentListener {
         {
             for (y = 0; y < board.getBoardSizeY(); ++y)
             {
-            	Piece currentPiece = board.getPieceAt(x, y);
+            	String currentPiece = board.getImagePiece(x,y);
                 if (currentPiece != null)
                 {
-                    piece = new ImageIcon(currentPiece.getImgUrl()).getImage(); // transform it 
+                    piece = new ImageIcon(currentPiece).getImage(); // transform it 
                     scaledPiece = piece.getScaledInstance((int)(piece.getWidth(null)*((squareSizeX)/piece.getWidth(null))),
                             (int)(piece.getHeight(null)*((this.squareSizeY)/piece.getHeight(null))), Image.SCALE_FAST);  
                     ImageIcon newimg = new ImageIcon(scaledPiece);
