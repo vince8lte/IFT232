@@ -2,15 +2,21 @@ package classes;
 
 public class Piece
 {
-    private String imgURL;
+    protected String imgURL;			//Indique l'image de la piece
+    private Boolean isWhite;		//Indique la couleur de la piece au joueur
     
-    public Piece(String imgURL)
+    public Piece(Boolean isWhite)
     {      
-        this.imgURL = imgURL;
-    }
-    public void setImgUrl(String url)
-    {
-        imgURL=url;
+        this.isWhite = isWhite;
+        
+        //Permet la construction du lien vers la bonne image de la piece
+        String urlImage = "ressources/pictures/pion";
+        if(isWhite){
+        	urlImage += "b.png";
+        }else{
+        	urlImage += "n.png";
+        }
+        this.imgURL = urlImage;
     }
     
     public String getImgUrl()

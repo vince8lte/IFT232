@@ -69,7 +69,7 @@ public class ChessGame extends JPanel implements ComponentListener {
                
                 //si on a pas cliquer
                 if(positionX==-1 && positionY==-1){
-                    if(pieces[positionx][positiony].getImgUrl()!=""){
+                    if(pieces[positionx][positiony]!=null){
                         positionX=positionx;
                         positionY=positiony;
                         System.out.println("piece cliquer");
@@ -77,10 +77,11 @@ public class ChessGame extends JPanel implements ComponentListener {
                 }
                 else{
                     //le deuxième clic obtient le contenue du premier clic
-                    Piece tempo = new Piece(pieces[positionX][positionY].getImgUrl());
-                    pieces[positionx][positiony]=tempo;
-                    pieces[positionX][positionY].setImgUrl("");
-                    positionX=-1;positionY=-1;
+                    //Piece tempo = 
+                    pieces[positionx][positiony]=pieces[positionX][positionY];;
+                    pieces[positionX][positionY]= null;
+                    positionX=-1;
+                    positionY=-1;
                     paintComponent(window.getGraphics());
                 }
             }
@@ -94,14 +95,14 @@ public class ChessGame extends JPanel implements ComponentListener {
         
         for (int X = 0; X < pieces.length; ++X)
         {
-            pieces[X][0] = new Piece("ressources/pictures/pionb.png");
-            pieces[X][1] = new Piece("ressources/pictures/pionb.png");
-            pieces[X][2] = new Piece("");
-            pieces[X][3] = new Piece("");
-            pieces[X][4] = new Piece("");
-            pieces[X][5] = new Piece("");      
-            pieces[X][6] = new Piece("ressources/pictures/pionn.png");
-            pieces[X][7] = new Piece("ressources/pictures/pionn.png");
+            pieces[X][0] = new Piece(true);
+            pieces[X][1] = new Piece(true);
+            pieces[X][2] = null;
+            pieces[X][3] = null;
+            pieces[X][4] = null;
+            pieces[X][5] = null;      
+            pieces[X][6] = new Piece(false);
+            pieces[X][7] = new Piece(false);
         }
     }
     //faire un constructeur qui recoit un nom de fichier
