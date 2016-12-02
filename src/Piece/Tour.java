@@ -9,8 +9,13 @@ public class Tour extends PieceSpeciale {
 
 	@Override
 	public boolean canMove(int x, int y) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean resultat = false;
+		
+		if(((x != 0) && ( y == 0)) || ((x == 0) && ( y != 0))){
+			resultat = true;
+		}
+		
+		return resultat;
 	}
 
 }

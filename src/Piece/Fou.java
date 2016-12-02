@@ -9,8 +9,14 @@ public class Fou extends Piece {
 
 	@Override
 	public boolean canMove(int x, int y) {
-		// TODO Auto-generated method stub
-		return false;
+		
+		boolean resultat = false;
+		
+		if( Math.abs(x) == Math.abs(y) ){
+			resultat = true;
+		}
+		
+		return resultat;
 	}
 
 }

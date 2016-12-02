@@ -9,8 +9,15 @@ public class Reine extends Piece {
 
 	@Override
 	public boolean canMove(int x, int y) {
-		// TODO Auto-generated method stub
-		return false;
+
+		boolean resultat = false;
+		
+		//Mouvement du fou ou de la tour
+		if( (((x != 0) && ( y == 0)) || ((x == 0) && ( y != 0))) || (Math.abs(x) == Math.abs(y)) ){
+			resultat = true;
+		}
+		
+		return resultat;
 	}
 
 }

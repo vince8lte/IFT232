@@ -131,14 +131,13 @@ public class Board {
     	
     	if (pieceToMove != null)
     	{
-    		pieceToMove.canMove(posX - posXSelect, posY - posYSelect);
+    		if(pieceToMove.canMove(posXSelect - posX, posYSelect - posY)){
     		
-    		
-    		
-    		this.board[posXSelect][posYSelect] = null;
-    		this.board[posX][posY] = pieceToMove;
-    		
-    		unselectPiece();
+	    		this.board[posXSelect][posYSelect] = null;
+	    		this.board[posX][posY] = pieceToMove;
+	    		
+	    		unselectPiece();
+    		}
     	}
     }
 }

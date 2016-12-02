@@ -8,8 +8,14 @@ public class Pion extends PieceSpeciale {
 
 	@Override
 	public boolean canMove(int x, int y) {
-		// TODO Auto-generated method stub
-		return false;
+		
+		boolean resultat = false;
+		
+		if((x == 0) && ((isWhite && (y == -1)) || (!isWhite && (y == 1)))){
+			resultat = true;
+		}
+		
+		return resultat;
 	}
 
 }
