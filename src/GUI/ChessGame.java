@@ -17,8 +17,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import Piece.Piece;
 import classes.Board;
-import classes.Piece;
 
 public class ChessGame extends JPanel implements ComponentListener {
     

@@ -1,9 +1,9 @@
-package classes;
+package Piece;
 
-public class Piece
+public abstract class Piece
 {
-    protected String imgURL;			//Indique l'image de la piece
-    private boolean isWhite;		//Indique la couleur de la piece au joueur
+    protected String imgURL;		//Indique l'image de la piece
+    protected boolean isWhite;		//Indique la couleur de la piece au joueur
     
     public Piece(boolean isWhite)
     {      
@@ -23,4 +23,10 @@ public class Piece
     {
         return imgURL;
     }
+    
+    public boolean isWhite(){
+    	return this.isWhite;
+    }
+    
+    public abstract boolean canMove(int x, int y);
 }

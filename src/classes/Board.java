@@ -1,5 +1,7 @@
 package classes;
 
+import Piece.Piece;
+
 public class Board {
 
 	//Constante
