@@ -37,7 +37,7 @@ public class Board {
     	posYSelect = NOT_SELECTED;
     	
     	board = new Piece[boardSizeX][boardSizeY];
-    	
+    	// A CHANGER EVENTUELLEMENT LORSQUON VA POUVOIR LOADER UN BOARD PERSONNALISÉ
         for (int X = 0; X < board.length; ++X)
         {
             board[X][0] = new Piece(true);
