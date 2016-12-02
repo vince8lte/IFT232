@@ -74,8 +74,6 @@ public class ChessGame extends JPanel implements ComponentListener {
         
         // Initialisation du JPanel
         // this.setPreferredSize(new Dimension(x, y));
-        
-        // Initialisation des pièces
  
     }
     //faire un constructeur qui recoit un nom de fichier
@@ -86,20 +84,14 @@ public class ChessGame extends JPanel implements ComponentListener {
         super.paintComponent(g);
         g.drawImage(scaledBackground, 0, 0, this);
         
-        for (x = 0; x < board.getBoardSizeX(); ++x)
+        for (Object[] information : board.getBoardImage())
         {
-            for (y = 0; y < board.getBoardSizeY(); ++y)
-            {
-            	String currentPiece = board.getImagePiece(x,y);
-                if (currentPiece != null)
-                {
-                    piece = new ImageIcon(currentPiece).getImage(); // transform it 
-                    scaledPiece = piece.getScaledInstance((int)(piece.getWidth(null)*((squareSizeX)/piece.getWidth(null))),
-                            (int)(piece.getHeight(null)*((this.squareSizeY)/piece.getHeight(null))), Image.SCALE_FAST);  
-                    ImageIcon newimg = new ImageIcon(scaledPiece);
-                    g.drawImage(newimg.getImage(), (int)(x*this.squareSizeX+this.borderSizeX), (int)(y*this.squareSizeY+this.borderSizeY), this);
-                }
-            }
+            piece = new ImageIcon((String)information[0]).getImage(); // transform it 
+            scaledPiece = piece.getScaledInstance((int)(piece.getWidth(null)*((squareSizeX)/piece.getWidth(null))),
+                    (int)(piece.getHeight(null)*((this.squareSizeY)/piece.getHeight(null))), Image.SCALE_FAST);  
+            ImageIcon newimg = new ImageIcon(scaledPiece);
+            g.drawImage(newimg.getImage(), (int)(((int)information[1])*this.squareSizeX+this.borderSizeX), 
+            						(int)(((int)information[2])*this.squareSizeY+this.borderSizeY), this);
         }        
     }
 
