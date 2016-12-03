@@ -20,4 +20,6 @@ public abstract class Piece
     }
     
     public abstract boolean canMove(int x, int y);
+    
+    public abstract boolean canAttack(int x, int y);
 }

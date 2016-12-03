@@ -24,5 +24,9 @@ public class Cavalier extends Piece {
 		
 		return resultat;
 	}
+	
+	public boolean canAttack(int x, int y){
+		return false;
+	}
 
 }

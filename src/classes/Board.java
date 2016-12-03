@@ -23,6 +23,7 @@ public class Board {
     Piece[][] board;
     
     public Board(){
+    	
     	this.boardSizeX = DEFAULT_BOARD_SIZE;
     	this.boardSizeY = DEFAULT_BOARD_SIZE;
     	
@@ -31,7 +32,7 @@ public class Board {
     	
     	board = new Piece[boardSizeX][boardSizeY];
     	
-    	// A CHANGER EVENTUELLEMENT LORSQUON VA POUVOIR LOADER UN BOARD PERSONNALISÉ
+    	// A CHANGER EVENTUELLEMENT LORSQUON VA POUVOIR LOADER UN BOARD PERSONNALISï¿½
         for (int X = 0; X < board.length; ++X)
         {
             board[X][0] = new Pion(true);
@@ -64,7 +65,7 @@ public class Board {
         		}
         	}
     	}
-    	
+ 
     	return result;		
     }
     
@@ -73,7 +74,7 @@ public class Board {
     	// si on a cliquer sur une piece
         if(haveSelectedPiece())
         {
-        	// Si on reclique sur la piece selectionner, on veut déselectionner la piece presentement selectionne.
+        	// Si on reclique sur la piece selectionner, on veut dï¿½selectionner la piece presentement selectionne.
         	if(getPieceAt(x, y) == getSelectedPiece())
         		unselectPiece();
         	else
@@ -84,7 +85,7 @@ public class Board {
         }
     }
     
-    //Retourne la piece à une position donner x et y
+    //Retourne la piece ï¿½ une position donner x et y
     private Piece getPieceAt(int posX, int posY)
 	{
 		if (posX >= 0 && posX < this.boardSizeX &&
@@ -94,7 +95,7 @@ public class Board {
 			return null;
 	}
 	
-    // Retourne si une pièce est présentement sélectionné ou pas
+    // Retourne si une piï¿½ce est prï¿½sentement sï¿½lectionnï¿½ ou pas
     private boolean haveSelectedPiece(){
     	return ((posXSelect != NOT_SELECTED) && (posYSelect != NOT_SELECTED));
     }
@@ -124,20 +125,38 @@ public class Board {
     	posYSelect = NOT_SELECTED;
     }
     
-    //Deplace une piece sur le board
+    //Deplace une piece sur le board si on peux selon ce qui se trouve a la destination
     private void movePiece(int posX, int posY)
-    {
-    	Piece pieceToMove = getPieceAt(posXSelect, posYSelect);
-    	
-    	if (pieceToMove != null)
+    {	
+    	if(getPieceAt(posX, posY) !=null)
     	{
-    		if(pieceToMove.canMove(posXSelect - posX, posYSelect - posY)){
+    		Piece targetPiece = getPieceAt(posX, posY);
+    		if((getSelectedPiece().isWhite() && !targetPiece.isWhite()) || (!getSelectedPiece().isWhite() && targetPiece.isWhite()))
+    		{
+    			if(getSelectedPiece().canAttack(posXSelect - posX, posYSelect - posY))
+    			{
+    				this.board[posX][posY] = getSelectedPiece();
+    				this.board[posXSelect][posYSelect] = null;
+    				unselectPiece();
+    				return;
+    			}
+    			else
+    				System.out.println("i can't attack this piece its out of reach for my attack move!!");
+    			
+    		}else
+    			System.out.println("i wont attack meh friends!");
     		
-	    		this.board[posXSelect][posYSelect] = null;
-	    		this.board[posX][posY] = pieceToMove;
-	    		
-	    		unselectPiece();
+    	}
+    	else
+    	{
+    		if(getSelectedPiece().canMove(posXSelect - posX, posYSelect - posY))
+    		{
+    			this.board[posX][posY] = getSelectedPiece();
+    			this.board[posXSelect][posYSelect] = null;
+    			unselectPiece();
     		}
+    		else
+    			System.out.println("im 2 lay-Z 2 move there, bro");
     	}
     }
 }
