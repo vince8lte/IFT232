@@ -1,9 +1,11 @@
 package Piece;
 
+import classes.Board;
+
 public class Roi extends PieceSpeciale{
 
-	public Roi(boolean isWhite) {
-		super(isWhite);
+	public Roi(boolean isWhite, Board b) {
+		super(isWhite, b);
         this.imgURL = "ressources/pictures/roi";
         //Permet la construction du lien vers la bonne image de la piece
         if(this.isWhite){
@@ -25,6 +27,12 @@ public class Roi extends PieceSpeciale{
 		return resultat;
 	}
 	public boolean canAttack(int x, int y){
+		return false;
+	}
+
+	@Override
+	public boolean freeWay(int x, int y, Board b) {
+		// TODO Auto-generated method stub
 		return false;
 	}
 

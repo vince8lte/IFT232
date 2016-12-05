@@ -1,11 +1,13 @@
 package Piece;
 
+import classes.Board;
+
 public class Pion extends PieceSpeciale {
 
 	private boolean coupSpecial = true;
 	
-	public Pion(boolean isWhite) {
-		super(isWhite);
+	public Pion(boolean isWhite, Board b) {
+		super(isWhite, b);
         this.imgURL = "ressources/pictures/pion";
         //Permet la construction du lien vers la bonne image de la piece
         if(this.isWhite){
@@ -35,10 +37,17 @@ public class Pion extends PieceSpeciale {
 	public boolean canAttack(int x, int y){
 		boolean resultat = false;
 		
-		if( Math.abs(x) == Math.abs(y) && Math.abs(x)==1){
+		if( Math.abs(x) == Math.abs(y) && y==-1){
 			resultat = true;
 		}
 		return resultat;
 	}
+
+	@Override
+	public boolean freeWay(int x, int y, Board b) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
 
 }

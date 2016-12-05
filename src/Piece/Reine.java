@@ -1,9 +1,11 @@
 package Piece;
 
+import classes.Board;
+
 public class Reine extends Piece {
 
-	public Reine(boolean isWhite) {
-		super(isWhite);
+	public Reine(boolean isWhite, Board b) {
+		super(isWhite, b);
         this.imgURL = "ressources/pictures/reine";
         //Permet la construction du lien vers la bonne image de la piece
         if(this.isWhite){
@@ -27,5 +29,11 @@ public class Reine extends Piece {
 	}
 	public boolean canAttack(int x, int y){
 		return canMove(x,y);
+	}
+
+	@Override
+	public boolean freeWay(int x, int y, Board b) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

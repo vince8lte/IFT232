@@ -24,6 +24,7 @@ public class Board {
 	//Contient le tableau de piece
 	Piece[][] board;
 
+	
 	public Board(){
 
 		this.boardSizeX = DEFAULT_BOARD_SIZE;
@@ -41,33 +42,33 @@ public class Board {
 			if(y==1 || y==6){
 				if(y%2==0){
 					for(int x =0;x<board.length;++x){
-						board[x][y]=new Pion(false);
+						board[x][y]=new Pion(false, this);
 					}
 				}else{
 					for(int x =0;x<board.length;++x){
-						board[x][y]=new Pion(true);
+						board[x][y]=new Pion(true, this);
 					}
 				}
 			}
 			else if(y==0 || y==7){
 				if(y%2==0){
-					board[0][y] = new Tour(true);
-					board[1][y] = new Cavalier(true);
-					board[2][y] = new Fou(true);
-					board[3][y] = new Roi(true);
-					board[4][y] = new Reine(true);
-					board[5][y] = new Fou(true);
-					board[6][y] = new Cavalier(true);
-					board[7][y] = new Tour(true);
+					board[0][y] = new Tour(true, this);
+					board[1][y] = new Cavalier(true, this);
+					board[2][y] = new Fou(true, this);
+					board[3][y] = new Roi(true, this);
+					board[4][y] = new Reine(true, this);
+					board[5][y] = new Fou(true, this);
+					board[6][y] = new Cavalier(true, this);
+					board[7][y] = new Tour(true, this);
 				}else{
-					board[0][y] = new Tour(false);
-					board[1][y] = new Cavalier(false);
-					board[2][y] = new Fou(false);
-					board[3][y] = new Reine(false);
-					board[4][y] = new Roi(false);
-					board[5][y] = new Fou(false);
-					board[6][y] = new Cavalier(false);
-					board[7][y] = new Tour(false);
+					board[0][y] = new Tour(false, this);
+					board[1][y] = new Cavalier(false, this);
+					board[2][y] = new Fou(false, this);
+					board[3][y] = new Reine(false, this);
+					board[4][y] = new Roi(false, this);
+					board[5][y] = new Fou(false, this);
+					board[6][y] = new Cavalier(false, this);
+					board[7][y] = new Tour(false, this);
 				}
 			}
 		}
@@ -113,7 +114,7 @@ public class Board {
 		}
 
 		//Retourne la piece � une position donner x et y
-		private Piece getPieceAt(int posX, int posY)
+		public Piece getPieceAt(int posX, int posY)
 		{
 			if (posX >= 0 && posX < this.boardSizeX &&
 					posY >= 0 && posY < this.boardSizeY)
@@ -204,4 +205,6 @@ public class Board {
 			
 			return result;
 		}
+		
+		
 	}
