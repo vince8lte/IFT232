@@ -32,8 +32,8 @@ public class Board {
 
 		board = new Piece[boardSizeX][boardSizeY];
 
-		// A CHANGER EVENTUELLEMENT LORSQUON VA POUVOIR LOADER UN BOARD PERSONNALIS�
-
+		//remplissage du board. 
+		//		>^.^<	meow
 		for (int y = 0; y < board.length; ++y)
 		{
 			if(y==1 || y==6){
