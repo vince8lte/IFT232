@@ -45,13 +45,15 @@ public class Fou extends Piece {
 
 		signDistanceX = xDist / Math.abs(xDist);
 		signDistanceY = yDist / Math.abs(yDist);
-		System.out.println("CURRENTX : " + currentX + "CURRENTY : " + currentY + "signX : " + signDistanceX + " signY : "+signDistanceY);
+		
 		for ( int i = 0 ; i < Math.abs(xDist);++i )
 		{
 			currentX -= signDistanceX;
 			currentY -= signDistanceY;
+			//s'il y a une piece sur la case
 			if (b.getPieceAt(currentX, currentY) != null )
 			{
+				//si ennemi et si derniere case iteration
 				if(b.getPieceAt(currentX, currentY).isWhite != this.isWhite && i == Math.abs(xDist) -1)
 				{
 					return true;
