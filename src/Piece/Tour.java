@@ -24,7 +24,7 @@ public class Tour extends PieceSpeciale {
 		return resultat;
 	}
 	public boolean canAttack(int x, int y){
-		return false;
+		return canMove(x,y);
 	}
 
 }

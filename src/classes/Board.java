@@ -1,5 +1,6 @@
 package classes;
 
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,7 @@ public class Board {
 	//Constante
 	final int DEFAULT_BOARD_SIZE = 8;
 	final int NOT_SELECTED = -1;
+	final int OUT_OF_BOUND = -10;
 
 	//conserve la position du premier clic
 	private int posXSelect;
@@ -183,5 +185,23 @@ public class Board {
 				else
 					System.out.println("im 2 lay-Z 2 move there, bro");
 			}
+		}
+		
+		public int[] getSelectedPosition()
+		{
+			int[] result = new int[2];
+			if(!this.haveSelectedPiece())
+			{
+				result[0] = OUT_OF_BOUND;
+				result[1] = OUT_OF_BOUND;
+			}
+			else
+			{
+				
+				result[0] = this.posXSelect;
+				result[1] = this.posYSelect;
+			}
+			
+			return result;
 		}
 	}

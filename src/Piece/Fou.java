@@ -25,6 +25,6 @@ public class Fou extends Piece {
 		return resultat;
 	}
 	public boolean canAttack(int x, int y){
-		return false;
+		return canMove(x,y);
 	}
 }

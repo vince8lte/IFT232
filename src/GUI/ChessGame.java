@@ -28,6 +28,8 @@ public class ChessGame extends JPanel implements ComponentListener {
     private Image piece;
     private Image scaledPiece;
     private int x,y;
+    private Image cadre;
+    private Image scaledCadre;
     
     private Board board;
 
@@ -86,15 +88,12 @@ public class ChessGame extends JPanel implements ComponentListener {
         
         for (Object[] information : board.getBoardImage())
         {
-            piece = new ImageIcon((String)information[0]).getImage(); // transform it 
-            scaledPiece = piece.getScaledInstance((int)(piece.getWidth(null)*((squareSizeX)/piece.getWidth(null))),
-                    (int)(piece.getHeight(null)*((this.squareSizeY)/piece.getHeight(null))), Image.SCALE_FAST);  
-            ImageIcon newimg = new ImageIcon(scaledPiece);
-            g.drawImage(newimg.getImage(), (int)(((int)information[1])*this.squareSizeX+this.borderSizeX), 
-            						(int)(((int)information[2])*this.squareSizeY+this.borderSizeY), this);
+        	this.AfficherElement(g,(String)information[0], (int)information[1], (int)information[2]);
         }        
+        
+        int[]poXY = board.getSelectedPosition();
+        this.AfficherElement(g,"ressources/pictures/cadre.png", poXY[0], poXY[1]);
     }
-
 
     @Override
     public void componentResized(ComponentEvent e)
@@ -126,4 +125,17 @@ public class ChessGame extends JPanel implements ComponentListener {
     public void componentHidden(ComponentEvent e){}
     @Override
     public void componentMoved(ComponentEvent e){}
+    
+    /* Fait le traitement du paintComponent
+     * @input : Graphic, url, x, y
+     */
+    private void AfficherElement (Graphics g, String url, int x, int y)
+    {
+    	piece = new ImageIcon(url).getImage(); // transform it 
+        scaledPiece = piece.getScaledInstance((int)(piece.getWidth(null)*((squareSizeX)/piece.getWidth(null))),
+                (int)(piece.getHeight(null)*((this.squareSizeY)/piece.getHeight(null))), Image.SCALE_FAST);  
+        ImageIcon newimg = new ImageIcon(scaledPiece);
+        g.drawImage(newimg.getImage(), (int)(((int)x)*this.squareSizeX+this.borderSizeX), 
+        						(int)(((int)y)*this.squareSizeY+this.borderSizeY), this);
+    }
 }
