@@ -31,7 +31,7 @@ public class Fou extends Piece {
 	}
 
 	/*
-	 * DOIT ETRE REVU (Si on veut ca beau ......)
+	 * A REVOIR (Si on veut ca beau ......)
 	 * @see Piece.Piece#freeWay(int, int, classes.Board)
 	 */
 	@Override

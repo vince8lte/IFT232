@@ -28,6 +28,7 @@ public abstract class Piece
     public abstract boolean canAttack(int x, int y);
     
     /*Determine si le "chemin" est libre (pour un move)
+     * avant le deplacement
      * 
      */
     public abstract boolean freeWay(int x, int y, Board b);

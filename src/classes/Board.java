@@ -7,7 +7,8 @@ import Piece.*;
 
 public class Board {
 
-	//Constante
+	//Constantes
+	//Fusionner "OOB & !Selected?
 	final int DEFAULT_BOARD_SIZE = 8;
 	final int NOT_SELECTED = -1;
 	final int OUT_OF_BOUND = -10;
@@ -23,7 +24,7 @@ public class Board {
 	//Contient le tableau de piece
 	Piece[][] board;
 
-	
+	//a revoir (si on veut ca beau.....)
 	public Board(){
 
 		this.boardSizeX = DEFAULT_BOARD_SIZE;
