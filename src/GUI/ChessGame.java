@@ -70,7 +70,8 @@ public class ChessGame extends JPanel implements ComponentListener {
                
                 board.move(clickPosX, clickPosY);
                 
-                SwingUtilities.updateComponentTreeUI(window);
+                //SwingUtilities.updateComponentTreeUI(window);
+                repaint();
             }
         });
         
@@ -89,7 +90,7 @@ public class ChessGame extends JPanel implements ComponentListener {
         for (Object[] information : board.getBoardImage())
         {
         	this.AfficherElement(g,(String)information[0], (int)information[1], (int)information[2]);
-        }        
+        }
         
         int[]poXY = board.getSelectedPosition();
         this.AfficherElement(g,"ressources/pictures/cadre.png", poXY[0], poXY[1]);

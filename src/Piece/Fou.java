@@ -1,14 +1,15 @@
 package Piece;
 
 import classes.Board;
+import classes.Player;
 
 public class Fou extends Piece {
 
-	public Fou(boolean isWhite, Board b) {
-		super(isWhite, b);
+	public Fou(Player player, Board b) {
+		super(player, b);
 		this.imgURL = "ressources/pictures/fou";
 		//Permet la construction du lien vers la bonne image de la piece
-		if(this.isWhite){
+		if(this.isWhite()){
 			this.imgURL += "b.png";
 		}else{
 			this.imgURL += "n.png";
@@ -35,7 +36,7 @@ public class Fou extends Piece {
 	 * @see Piece.Piece#freeWay(int, int, classes.Board)
 	 */
 	@Override
-	public boolean freeWay(int xDist, int yDist, Board b)
+	protected boolean freeWay(int xDist, int yDist, Board b)
 	{
 		int[]currentPos = b.getSelectedPosition();
 		int currentX = currentPos[0] ;
@@ -54,7 +55,7 @@ public class Fou extends Piece {
 			if (b.getPieceAt(currentX, currentY) != null )
 			{
 				//si ennemi et si derniere case iteration
-				if(b.getPieceAt(currentX, currentY).isWhite != this.isWhite && i == Math.abs(xDist) -1)
+				if(b.getPieceAt(currentX, currentY).isWhite() != this.isWhite() && i == Math.abs(xDist) -1)
 				{
 					return true;
 				}

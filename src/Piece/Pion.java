@@ -1,16 +1,17 @@
 package Piece;
 
 import classes.Board;
+import classes.Player;
 
 public class Pion extends PieceSpeciale {
 
 	private boolean coupSpecial = true;
 	
-	public Pion(boolean isWhite, Board b) {
-		super(isWhite, b);
+	public Pion(Player player, Board b) {
+		super(player, b);
         this.imgURL = "ressources/pictures/pion";
         //Permet la construction du lien vers la bonne image de la piece
-        if(this.isWhite){
+        if(this.isWhite()){
         	this.imgURL += "b.png";
         }else{
         	this.imgURL += "n.png";
@@ -22,11 +23,11 @@ public class Pion extends PieceSpeciale {
 		
 		boolean resultat = false;
 		
-		if((x == 0) && ((isWhite && (y == -1)) || (!isWhite && (y == 1)))){
+		if((x == 0) && ((isWhite() && (y == -1)) || (!isWhite() && (y == 1)))){
 			coupSpecial = false;
 			resultat = true;
 		}
-		else if((x == 0) && ((isWhite && (y == -2)) || (!isWhite && (y == 2))) && coupSpecial)
+		else if((x == 0) && ((isWhite() && (y == -2)) || (!isWhite() && (y == 2))) && coupSpecial)
 		{
 			coupSpecial = false;
 			resultat = true;
@@ -37,14 +38,14 @@ public class Pion extends PieceSpeciale {
 	public boolean canAttack(int x, int y){
 		boolean resultat = false;
 		
-		if( Math.abs(x) == Math.abs(y) && y==-1){
+		if( Math.abs(x) == Math.abs(y) && ((isWhite() && (y == -1)) || (!isWhite() && (y == 1)))){
 			resultat = true;
 		}
 		return resultat;
 	}
 
 	@Override
-	public boolean freeWay(int x, int y, Board b) {
+	protected boolean freeWay(int x, int y, Board b) {
 		// TODO Auto-generated method stub
 		return false;
 	}

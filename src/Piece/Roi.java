@@ -1,14 +1,15 @@
 package Piece;
 
 import classes.Board;
+import classes.Player;
 
 public class Roi extends PieceSpeciale{
 
-	public Roi(boolean isWhite, Board b) {
-		super(isWhite, b);
+	public Roi(Player player, Board b) {
+		super(player, b);
         this.imgURL = "ressources/pictures/roi";
         //Permet la construction du lien vers la bonne image de la piece
-        if(this.isWhite){
+        if(this.isWhite()){
         	this.imgURL += "b.png";
         }else{
         	this.imgURL += "n.png";
@@ -31,7 +32,7 @@ public class Roi extends PieceSpeciale{
 	}
 
 	@Override
-	public boolean freeWay(int x, int y, Board b) {
+	protected boolean freeWay(int x, int y, Board b) {
 		// TODO Auto-generated method stub
 		return false;
 	}

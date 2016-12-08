@@ -23,6 +23,12 @@ public class Board {
 
 	//Contient le tableau de piece
 	Piece[][] board;
+	
+	//Contient les joueurs
+	Player[] players;
+	
+	//Tour du joueur
+	int currentPlayerTurn = 1;
 
 	//a revoir (si on veut ca beau.....)
 	public Board(){
@@ -35,6 +41,11 @@ public class Board {
 
 		board = new Piece[boardSizeX][boardSizeY];
 
+		// Création des deux joueurs
+		players = new Player[2];
+		players[0] = new Player(false);
+		players[1] = new Player(true);
+		
 		//remplissage du board. 
 		//		>^.^<	meow
 		for (int y = 0; y < board.length; ++y)
@@ -42,33 +53,33 @@ public class Board {
 			if(y==1 || y==6){
 				if(y%2==0){
 					for(int x =0;x<board.length;++x){
-						board[x][y]=new Pion(false, this);
+						board[x][y]=new Pion(players[0], this);
 					}
 				}else{
 					for(int x =0;x<board.length;++x){
-						board[x][y]=new Pion(true, this);
+						board[x][y]=new Pion(players[1], this);
 					}
 				}
 			}
 			else if(y==0 || y==7){
 				if(y%2==0){
-					board[0][y] = new Tour(true, this);
-					board[1][y] = new Cavalier(true, this);
-					board[2][y] = new Fou(true, this);
-					board[3][y] = new Roi(true, this);
-					board[4][y] = new Reine(true, this);
-					board[5][y] = new Fou(true, this);
-					board[6][y] = new Cavalier(true, this);
-					board[7][y] = new Tour(true, this);
+					board[0][y] = new Tour(players[1], this);
+					board[1][y] = new Cavalier(players[1], this);
+					board[2][y] = new Fou(players[1], this);
+					board[3][y] = new Roi(players[1], this);
+					board[4][y] = new Reine(players[1], this);
+					board[5][y] = new Fou(players[1], this);
+					board[6][y] = new Cavalier(players[1], this);
+					board[7][y] = new Tour(players[1], this);
 				}else{
-					board[0][y] = new Tour(false, this);
-					board[1][y] = new Cavalier(false, this);
-					board[2][y] = new Fou(false, this);
-					board[3][y] = new Reine(false, this);
-					board[4][y] = new Roi(false, this);
-					board[5][y] = new Fou(false, this);
-					board[6][y] = new Cavalier(false, this);
-					board[7][y] = new Tour(false, this);
+					board[0][y] = new Tour(players[0], this);
+					board[1][y] = new Cavalier(players[0], this);
+					board[2][y] = new Fou(players[0], this);
+					board[3][y] = new Reine(players[0], this);
+					board[4][y] = new Roi(players[0], this);
+					board[5][y] = new Fou(players[0], this);
+					board[6][y] = new Cavalier(players[0], this);
+					board[7][y] = new Tour(players[0], this);
 				}
 			}
 		}
@@ -85,6 +96,13 @@ public class Board {
 			for(int x = 0; x < DEFAULT_BOARD_SIZE; x++){
 				for(int y = 0; y < DEFAULT_BOARD_SIZE; y++){
 					if(getPieceAt(x, y) != null){
+						if (x == posXSelect && y == posYSelect) {
+							Information = new Object[3];
+							Information[0] = "ressources/pictures/selected.png";
+							Information[1] = x;
+							Information[2] = y;
+							result.add(Information);
+						}
 						Information = new Object[3];
 						Information[0] = getPieceAt(x, y).getImgUrl();
 						Information[1] = x;
@@ -136,11 +154,15 @@ public class Board {
 		//Change la piece selectionner
 		private boolean selectPiece(int posX, int posY)
 		{
-			if (getPieceAt(posX, posY) != null)
+			Piece selectedPiece = getPieceAt(posX, posY);
+			if (selectedPiece != null)
 			{
-				this.posXSelect = posX;
-				this.posYSelect = posY;
-				return true;
+				if (players[currentPlayerTurn].isWhite() == selectedPiece.isWhite()) {
+					this.posXSelect = posX;
+					this.posYSelect = posY;
+					return true;
+				}
+				return false;
 			}
 			else
 				return false;
@@ -159,13 +181,14 @@ public class Board {
 			if(getPieceAt(posX, posY) !=null)
 			{
 				Piece targetPiece = getPieceAt(posX, posY);
-				if((getSelectedPiece().isWhite() && !targetPiece.isWhite()) || (!getSelectedPiece().isWhite() && targetPiece.isWhite()))
+				if(getSelectedPiece().isWhite() != targetPiece.isWhite())
 				{
 					if(getSelectedPiece().canAttack(posXSelect - posX, posYSelect - posY))
 					{
 						this.board[posX][posY] = getSelectedPiece();
 						this.board[posXSelect][posYSelect] = null;
 						unselectPiece();
+						currentPlayerTurn = (currentPlayerTurn == 1) ? 0 : 1;
 						return;
 					}
 					else
@@ -182,6 +205,7 @@ public class Board {
 					this.board[posX][posY] = getSelectedPiece();
 					this.board[posXSelect][posYSelect] = null;
 					unselectPiece();
+					currentPlayerTurn = (currentPlayerTurn == 1) ? 0 : 1;
 				}
 				else
 					System.out.println("im 2 lay-Z 2 move there, bro");

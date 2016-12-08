@@ -1,16 +1,17 @@
 package Piece;
 
 import classes.Board;
+import classes.Player;
 
 public abstract class Piece
 {
-	private Board b;
+	protected Board b;
     protected String imgURL;		//Indique l'image de la piece
-    protected boolean isWhite;		//Indique la couleur de la piece au joueur
+    protected Player player;
     
-    public Piece(boolean isWhite, Board b)
-    {      
-        this.isWhite = isWhite;
+    public Piece(Player player, Board b)
+    {
+        this.player = player;
         this.b=b;
     }
     
@@ -20,7 +21,7 @@ public abstract class Piece
     }
     
     public boolean isWhite(){
-    	return this.isWhite;
+    	return this.player.isWhite();
     }
     
     public abstract boolean canMove(int x, int y);
@@ -31,7 +32,7 @@ public abstract class Piece
      * avant le deplacement
      * 
      */
-    public abstract boolean freeWay(int x, int y, Board b);
+    protected abstract boolean freeWay(int x, int y, Board b);
     
     protected Board getBoard()
     {
