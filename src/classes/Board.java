@@ -1,34 +1,30 @@
 package classes;
 
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 import Piece.*;
 
 public class Board extends JPanel implements ComponentListener {
-	private final int BOARD_SIZE = 8;
+	/**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
+    private final int BOARD_SIZE = 8;
 
 	private Grid grid;
 	private Square selectedSquare;
     private Image background;
     private Image scaledBackground;
-    private HashMap<String, Image> pieces;
-    private HashMap<String, Image> scaledPieces;
     private Point2D.Double borderSize;
     private Point2D.Double squareSize;
     
@@ -87,13 +83,6 @@ public class Board extends JPanel implements ComponentListener {
             background = new ImageIcon("ressources/pictures/chessboard.jpg").getImage();
         }
         scaledBackground = background.getScaledInstance(this.getWidth(), this.getHeight(), Image.SCALE_FAST);
-        
-        /*if (scaledPieces == null) {
-            pieces = new ImageIcon(squares[x][y].getImgUrl()).getImage();
-        }
-        piece = new ImageIcon(pieces[x][y].getImgUrl()).getImage();
-        scaledPiece = piece.getScaledInstance((int)(piece.getWidth(null)*((squareSizeX)/piece.getWidth(null))),
-                (int)(piece.getHeight(null)*((squareSizeY)/piece.getHeight(null))), Image.SCALE_FAST);*/
     }
     
     public Image getScaledImage(String imgUrl) {

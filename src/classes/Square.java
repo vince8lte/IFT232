@@ -1,15 +1,9 @@
 package classes;
 
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.geom.Point2D;
-
-import javax.swing.JComponent;
-
 import Piece.Piece;
 
 public class Square {
