@@ -2,40 +2,38 @@ package Piece;
 
 import classes.Board;
 import classes.Player;
+import classes.Square;
 
 public class Cavalier extends Piece {
 
-	public Cavalier(Player player, Board b) {
-		super(player, b);
-        this.imgURL = "ressources/pictures/cavalier";
-        //Permet la construction du lien vers la bonne image de la piece
-        if(this.isWhite()){
-        	this.imgURL += "b.png";
+	public Cavalier(Player.Color color, Board b) {
+		super(color, b);
+        this.imgUrl = "ressources/pictures/cavalier";
+        if(this.getColor() == Player.Color.WHITE){
+        	this.imgUrl += "b.png";
         }else{
-        	this.imgURL += "n.png";
+        	this.imgUrl += "n.png";
         }
 	}
 
 	@Override
-	public boolean canMove(int x, int y) {
-
+	public boolean canMoveTo(Square square) {
 		boolean resultat = false;
-		
-		if(((Math.abs(x) == 1) && (Math.abs(y) == 2)) || ((Math.abs(x) == 2) && (Math.abs(y) == 1))){
+		/*if(((Math.abs(x) == 1) && (Math.abs(y) == 2)) || ((Math.abs(x) == 2) && (Math.abs(y) == 1))){
 			resultat = true;
-		}
-		
+		}*/
 		return resultat;
-	}
-	
-	public boolean canAttack(int x, int y){
-		return canMove(x,y);
 	}
 
 	@Override
 	protected boolean freeWay(int x, int y, Board b) {
-		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public void highlightPossibleMove() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

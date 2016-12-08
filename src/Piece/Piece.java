@@ -1,41 +1,48 @@
 package Piece;
 
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Rectangle;
+
+import javax.swing.JComponent;
+
 import classes.Board;
 import classes.Player;
+import classes.Square;
 
 public abstract class Piece
 {
-	protected Board b;
-    protected String imgURL;		//Indique l'image de la piece
-    protected Player player;
+	protected Board board;
+	protected Player.Color color;
+    protected String imgUrl;
+    protected Square square;
     
-    public Piece(Player player, Board b)
-    {
-        this.player = player;
-        this.b=b;
+    public Piece(Player.Color color, Board board) {
+        this.board = board;
+        this.color = color;
     }
     
-    public String getImgUrl()
-    {
-        return imgURL;
+    public void setSquare(Square square) {
+    	this.square = square;
     }
     
-    public boolean isWhite(){
-    	return this.player.isWhite();
+    public String getImgUrl() {
+        return imgUrl;
     }
     
-    public abstract boolean canMove(int x, int y);
+    public Player.Color getColor() {
+    	return this.color;
+    }
     
-    public abstract boolean canAttack(int x, int y);
+    public void paintComponent(Rectangle rec, Graphics g) {
+    	Image scaledPiece = board.getScaledImage(imgUrl);
+        g.drawImage(scaledPiece, rec.x, rec.y, null);
+    }
     
-    /*Determine si le "chemin" est libre (pour un move)
-     * avant le deplacement
-     * 
-     */
+    public abstract void highlightPossibleMove();
+    
+    public abstract boolean canMoveTo(Square x);
+    
     protected abstract boolean freeWay(int x, int y, Board b);
-    
-    protected Board getBoard()
-    {
-    	return this.b;
-    }
 }

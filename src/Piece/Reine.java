@@ -2,39 +2,41 @@ package Piece;
 
 import classes.Board;
 import classes.Player;
+import classes.Square;
 
 public class Reine extends Piece {
 
-	public Reine(Player player, Board b) {
-		super(player, b);
-        this.imgURL = "ressources/pictures/reine";
-        //Permet la construction du lien vers la bonne image de la piece
-        if(this.isWhite()){
-        	this.imgURL += "b.png";
+	public Reine(Player.Color color, Board board) {
+		super(color, board);
+        this.imgUrl = "ressources/pictures/reine";
+        if(this.getColor() == Player.Color.WHITE){
+        	this.imgUrl += "b.png";
         }else{
-        	this.imgURL += "n.png";
+        	this.imgUrl += "n.png";
         }
 	}
 
 	@Override
-	public boolean canMove(int x, int y) {
+	public boolean canMoveTo(Square x) {
 
 		boolean resultat = false;
 		
-		//Mouvement du fou ou de la tour
-		if( (((x != 0) && ( y == 0)) || ((x == 0) && ( y != 0))) || (Math.abs(x) == Math.abs(y)) ){
+		/*if( (((x != 0) && ( y == 0)) || ((x == 0) && ( y != 0))) || (Math.abs(x) == Math.abs(y)) ){
 			resultat = true;
-		}
+		}*/
 		
 		return resultat;
-	}
-	public boolean canAttack(int x, int y){
-		return canMove(x,y);
 	}
 
 	@Override
 	protected boolean freeWay(int x, int y, Board b) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public void highlightPossibleMove() {
+		// TODO Auto-generated method stub
+		
 	}
 }

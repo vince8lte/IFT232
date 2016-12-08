@@ -19,124 +19,28 @@ import javax.swing.SwingUtilities;
 
 import Piece.Piece;
 import classes.Board;
+import classes.Player;
 
-public class ChessGame extends JPanel implements ComponentListener {
+public class ChessGame {
     
     private JFrame window;
-    private Image background;
-    private Image scaledBackground;
-    private Image piece;
-    private Image scaledPiece;
-    private int x,y;
-    private Image cadre;
-    private Image scaledCadre;
-    
     private Board board;
-
-    //déclaration de la bordure et de la taille d'un carré
-    private double squareSizeX;
-    private double squareSizeY;
-    private double borderSizeX;
-    private double borderSizeY;
     
-    public ChessGame(int x, int y)
+    public ChessGame(Dimension windowSize)
     {
-    	//initialisation du board
     	this.board = new Board();
     	
-        // Initialisation de la fenêtre
         window = new JFrame();
-        window.setSize(x, y);
-        window.setTitle("Jeu d'échec");
+        window.setSize(windowSize);
+        window.setTitle("Chess Game");
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setLocationRelativeTo(null);
         window.setResizable(true);
-        window.getContentPane().add(this, BorderLayout.CENTER);
+        window.getContentPane().add(board, BorderLayout.CENTER);
         window.setVisible(true);
-        window.addComponentListener(this);
-        
-        this.borderSizeX = this.getWidth()*0.0625;
-        this.borderSizeY = this.getHeight()*0.0625;
-        this.squareSizeX = (this.getWidth()-borderSizeX*2.0)/8.0;
-        this.squareSizeY = (this.getHeight()-borderSizeY*2.0)/8.0;
-        
-        addMouseListener(new MouseAdapter() {
-            
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                //on recupère la position dans le board
-                int clickPosX = (int)((e.getX()-borderSizeX)/squareSizeX);
-                int clickPosY = (int)((e.getY()-borderSizeY)/squareSizeY);
-               
-                board.move(clickPosX, clickPosY);
-                
-                //SwingUtilities.updateComponentTreeUI(window);
-                repaint();
-            }
-        });
-        
-        // Initialisation du JPanel
-        // this.setPreferredSize(new Dimension(x, y));
- 
+        window.addComponentListener(board);
     }
+    
     //faire un constructeur qui recoit un nom de fichier
     //correspondant a une sauvegarde de la matrice des pieces
-    
-    @Override
-    protected void paintComponent(Graphics g) {        
-        super.paintComponent(g);
-        g.drawImage(scaledBackground, 0, 0, this);
-        
-        for (Object[] information : board.getBoardImage())
-        {
-        	this.AfficherElement(g,(String)information[0], (int)information[1], (int)information[2]);
-        }
-        
-        int[]poXY = board.getSelectedPosition();
-        this.AfficherElement(g,"ressources/pictures/cadre.png", poXY[0], poXY[1]);
-    }
-
-    @Override
-    public void componentResized(ComponentEvent e)
-    {
-        this.borderSizeX = this.getWidth()*0.0625;
-        this.borderSizeY = this.getHeight()*0.0625;
-        this.squareSizeX = (this.getWidth()-borderSizeX*2.0)/8.0;
-        this.squareSizeY = (this.getHeight()-borderSizeY*2.0)/8.0;
-
-        if (background == null) {
-            background = new ImageIcon("ressources/pictures/chessboard.jpg").getImage();
-        }
-        scaledBackground = background.getScaledInstance(this.getWidth(), this.getHeight(), Image.SCALE_DEFAULT);
-       
-        /*
-            if (scaledPiece == null) {
-                piece = new ImageIcon(pieces[x][y].getImgUrl()).getImage();
-            }
-            
-            piece = new ImageIcon(pieces[x][y].getImgUrl()).getImage();
-            scaledPiece = piece.getScaledInstance((int)(piece.getWidth(null)*((squareSizeX)/piece.getWidth(null))),
-                    (int)(piece.getHeight(null)*((squareSizeY)/piece.getHeight(null))), Image.SCALE_FAST);
-        */
-    }
-
-    @Override
-    public void componentShown(ComponentEvent arg0){}
-    @Override
-    public void componentHidden(ComponentEvent e){}
-    @Override
-    public void componentMoved(ComponentEvent e){}
-    
-    /* Fait le traitement du paintComponent
-     * @input : Graphic, url, x, y
-     */
-    private void AfficherElement (Graphics g, String url, int x, int y)
-    {
-    	piece = new ImageIcon(url).getImage(); // transform it 
-        scaledPiece = piece.getScaledInstance((int)(piece.getWidth(null)*((squareSizeX)/piece.getWidth(null))),
-                (int)(piece.getHeight(null)*((this.squareSizeY)/piece.getHeight(null))), Image.SCALE_FAST);  
-        ImageIcon newimg = new ImageIcon(scaledPiece);
-        g.drawImage(newimg.getImage(), (int)(((int)x)*this.squareSizeX+this.borderSizeX), 
-        						(int)(((int)y)*this.squareSizeY+this.borderSizeY), this);
-    }
 }

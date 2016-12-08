@@ -1,13 +1,24 @@
 package classes;
 
+import Piece.Piece;
+
 public class Player {
-	private boolean isWhite;
+	private Color color;
 	
-	public Player(boolean isWhite) {
-		this.isWhite = isWhite;
+	public enum Color {
+		WHITE,
+		BLACK
 	}
 	
-	public boolean isWhite() {
-		return isWhite;
+	public Player(Color color) {
+		this.color = color;
+	}
+	
+	public Color getColor() {
+		return color;
+	}
+	
+	public boolean isPieceOwner(Piece piece) {
+		return color == piece.getColor();
 	}
 }

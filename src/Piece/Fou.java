@@ -2,43 +2,34 @@ package Piece;
 
 import classes.Board;
 import classes.Player;
+import classes.Square;
 
 public class Fou extends Piece {
 
-	public Fou(Player player, Board b) {
-		super(player, b);
-		this.imgURL = "ressources/pictures/fou";
-		//Permet la construction du lien vers la bonne image de la piece
-		if(this.isWhite()){
-			this.imgURL += "b.png";
+	public Fou(Player.Color color, Board b) {
+		super(color, b);
+		this.imgUrl = "ressources/pictures/fou";
+		if(this.getColor() == Player.Color.WHITE){
+			this.imgUrl += "b.png";
 		}else{
-			this.imgURL += "n.png";
+			this.imgUrl += "n.png";
 		}
 	}
 
 	@Override
-	public boolean canMove(int x, int y) {
-
+	public boolean canMoveTo(Square square) {
 		boolean resultat = false;
-		if( Math.abs(x) == Math.abs(y) && freeWay(x,y,super.getBoard()))
+		/*if( Math.abs(x) == Math.abs(y) && freeWay(x,y,board))
 		{
 			resultat = true;
-		}
-
+		}*/
 		return resultat;
 	}
-	public boolean canAttack(int x, int y){
-		return canMove(x,y);
-	}
 
-	/*
-	 * A REVOIR (Si on veut ca beau ......)
-	 * @see Piece.Piece#freeWay(int, int, classes.Board)
-	 */
 	@Override
 	protected boolean freeWay(int xDist, int yDist, Board b)
 	{
-		int[]currentPos = b.getSelectedPosition();
+		/*int[]currentPos = b.getSelectedPosition();
 		int currentX = currentPos[0] ;
 		int currentY = currentPos[1] ;
 		int signDistanceX;
@@ -51,10 +42,8 @@ public class Fou extends Piece {
 		{
 			currentX -= signDistanceX;
 			currentY -= signDistanceY;
-			//s'il y a une piece sur la case
 			if (b.getPieceAt(currentX, currentY) != null )
 			{
-				//si ennemi et si derniere case iteration
 				if(b.getPieceAt(currentX, currentY).isWhite() != this.isWhite() && i == Math.abs(xDist) -1)
 				{
 					return true;
@@ -62,8 +51,14 @@ public class Fou extends Piece {
 				return false;
 			}
 				
-		}
+		}*/
 
 		return true;
+	}
+
+	@Override
+	public void highlightPossibleMove() {
+		// TODO Auto-generated method stub
+		
 	}
 }

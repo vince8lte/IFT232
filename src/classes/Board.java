@@ -1,234 +1,216 @@
 package classes;
 
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import javax.swing.ImageIcon;
+import javax.swing.JPanel;
 
 import Piece.*;
 
-public class Board {
+public class Board extends JPanel implements ComponentListener {
+	private final int BOARD_SIZE = 8;
 
-	//Constantes
-	//Fusionner "OOB & !Selected?
-	final int DEFAULT_BOARD_SIZE = 8;
-	final int NOT_SELECTED = -1;
-	final int OUT_OF_BOUND = -10;
-
-	//conserve la position du premier clic
-	private int posXSelect;
-	private int posYSelect;
-
-	//Contient la taille maximal du board
-	private int boardSizeX;
-	private int boardSizeY;
-
-	//Contient le tableau de piece
-	Piece[][] board;
+	private Square[][] squares;
+	private Square selectedSquare;
+    private Image background;
+    private Image scaledBackground;
+    private HashMap<String, Image> pieces;
+    private HashMap<String, Image> scaledPieces;
+    private Point2D.Double borderSize;
+    private Point2D.Double squareSize;
+    
+	private Player[] players;
+	private Player activePlayer;
 	
-	//Contient les joueurs
-	Player[] players;
-	
-	//Tour du joueur
-	int currentPlayerTurn = 1;
-
-	//a revoir (si on veut ca beau.....)
+    
+    
 	public Board(){
-
-		this.boardSizeX = DEFAULT_BOARD_SIZE;
-		this.boardSizeY = DEFAULT_BOARD_SIZE;
-
-		posXSelect = NOT_SELECTED;
-		posYSelect = NOT_SELECTED;
-
-		board = new Piece[boardSizeX][boardSizeY];
-
-		// Création des deux joueurs
-		players = new Player[2];
-		players[0] = new Player(false);
-		players[1] = new Player(true);
+		FlowLayout layout = (FlowLayout)this.getLayout();
+		layout.setVgap(0);
 		
-		//remplissage du board. 
-		//		>^.^<	meow
-		for (int y = 0; y < board.length; ++y)
+		players = new Player[2];
+		players[0] = new Player(Player.Color.BLACK);
+		players[1] = new Player(Player.Color.WHITE);
+		activePlayer = players[1];
+		
+		
+        this.borderSize = new Point2D.Double(this.getWidth()*0.0625, this.getHeight()*0.0625);
+        this.squareSize = new Point2D.Double((this.getWidth()-borderSize.x*2.0)/8.0, this.getHeight()-borderSize.y*2.0/8.0);
+
+		squares = new Square[BOARD_SIZE][BOARD_SIZE];
+		
+		for(int i = 0; i < squares.length; ++i) {
+			for (int j = 0; j < squares[i].length; ++j) {
+				Square square = new Square(new Point(i, j), this);
+				squares[i][j] = square;
+			}
+		}
+		// Ce code peut être remplacé lorsqu'on sera capable de charger les squares à partir d'un fichier
+		for (int y = 0; y < squares.length; ++y)
 		{
 			if(y==1 || y==6){
 				if(y%2==0){
-					for(int x =0;x<board.length;++x){
-						board[x][y]=new Pion(players[0], this);
+					for(int x =0;x<squares.length;++x){
+						squares[x][y].setPiece(new Pion(Player.Color.BLACK, this)); // black
 					}
 				}else{
-					for(int x =0;x<board.length;++x){
-						board[x][y]=new Pion(players[1], this);
+					for(int x =0;x<squares.length;++x){
+						squares[x][y].setPiece(new Pion(Player.Color.WHITE, this)); // white
 					}
 				}
 			}
 			else if(y==0 || y==7){
 				if(y%2==0){
-					board[0][y] = new Tour(players[1], this);
-					board[1][y] = new Cavalier(players[1], this);
-					board[2][y] = new Fou(players[1], this);
-					board[3][y] = new Roi(players[1], this);
-					board[4][y] = new Reine(players[1], this);
-					board[5][y] = new Fou(players[1], this);
-					board[6][y] = new Cavalier(players[1], this);
-					board[7][y] = new Tour(players[1], this);
+					squares[0][y].setPiece(new Tour(Player.Color.WHITE, this)); // all white
+					squares[1][y].setPiece(new Cavalier(Player.Color.WHITE, this));
+					squares[2][y].setPiece(new Fou(Player.Color.WHITE, this));
+					squares[3][y].setPiece(new Roi(Player.Color.WHITE, this));
+					squares[4][y].setPiece(new Reine(Player.Color.WHITE, this));
+					squares[5][y].setPiece(new Fou(Player.Color.WHITE, this));
+					squares[6][y].setPiece(new Cavalier(Player.Color.WHITE, this));
+					squares[7][y].setPiece(new Tour(Player.Color.WHITE, this));
 				}else{
-					board[0][y] = new Tour(players[0], this);
-					board[1][y] = new Cavalier(players[0], this);
-					board[2][y] = new Fou(players[0], this);
-					board[3][y] = new Reine(players[0], this);
-					board[4][y] = new Roi(players[0], this);
-					board[5][y] = new Fou(players[0], this);
-					board[6][y] = new Cavalier(players[0], this);
-					board[7][y] = new Tour(players[0], this);
+					squares[0][y].setPiece(new Tour(Player.Color.BLACK, this)); // all black
+					squares[1][y].setPiece(new Cavalier(Player.Color.BLACK, this));
+					squares[2][y].setPiece(new Fou(Player.Color.BLACK, this));
+					squares[3][y].setPiece(new Reine(Player.Color.BLACK, this));
+					squares[4][y].setPiece(new Roi(Player.Color.BLACK, this));
+					squares[5][y].setPiece(new Fou(Player.Color.BLACK, this));
+					squares[6][y].setPiece(new Cavalier(Player.Color.BLACK, this));
+					squares[7][y].setPiece(new Tour(Player.Color.BLACK, this));
 				}
+			}
+		}
+		
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            	int clickPosX = (int)((e.getX()-borderSize.x)/squareSize.x);
+                int clickPosY = (int)((e.getY()-borderSize.y)/squareSize.y);
+                click(squares[clickPosX][clickPosY]);
+                repaint();
+            }
+        });
+	}
+
+	public void click(Square square) {
+		if(selectedSquare != null) {
+			movePiece(square);
+		}
+		else {
+			selectSquare(square);
+		}
+	}
+	
+    @Override
+    protected void paintComponent(Graphics g) {        
+        super.paintComponent(g);
+        g.drawImage(scaledBackground, 0, 0, this);
+        for (int i = 0; i < squares.length; ++i) {
+        	for ( int j = 0; j < squares[i].length; ++j) {
+        		Rectangle rec = new Rectangle();
+        		rec.setRect(borderSize.x + squareSize.x*i, borderSize.y + squareSize.y*j, squareSize.x, squareSize.y);
+        		squares[i][j].paintComponent(rec, g);
+        	}
+        }
+    }
+
+
+    @Override
+    public void componentResized(ComponentEvent e)
+    {
+    	this.borderSize = new Point2D.Double(this.getWidth()*0.0625, this.getHeight()*0.0625);
+        this.squareSize = new Point2D.Double((this.getWidth()-borderSize.x*2.0)/8.0, (this.getHeight()-borderSize.y*2.0)/8.0);
+
+        if (background == null) {
+            background = new ImageIcon("ressources/pictures/chessboard.jpg").getImage();
+        }
+        scaledBackground = background.getScaledInstance(this.getWidth(), this.getHeight(), Image.SCALE_FAST);
+        
+        /*if (scaledPieces == null) {
+            pieces = new ImageIcon(squares[x][y].getImgUrl()).getImage();
+        }
+        piece = new ImageIcon(pieces[x][y].getImgUrl()).getImage();
+        scaledPiece = piece.getScaledInstance((int)(piece.getWidth(null)*((squareSizeX)/piece.getWidth(null))),
+                (int)(piece.getHeight(null)*((squareSizeY)/piece.getHeight(null))), Image.SCALE_FAST);*/
+    }
+    
+    public Image getScaledImage(String imgUrl) {
+    	Image image = new ImageIcon(imgUrl).getImage();
+    	Image scaledImage = image.getScaledInstance((int)(this.getWidth()*((squareSize.x)/this.getWidth())),
+                (int)(this.getHeight()*((squareSize.y)/this.getHeight())), Image.SCALE_FAST);
+    	Image newimg = new ImageIcon(scaledImage).getImage();
+    	return newimg;
+    }
+    
+    public Square[][] getSquares() {
+    	return squares;
+    }
+
+	private boolean selectSquare(Square square)
+	{
+		Piece selectedPiece = square.getPiece();
+		if (selectedPiece == null) {
+			return false;
+		}
+		if (activePlayer.isPieceOwner(selectedPiece)) {
+			selectedSquare = square;
+			square.isSelected(true);
+			selectedPiece.highlightPossibleMove();
+			return true;
+		}
+		return false;
+	}
+
+	private void movePiece(Square square)
+	{
+		Piece movingPiece = selectedSquare.getPiece();
+		if (movingPiece.canMoveTo(square)) {
+			selectedSquare.movePieceTo(square);
+			selectedSquare = null;
+			resetSelectedSquare();
+			changeActivePlayer();
+		}
+		else if (square == selectedSquare) {
+			selectedSquare = null;
+			resetSelectedSquare();
+		}
+	}
+	
+	private void changeActivePlayer() {
+		for (int i = 0; i < players.length; ++i) {
+			if (players[i].getColor() == activePlayer.getColor()) {
+				activePlayer = players[(i + 1) % 2];
+			}
+		}
+	}
+	
+	private void resetSelectedSquare() {
+		for (int i = 0; i < squares.length; ++i) {
+			for (int j = 0; j < squares[i].length; ++j) {
+				squares[i][j].isHighlighted(false);
+				squares[i][j].isSelected(false);
 			}
 		}
 	}
 
-
-		//Methode qui renvoie les informations nescessaire a afficher le board
-		public List<Object[]> getBoardImage(){
-
-			List<Object[]> result = new ArrayList<Object[]>();
-			Object[] Information;
-
-			//Parcour le board pour chercher les piece a afficher
-			for(int x = 0; x < DEFAULT_BOARD_SIZE; x++){
-				for(int y = 0; y < DEFAULT_BOARD_SIZE; y++){
-					if(getPieceAt(x, y) != null){
-						if (x == posXSelect && y == posYSelect) {
-							Information = new Object[3];
-							Information[0] = "ressources/pictures/selected.png";
-							Information[1] = x;
-							Information[2] = y;
-							result.add(Information);
-						}
-						Information = new Object[3];
-						Information[0] = getPieceAt(x, y).getImgUrl();
-						Information[1] = x;
-						Information[2] = y;
-						result.add(Information);
-					}
-				}
-			}
-
-			return result;		
-		}
-
-		//Fonction qui gere le mouvement de piece
-		public void move(int x, int y){
-			// si on a cliquer sur une piece
-			if(haveSelectedPiece())
-			{
-				// Si on reclique sur la piece selectionner, on veut dï¿½selectionner la piece presentement selectionne.
-				if(getPieceAt(x, y) == getSelectedPiece())
-					unselectPiece();
-				else
-					movePiece(x, y);                	                	
-			}               
-			else {
-				selectPiece(x, y);
-			}
-		}
-
-		//Retourne la piece ï¿½ une position donner x et y
-		public Piece getPieceAt(int posX, int posY)
-		{
-			if (posX >= 0 && posX < this.boardSizeX &&
-					posY >= 0 && posY < this.boardSizeY)
-				return board[posX][posY];
-			else
-				return null;
-		}
-
-		// Retourne si une piï¿½ce est prï¿½sentement sï¿½lectionnï¿½ ou pas
-		private boolean haveSelectedPiece(){
-			return ((posXSelect != NOT_SELECTED) && (posYSelect != NOT_SELECTED));
-		}
-
-		//Retourne la piece selectionner
-		private Piece getSelectedPiece() {
-			return getPieceAt(this.posXSelect, this.posYSelect);
-		}
-
-		//Change la piece selectionner
-		private boolean selectPiece(int posX, int posY)
-		{
-			Piece selectedPiece = getPieceAt(posX, posY);
-			if (selectedPiece != null)
-			{
-				if (players[currentPlayerTurn].isWhite() == selectedPiece.isWhite()) {
-					this.posXSelect = posX;
-					this.posYSelect = posY;
-					return true;
-				}
-				return false;
-			}
-			else
-				return false;
-		}
-
-		//Deselectionne une piece
-		private void unselectPiece()
-		{
-			posXSelect = NOT_SELECTED;
-			posYSelect = NOT_SELECTED;
-		}
-
-		//Deplace une piece sur le board si on peux selon ce qui se trouve a la destination
-		private void movePiece(int posX, int posY)
-		{	
-			if(getPieceAt(posX, posY) !=null)
-			{
-				Piece targetPiece = getPieceAt(posX, posY);
-				if(getSelectedPiece().isWhite() != targetPiece.isWhite())
-				{
-					if(getSelectedPiece().canAttack(posXSelect - posX, posYSelect - posY))
-					{
-						this.board[posX][posY] = getSelectedPiece();
-						this.board[posXSelect][posYSelect] = null;
-						unselectPiece();
-						currentPlayerTurn = (currentPlayerTurn == 1) ? 0 : 1;
-						return;
-					}
-					else
-						System.out.println("i can't attack this piece its out of reach for my attack move!!");
-
-				}else
-					System.out.println("i wont attack meh friends!");
-
-			}
-			else
-			{
-				if(getSelectedPiece().canMove(posXSelect - posX, posYSelect - posY))
-				{
-					this.board[posX][posY] = getSelectedPiece();
-					this.board[posXSelect][posYSelect] = null;
-					unselectPiece();
-					currentPlayerTurn = (currentPlayerTurn == 1) ? 0 : 1;
-				}
-				else
-					System.out.println("im 2 lay-Z 2 move there, bro");
-			}
-		}
-		
-		public int[] getSelectedPosition()
-		{
-			int[] result = new int[2];
-			if(!this.haveSelectedPiece())
-			{
-				result[0] = OUT_OF_BOUND;
-				result[1] = OUT_OF_BOUND;
-			}
-			else
-			{
-				
-				result[0] = this.posXSelect;
-				result[1] = this.posYSelect;
-			}
-			
-			return result;
-		}
-		
-		
-	}
+	@Override
+	public void componentHidden(ComponentEvent e) {}
+	@Override
+	public void componentMoved(ComponentEvent e) {}
+	@Override
+	public void componentShown(ComponentEvent e) {}
+}
