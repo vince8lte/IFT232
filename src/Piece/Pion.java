@@ -66,9 +66,7 @@ public class Pion extends PieceSpeciale {
 	}
 
 	@Override
-	protected boolean freeWay(int x, int y, Board b) {
+	protected boolean freeWay(Point Pos, Point nextPos) {
 		return false;
 	}
-	
-
 }

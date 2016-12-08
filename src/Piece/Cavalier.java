@@ -25,7 +25,7 @@ public class Cavalier extends Piece {
 	}
 
 	@Override
-	protected boolean freeWay(int x, int y, Board b) {
+	protected boolean freeWay(Point Pos, Point nextPos) {
 		return false;
 	}
 
@@ -59,5 +59,4 @@ public class Cavalier extends Piece {
         this.tryHighlight(square);
 		
 	}
-
 }

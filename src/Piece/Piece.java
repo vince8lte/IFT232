@@ -5,8 +5,6 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 
-import javax.swing.JComponent;
-
 import classes.Board;
 import classes.Player;
 import classes.Square;
@@ -40,18 +38,28 @@ public abstract class Piece
         g.drawImage(scaledPiece, rec.x, rec.y, null);
     }
     
-    public void tryHighlight(Square square)
+    public boolean tryHighlight(Square square)
     {
         if (square != null)
         {
             if(square.isEmpty()) square.isHighlighted(true);
             else if (this.getColor() != square.getPiece().getColor()) square.isHighlighted(true);
+            if (square.isHighlighted()) return true;
         }
+        return false;
+    }
+    
+    public String exportPiece()
+    {
+        String text = "";
+        text += getClass().getSimpleName()+",";
+        text += this.getColor().name();
+        return text;
     }
     
     public abstract void highlightPossibleMove();
     
     public abstract boolean canMoveTo(Square x);
     
-    protected abstract boolean freeWay(int x, int y, Board b);
+    protected abstract boolean freeWay(Point actPos, Point nextPos);
 }

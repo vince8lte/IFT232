@@ -35,34 +35,31 @@ public class Board extends JPanel implements ComponentListener {
 	private Player[] players;
 	private Player activePlayer;
 	
-    
-    
 	public Board(){
-		FlowLayout layout = (FlowLayout)this.getLayout();
-		layout.setVgap(0);
-		
-		players = new Player[2];
-		players[0] = new Player(Player.Color.BLACK);
-		players[1] = new Player(Player.Color.WHITE);
-		activePlayer = players[1];
-		
-		
+	    FlowLayout layout = (FlowLayout)this.getLayout();
+        layout.setVgap(0);
+        
+        players = new Player[2];
+        players[0] = new Player(Player.Color.BLACK);
+        players[1] = new Player(Player.Color.WHITE);
+        activePlayer = players[1];
+        
         this.borderSize = new Point2D.Double(this.getWidth()*0.0625, this.getHeight()*0.0625);
         this.squareSize = new Point2D.Double((this.getWidth()-borderSize.x*2.0)/8.0, this.getHeight()-borderSize.y*2.0/8.0);
-
-		grid = new Grid(BOARD_SIZE,this);
-		
+        
+        grid = new Grid(BOARD_SIZE,this);
+        
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-            	int clickPosX = (int)((e.getX()-borderSize.x)/squareSize.x);
+                int clickPosX = (int)((e.getX()-borderSize.x)/squareSize.x);
                 int clickPosY = (int)((e.getY()-borderSize.y)/squareSize.y);
                 click(grid.getSquare(clickPosX, clickPosY));
                 repaint();
             }
         });
 	}
-
+	
 	public void click(Square square) {
 		if(selectedSquare != null) {
 			movePiece(square);
@@ -148,6 +145,12 @@ public class Board extends JPanel implements ComponentListener {
 	    else activePlayer = players[1];
 	}
 	
+	public void resetGame()
+	{
+	    grid = new Grid(BOARD_SIZE,this);
+	    activePlayer = players[1];
+	    repaint();
+	}
 	
 
 	@Override

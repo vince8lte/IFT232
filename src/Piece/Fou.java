@@ -1,6 +1,9 @@
 package Piece;
 
+import java.awt.Point;
+
 import classes.Board;
+import classes.Grid;
 import classes.Player;
 import classes.Square;
 
@@ -18,47 +21,42 @@ public class Fou extends Piece {
 
 	@Override
 	public boolean canMoveTo(Square square) {
-		boolean resultat = false;
-		/*if( Math.abs(x) == Math.abs(y) && freeWay(x,y,board))
-		{
-			resultat = true;
-		}*/
-		return resultat;
+	    return square.isHighlighted();
 	}
 
 	@Override
-	protected boolean freeWay(int xDist, int yDist, Board b)
+	protected boolean freeWay(Point Pos, Point nextPos)
 	{
-		/*int[]currentPos = b.getSelectedPosition();
-		int currentX = currentPos[0] ;
-		int currentY = currentPos[1] ;
-		int signDistanceX;
-		int signDistanceY;
-
-		signDistanceX = xDist / Math.abs(xDist);
-		signDistanceY = yDist / Math.abs(yDist);
-		
-		for ( int i = 0 ; i < Math.abs(xDist);++i )
-		{
-			currentX -= signDistanceX;
-			currentY -= signDistanceY;
-			if (b.getPieceAt(currentX, currentY) != null )
-			{
-				if(b.getPieceAt(currentX, currentY).isWhite() != this.isWhite() && i == Math.abs(xDist) -1)
-				{
-					return true;
-				}
-				return false;
-			}
-				
-		}*/
-
-		return true;
+	    return false;
 	}
 
 	@Override
 	public void highlightPossibleMove() {
-		// TODO Auto-generated method stub
-		
+	    Grid grid = board.getGrid();
+        Point pos = this.square.getPos();
+        
+        // Mouvement en forme de X , on arrete si la case n'est pas possible
+        // ou si la case est possible, mais qu'une piece est presente
+        
+	    for (int i = 1;;i++){
+	        Square square = grid.getSquare(pos.x+i, pos.y+i);
+	        if (!this.tryHighlight(square)) break;
+	        else if (square != null && !square.isEmpty()) break;
+        }
+	    for (int i = 1;;i++){
+            Square square = grid.getSquare(pos.x+i, pos.y-i);
+            if (!this.tryHighlight(square)) break;
+            else if (square != null && !square.isEmpty()) break;
+        }
+	    for (int i = 1;;i++){
+            Square square = grid.getSquare(pos.x-i, pos.y+i);
+            if (!this.tryHighlight(square)) break;
+            else if (square != null && !square.isEmpty()) break;
+        }
+	    for (int i = 1;;i++){
+            Square square = grid.getSquare(pos.x-i, pos.y-i);
+            if (!this.tryHighlight(square)) break;
+            else if (square != null && !square.isEmpty()) break;
+        }
 	}
 }
