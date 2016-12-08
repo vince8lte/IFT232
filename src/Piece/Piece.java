@@ -40,6 +40,15 @@ public abstract class Piece
         g.drawImage(scaledPiece, rec.x, rec.y, null);
     }
     
+    public void tryHighlight(Square square)
+    {
+        if (square != null)
+        {
+            if(square.isEmpty()) square.isHighlighted(true);
+            else if (this.getColor() != square.getPiece().getColor()) square.isHighlighted(true);
+        }
+    }
+    
     public abstract void highlightPossibleMove();
     
     public abstract boolean canMoveTo(Square x);

@@ -23,7 +23,7 @@ import Piece.*;
 public class Board extends JPanel implements ComponentListener {
 	private final int BOARD_SIZE = 8;
 
-	private Square[][] squares;
+	private Grid grid;
 	private Square selectedSquare;
     private Image background;
     private Image scaledBackground;
@@ -50,57 +50,14 @@ public class Board extends JPanel implements ComponentListener {
         this.borderSize = new Point2D.Double(this.getWidth()*0.0625, this.getHeight()*0.0625);
         this.squareSize = new Point2D.Double((this.getWidth()-borderSize.x*2.0)/8.0, this.getHeight()-borderSize.y*2.0/8.0);
 
-		squares = new Square[BOARD_SIZE][BOARD_SIZE];
-		
-		for(int i = 0; i < squares.length; ++i) {
-			for (int j = 0; j < squares[i].length; ++j) {
-				Square square = new Square(new Point(i, j), this);
-				squares[i][j] = square;
-			}
-		}
-		// Ce code peut être remplacé lorsqu'on sera capable de charger les squares à partir d'un fichier
-		for (int y = 0; y < squares.length; ++y)
-		{
-			if(y==1 || y==6){
-				if(y%2==0){
-					for(int x =0;x<squares.length;++x){
-						squares[x][y].setPiece(new Pion(Player.Color.BLACK, this)); // black
-					}
-				}else{
-					for(int x =0;x<squares.length;++x){
-						squares[x][y].setPiece(new Pion(Player.Color.WHITE, this)); // white
-					}
-				}
-			}
-			else if(y==0 || y==7){
-				if(y%2==0){
-					squares[0][y].setPiece(new Tour(Player.Color.WHITE, this)); // all white
-					squares[1][y].setPiece(new Cavalier(Player.Color.WHITE, this));
-					squares[2][y].setPiece(new Fou(Player.Color.WHITE, this));
-					squares[3][y].setPiece(new Roi(Player.Color.WHITE, this));
-					squares[4][y].setPiece(new Reine(Player.Color.WHITE, this));
-					squares[5][y].setPiece(new Fou(Player.Color.WHITE, this));
-					squares[6][y].setPiece(new Cavalier(Player.Color.WHITE, this));
-					squares[7][y].setPiece(new Tour(Player.Color.WHITE, this));
-				}else{
-					squares[0][y].setPiece(new Tour(Player.Color.BLACK, this)); // all black
-					squares[1][y].setPiece(new Cavalier(Player.Color.BLACK, this));
-					squares[2][y].setPiece(new Fou(Player.Color.BLACK, this));
-					squares[3][y].setPiece(new Reine(Player.Color.BLACK, this));
-					squares[4][y].setPiece(new Roi(Player.Color.BLACK, this));
-					squares[5][y].setPiece(new Fou(Player.Color.BLACK, this));
-					squares[6][y].setPiece(new Cavalier(Player.Color.BLACK, this));
-					squares[7][y].setPiece(new Tour(Player.Color.BLACK, this));
-				}
-			}
-		}
+		grid = new Grid(BOARD_SIZE,this);
 		
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
             	int clickPosX = (int)((e.getX()-borderSize.x)/squareSize.x);
                 int clickPosY = (int)((e.getY()-borderSize.y)/squareSize.y);
-                click(squares[clickPosX][clickPosY]);
+                click(grid.getSquare(clickPosX, clickPosY));
                 repaint();
             }
         });
@@ -119,13 +76,7 @@ public class Board extends JPanel implements ComponentListener {
     protected void paintComponent(Graphics g) {        
         super.paintComponent(g);
         g.drawImage(scaledBackground, 0, 0, this);
-        for (int i = 0; i < squares.length; ++i) {
-        	for ( int j = 0; j < squares[i].length; ++j) {
-        		Rectangle rec = new Rectangle();
-        		rec.setRect(borderSize.x + squareSize.x*i, borderSize.y + squareSize.y*j, squareSize.x, squareSize.y);
-        		squares[i][j].paintComponent(rec, g);
-        	}
-        }
+        grid.paintComponent(borderSize, squareSize, g);
     }
 
 
@@ -156,8 +107,9 @@ public class Board extends JPanel implements ComponentListener {
     	return newimg;
     }
     
-    public Square[][] getSquares() {
-    	return squares;
+    public Grid getGrid()
+    {
+        return grid;
     }
 
 	private boolean selectSquare(Square square)
@@ -181,31 +133,22 @@ public class Board extends JPanel implements ComponentListener {
 		if (movingPiece.canMoveTo(square)) {
 			selectedSquare.movePieceTo(square);
 			selectedSquare = null;
-			resetSelectedSquare();
+			grid.resetSelectedSquare();
 			changeActivePlayer();
 		}
 		else if (square == selectedSquare) {
 			selectedSquare = null;
-			resetSelectedSquare();
+			grid.resetSelectedSquare();
 		}
 	}
 	
-	private void changeActivePlayer() {
-		for (int i = 0; i < players.length; ++i) {
-			if (players[i].getColor() == activePlayer.getColor()) {
-				activePlayer = players[(i + 1) % 2];
-			}
-		}
+	private void changeActivePlayer() 
+	{
+	    if (activePlayer.getColor() == Player.Color.WHITE) activePlayer = players[0];
+	    else activePlayer = players[1];
 	}
 	
-	private void resetSelectedSquare() {
-		for (int i = 0; i < squares.length; ++i) {
-			for (int j = 0; j < squares[i].length; ++j) {
-				squares[i][j].isHighlighted(false);
-				squares[i][j].isSelected(false);
-			}
-		}
-	}
+	
 
 	@Override
 	public void componentHidden(ComponentEvent e) {}

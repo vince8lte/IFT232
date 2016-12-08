@@ -3,6 +3,7 @@ package Piece;
 import java.awt.Point;
 
 import classes.Board;
+import classes.Grid;
 import classes.Player;
 import classes.Square;
 
@@ -22,27 +23,33 @@ public class Pion extends PieceSpeciale {
 
 	@Override
 	public void highlightPossibleMove() {
-		Square[][] squares = board.getSquares();
+		Grid grid = board.getGrid();
 		Point pos = this.square.getPos();
 		int signY = (this.getColor() == Player.Color.WHITE) ? 1 : -1;
 		// Un coup par en avant
-		if (squares[pos.x][pos.y + signY] != null && squares[pos.x][pos.y + signY].isEmpty()) {
-			squares[pos.x][pos.y + signY].isHighlighted(true);
+		Square square = grid.getSquare(pos.x, pos.y+signY);
+		if (square != null && square.isEmpty()){
+		    square.isHighlighted(true);
 			// deux coup par en avant
-			if (squares[pos.x][pos.y + signY*2] != null && squares[pos.x][pos.y + signY*2].isEmpty() && coupSpecial == true) {
-				squares[pos.x][pos.y + signY*2].isHighlighted(true);
+		    square = grid.getSquare(pos.x,pos.y + signY*2);
+			if (square != null && square.isEmpty() && coupSpecial == true) {
+				square.isHighlighted(true);
 			}
 		}
+		
 		// Un coup en diagonale (capturer)
-		if (squares[pos.x-1][pos.y + signY] != null && !squares[pos.x-1][pos.y + signY].isEmpty() &&
-				this.getColor() != squares[pos.x-1][pos.y + signY].getPiece().getColor()) {
-			squares[pos.x-1][pos.y + signY].isHighlighted(true);
+		square = grid.getSquare(pos.x-1,pos.y + signY);
+		if (square != null && !square.isEmpty() &&
+				this.getColor() != square.getPiece().getColor()) {
+			square.isHighlighted(true);
 		}
+		
 		// Un coup dans l'autre diagonale (capturer)
-		if (squares[pos.x-1][pos.y + signY] != null && !squares[pos.x-1][pos.y + signY].isEmpty() &&
-				this.getColor() != squares[pos.x-1][pos.y + signY].getPiece().getColor()) {
-			squares[pos.x-1][pos.y + signY].isHighlighted(true);
-		}
+		square = grid.getSquare(pos.x+1,pos.y + signY);
+		if (square != null && !square.isEmpty() &&
+                this.getColor() != square.getPiece().getColor()) {
+            square.isHighlighted(true);
+        }
 	}
 
 	@Override

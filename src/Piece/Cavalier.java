@@ -1,6 +1,9 @@
 package Piece;
 
+import java.awt.Point;
+
 import classes.Board;
+import classes.Grid;
 import classes.Player;
 import classes.Square;
 
@@ -18,11 +21,7 @@ public class Cavalier extends Piece {
 
 	@Override
 	public boolean canMoveTo(Square square) {
-		boolean resultat = false;
-		/*if(((Math.abs(x) == 1) && (Math.abs(y) == 2)) || ((Math.abs(x) == 2) && (Math.abs(y) == 1))){
-			resultat = true;
-		}*/
-		return resultat;
+	    return square.isHighlighted();
 	}
 
 	@Override
@@ -32,7 +31,32 @@ public class Cavalier extends Piece {
 
 	@Override
 	public void highlightPossibleMove() {
-		// TODO Auto-generated method stub
+	    Grid grid = board.getGrid();
+        Point pos = this.square.getPos();
+        
+        Square square = grid.getSquare(pos.x+1, pos.y+2);
+        this.tryHighlight(square);
+            
+        square = grid.getSquare(pos.x-1, pos.y+2);
+        this.tryHighlight(square);
+        
+        square = grid.getSquare(pos.x+1, pos.y-2);
+        this.tryHighlight(square);
+        
+        square = grid.getSquare(pos.x-1, pos.y-2);
+        this.tryHighlight(square);
+        
+        square = grid.getSquare(pos.x+2, pos.y+1);
+        this.tryHighlight(square);
+        
+        square = grid.getSquare(pos.x+2, pos.y-1);
+        this.tryHighlight(square);
+        
+        square = grid.getSquare(pos.x-2, pos.y+1);
+        this.tryHighlight(square);
+        
+        square = grid.getSquare(pos.x-2, pos.y-1);
+        this.tryHighlight(square);
 		
 	}
 

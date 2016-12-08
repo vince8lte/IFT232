@@ -17,7 +17,7 @@ public class Tour extends PieceSpeciale {
 	}
 
 	@Override
-	public boolean canMoveTo(Square x) {
+	public boolean canMoveTo(Square square) {
 		boolean resultat = false;
 		
 		/*if((((x != 0) && ( y == 0)) || ((x == 0) && ( y != 0))) && freeWay(x, y, board)){

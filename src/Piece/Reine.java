@@ -17,7 +17,7 @@ public class Reine extends Piece {
 	}
 
 	@Override
-	public boolean canMoveTo(Square x) {
+	public boolean canMoveTo(Square square) {
 
 		boolean resultat = false;
 		
