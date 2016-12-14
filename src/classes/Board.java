@@ -107,7 +107,7 @@ public class Board extends JPanel implements ComponentListener {
 		if (activePlayer.isPieceOwner(selectedPiece)) {
 			selectedSquare = square;
 			square.isSelected(true);
-			selectedPiece.highlightPossibleMove();
+			//selectedPiece.highlightPossibleMove();
 			return true;
 		}
 		return false;
@@ -141,7 +141,6 @@ public class Board extends JPanel implements ComponentListener {
 	    repaint();
 	}
 	
-
 	@Override
 	public void componentHidden(ComponentEvent e) {}
 	@Override

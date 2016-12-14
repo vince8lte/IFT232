@@ -11,18 +11,21 @@ import classes.Square;
 
 public abstract class Piece
 {
-	protected Board board;
+	//protected Board board;
 	protected Player.Color color;
     protected String imgUrl;
-    protected Square square;
+    //protected Square square;
+    protected PiecePatterns[] patterns;
+    
+    public void hasMoved(){}
     
     public Piece(Player.Color color, Board board) {
-        this.board = board;
+        //this.board = board;
         this.color = color;
     }
     
     public void setSquare(Square square) {
-    	this.square = square;
+    	//this.square = square;
     }
     
     public String getImgUrl() {
@@ -33,12 +36,12 @@ public abstract class Piece
     	return this.color;
     }
     
-    public void paintComponent(Rectangle rec, Graphics g) {
+    /*public void paintComponent(Rectangle rec, Graphics g) {
     	Image scaledPiece = board.getScaledImage(imgUrl);
         g.drawImage(scaledPiece, rec.x, rec.y, null);
-    }
+    }*/
     
-    public boolean tryHighlight(Square square)
+    /*public boolean tryHighlight(Square square)
     {
         if (square != null)
         {
@@ -47,7 +50,7 @@ public abstract class Piece
             if (square.isHighlighted()) return true;
         }
         return false;
-    }
+    }*/
     
     public String exportPiece()
     {
@@ -57,9 +60,14 @@ public abstract class Piece
         return text;
     }
     
-    public abstract void highlightPossibleMove();
+    //public abstract void highlightPossibleMove();
     
     public abstract boolean canMoveTo(Square x);
     
-    protected abstract boolean freeWay(Point actPos, Point nextPos);
+    protected abstract void initPattern();
+    
+    public PiecePatterns[] getPattern()
+    {
+    	return this.patterns;
+    }
 }
