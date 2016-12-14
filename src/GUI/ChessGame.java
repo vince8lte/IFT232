@@ -16,6 +16,9 @@ import javax.swing.JPanel;
 
 import com.sun.glass.events.MouseEvent;
 
+import Action.LoadAction;
+import Action.RestartAction;
+import Action.SaveAction;
 import classes.Board;
 import classes.Player;
 
