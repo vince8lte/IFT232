@@ -85,8 +85,8 @@ public class Board {
 			pieceTempo = getPiece(i%8, i/8);
 			
 			if(pieceTempo != null){
-				sauvegarde += "[" + Integer.toString(i%8) + "," + Integer.toString(i%8) + "] ";
-				sauvegarde += pieceTempo.toString() + "/n";
+				sauvegarde +=Integer.toString(i%8) + "," + Integer.toString(i%8) + "|";
+				sauvegarde += pieceTempo.toString() + "\n";
 			}
 		}
 		
@@ -96,17 +96,24 @@ public class Board {
 	//Lit un fichier pour l'appliquer au board
 	public void LoadSaveFile(String loadFile){
 		
-		deleteBoard();
-	
-		//Hash le loadFile pour faire des appels à la factory
-		
-	}
-	
-	//Vide l'echequier
-	public void deleteBoard(){
+		//Distingue toute les lignes
+		String[] Ligne = loadFile.split("\n");
+		String posSection;
+		int posX;
+		int posY;		
+
+		//Vide l'echiquiers
 		for(int i = 0; i < (BOARD_SIZE*BOARD_SIZE); i++){
 			echequier[i%8][i/8] = null;
 		}
+		
+		//Parcour toute les lignes à charger
+		for(int i=0; i < Ligne.length; i++){
+			posSection = Ligne[1].split(",")[0];
+			posX = Integer.parseInt(posSection.split(",")[0]);
+			posY = Integer.parseInt(posSection.split(",")[1]);
+			echequier[posX][posY] = PieceFactory.getInstance().givePiece(Ligne[1].split(",")[1]);
+		}		
 	}
 	
 	

@@ -9,16 +9,7 @@ import Piece.Roi;
 import Piece.Tour;
 
 public class PieceFactory
-{
-    public enum PieceType {
-        Cavalier,
-        Fou,
-        Pion,
-        Reine,
-        Roi,
-        Tour
-    }
-    
+{    
     /** Holder */ /* NOTE DE JONATHAN: LAISSEZ-ÇA COMME ÇA. J'AI PARLÉ AVEC MIKAEL EN CLASSE. */
     private static class PieceFactoryHolder
     { 
@@ -26,45 +17,45 @@ public class PieceFactory
         private final static PieceFactory instance = new PieceFactory();
     }
     
-    private PieceFactory()
-    {
-        
-    }
-    
     public static PieceFactory getInstance()
     {
         return PieceFactoryHolder.instance;
     }
     
-    public Piece create(PieceType piece, Player.Color color){
-        switch(piece)
-        {
-            case Pion:
-            {
-                return new Pion(color);
-            }
-            case Fou:
+    public Piece givePiece(String strPiece){
+    	  	
+    	//Inspecte le string pour d�terminer la couleur de la nouvelle piece
+    	Player.Color color = Player.Color.BLACK;
+    	if(strPiece.split(",")[1] == "WHITE"){
+    		color = Player.Color.WHITE;
+    	}
+    	
+    	switch(strPiece.split(",")[0])
+    	{
+	    	case "Pion":{
+	    		return new Pion(color);
+	    	}
+	    	case "Tour":{
+	    		return new Tour(color);
+	    	}
+	    	case "Fou":
             {
                 return new Fou(color);
             }
-            case Cavalier:
+	    	case "Cavalier":
             {
                 return new Cavalier(color);
             }
-            case Reine:
+	    	case "Reine":
             {
                 return new Reine(color);
             }
-            case Roi:
+	    	case "Roi":
             {
                 return new Roi(color);
             }
-            case Tour:
-            {
-                return new Tour(color);
-            }
-            default:
+	    	default:
                 return null;
-        }
+    	}
     }
 }
