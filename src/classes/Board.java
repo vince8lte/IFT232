@@ -3,6 +3,7 @@ package classes;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
@@ -139,6 +140,28 @@ public class Board extends JPanel implements ComponentListener {
 	    grid = new Grid(BOARD_SIZE,this);
 	    activePlayer = players[1];
 	    repaint();
+	}
+	
+	public void highlightPossibleMoves()
+	{
+		PiecePatterns[] patterns = this.selectedSquare.getPiece().getPattern();
+		Point initPos = selectedSquare.getPos();
+		Piece tempPiece;
+		for ( int i =0 ; i<patterns.length ; i++)
+		{
+			initPos = selectedSquare.getPos();
+			int j=0;
+			do
+			{
+				initPos.setLocation(initPos.getX()+patterns[i].getDirectionX(), initPos.getY()+patterns[i].getDirectionY());
+				tempPiece = grid.getSquare((int)initPos.getX(), (int)initPos.getY()).getPiece();
+				if (tempPiece == null)
+				{
+					//highlighter la piece
+				}
+				j++;
+			}while(tempPiece == null && j<patterns[i].getDistanceMax());
+		}
 	}
 	
 	@Override
