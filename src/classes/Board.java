@@ -14,37 +14,46 @@ import javax.swing.JPanel;
 
 import Piece.*;
 
-public class Board extends JPanel implements ComponentListener {
+public class Board {
 	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
+   // private static final long serialVersionUID = 1L;
 
     private final int BOARD_SIZE = 8;
+    private final int NOT_SELECTED = -1;
 
-	private Grid grid;
-	private Square selectedSquare;
+	
     private Image background;
     private Image scaledBackground;
     private Point2D.Double borderSize;
     private Point2D.Double squareSize;
     
-	private Player[] players;
-	private Player activePlayer;
+    private Piece[][] echequier;		//Contient la position de toute les pieces de l'échiquier
+    private int selectedX;				//Indique la position de la piece selectionner en X
+    private int selectedY;				//Indique la position de la piece selectionner en Y
+    
+    
+	//private Player[] players;
+	//private Player activePlayer;
 	
 	public Board(){
-	    FlowLayout layout = (FlowLayout)this.getLayout();
-        layout.setVgap(0);
+	    //FlowLayout layout = (FlowLayout)this.getLayout();
+        //layout.setVgap(0);
         
+        echequier = new Piece[BOARD_SIZE][BOARD_SIZE];
+        selectedX = NOT_SELECTED;
+        selectedY = NOT_SELECTED;
+        
+        /*
         players = new Player[2];
         players[0] = new Player(Player.Color.BLACK);
         players[1] = new Player(Player.Color.WHITE);
-        activePlayer = players[1];
+        activePlayer = players[1];*/
         
-        this.borderSize = new Point2D.Double(this.getWidth()*0.0625, this.getHeight()*0.0625);
-        this.squareSize = new Point2D.Double((this.getWidth()-borderSize.x*2.0)/8.0, this.getHeight()-borderSize.y*2.0/8.0);
-        
-        grid = new Grid(BOARD_SIZE,this);
+        //this.borderSize = new Point2D.Double(this.getWidth()*0.0625, this.getHeight()*0.0625);
+        //this.squareSize = new Point2D.Double((this.getWidth()-borderSize.x*2.0)/8.0, this.getHeight()-borderSize.y*2.0/8.0);
+        /*
         
         addMouseListener(new MouseAdapter() {
             @Override
@@ -54,9 +63,37 @@ public class Board extends JPanel implements ComponentListener {
                 click(grid.getSquare(clickPosX, clickPosY));
                 repaint();
             }
-        });
+        });*/
 	}
 	
+	private Piece getPiece(int x, int y){
+		return echequier[x][y];
+	}
+	
+	private Piece getSelectedPiece(){
+		if(pieceIsSelected()){
+			return echequier[selectedX][selectedY];
+		}else{
+			return null;
+		}
+	}
+	
+	private boolean squareIsEmpty(int x, int y){
+		return (echequier[x][y] == null);
+	}
+	
+	private boolean pieceIsSelected(){
+		return ((selectedX != NOT_SELECTED) && (selectedY != NOT_SELECTED));
+	}
+	
+	private void movePiece(int x, int y){
+		echequier[x][y] = echequier[selectedX][selectedY];
+		echequier[selectedX][selectedY] = null;
+	}
+	
+	
+	
+	/*
 	public void click(Square square) {
 		if(selectedSquare != null) {
 			movePiece(square);
@@ -64,16 +101,17 @@ public class Board extends JPanel implements ComponentListener {
 		else {
 			selectSquare(square);
 		}
-	}
+	}*/
 	
+	/*
     @Override
     protected void paintComponent(Graphics g) {        
         super.paintComponent(g);
         g.drawImage(scaledBackground, 0, 0, this);
         grid.paintComponent(borderSize, squareSize, g);
-    }
+    }*/
 
-
+	/*
     @Override
     public void componentResized(ComponentEvent e)
     {
@@ -92,13 +130,8 @@ public class Board extends JPanel implements ComponentListener {
                 (int)(this.getHeight()*((squareSize.y)/this.getHeight())), Image.SCALE_FAST);
     	Image newimg = new ImageIcon(scaledImage).getImage();
     	return newimg;
-    }
-    
-    public Grid getGrid()
-    {
-        return grid;
-    }
-
+    }*/
+/*
 	private boolean selectSquare(Square square)
 	{
 		Piece selectedPiece = square.getPiece();
@@ -112,7 +145,7 @@ public class Board extends JPanel implements ComponentListener {
 			return true;
 		}
 		return false;
-	}
+	}*/
 
 	private void movePiece(Square square)
 	{
@@ -128,19 +161,21 @@ public class Board extends JPanel implements ComponentListener {
 			grid.resetSelectedSquare();
 		}
 	}
+	/*
 	
 	private void changeActivePlayer() 
 	{
 	    if (activePlayer.getColor() == Player.Color.WHITE) activePlayer = players[0];
 	    else activePlayer = players[1];
 	}
-	
+	*/
+	/*
 	public void resetGame()
 	{
 	    grid = new Grid(BOARD_SIZE,this);
 	    activePlayer = players[1];
 	    repaint();
-	}
+	}*/
 	
 	public void highlightPossibleMoves()
 	{
@@ -164,10 +199,12 @@ public class Board extends JPanel implements ComponentListener {
 		}
 	}
 	
+	/*
 	@Override
 	public void componentHidden(ComponentEvent e) {}
 	@Override
 	public void componentMoved(ComponentEvent e) {}
 	@Override
 	public void componentShown(ComponentEvent e) {}
+	*/
 }

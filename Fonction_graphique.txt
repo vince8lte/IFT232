@@ -1,0 +1,20 @@
+Fonction du graphisme
+
+
+	public void paintComponent(Rectangle rec, Graphics g) {
+		if (isSelected || isHighlighted) {
+			Image scaledPiece = board.getScaledImage("ressources/pictures/selected.png");
+			g.drawImage(scaledPiece, rec.x, rec.y, null);
+		}
+		if (piece != null)
+			piece.paintComponent(rec, g);
+	}*/
+	
+	/*
+	public void isHighlighted(boolean isHighlighted) {
+		this.isHighlighted = isHighlighted;
+	}
+	/*
+	public boolean isHighlighted() {
+		return this.isHighlighted;
+	}
