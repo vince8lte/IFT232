@@ -1,0 +1,66 @@
+public String exportGrid()
+    {
+        String text = "";
+        text += squares.length+"\r\n";
+        for (int i = 0; i < squares.length; ++i) {
+            for (int j = 0; j < squares[i].length; ++j) {
+                Square square = this.getSquare(i, j);
+                text += i +","+j+",";
+                if (!square.isEmpty())
+                {
+                    text+=square.getPiece().exportPiece();
+                }
+                text += "\r\n";
+            }
+        }
+        return text;
+    }
+
+
+public void importGrid(String filename)
+    {
+        BufferedReader br = null;
+        String line = "";
+        int size = 0;
+
+        try 
+        {
+
+            br = new BufferedReader(new FileReader(filename));
+            size = Integer.parseInt(br.readLine());
+            
+            // initialise tous les squares
+            squares = new Square[size][size];
+            for(int i = 0; i < squares.length; ++i) {
+                for (int j = 0; j < squares[i].length; ++j) {
+                    Square square = new Square(new Point(i, j), board);
+                    squares[i][j] = square;
+                }
+            }
+            
+            //ajouter les pieces dans la grid
+            while ((line = br.readLine()) != null) 
+            {
+                String[] data = line.split(",");
+                if (data.length >= 4){
+                    int x = Integer.parseInt(data[0]);
+                    int y = Integer.parseInt(data[1]);
+                    String classname = data[2];
+                    String color = data [3];
+                    
+                    Piece piece = PieceFactory.getInstance().create(PieceFactory.PieceType.valueOf(classname), Player.Color.valueOf(color), board);
+                    
+                    squares[x][y].setPiece(piece);
+                }          
+            }
+
+        } 
+        catch (FileNotFoundException e) 
+        {
+            e.printStackTrace();
+        } 
+        catch (IOException e) 
+        {
+            e.printStackTrace();
+        } 
+    }
