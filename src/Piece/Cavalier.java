@@ -2,17 +2,16 @@ package Piece;
 
 import java.awt.Point;
 
-import classes.Board;
-import classes.Grid;
 import classes.Player;
-import classes.Square;
 
 public class Cavalier extends Piece {
 
-	public Cavalier(Player.Color color, Board b) {
-		super(color, b);
+	public Cavalier(Player.Color color) {
+		super(color);
+		
         this.imgUrl = "ressources/pictures/cavalier";
         this.initPattern();
+        
         if(this.getColor() == Player.Color.WHITE){
         	this.imgUrl += "b.png";
         }else{
@@ -32,39 +31,9 @@ public class Cavalier extends Piece {
 		patterns[6] = new PiecePatterns(-2,1,1,false);
 		patterns[7] = new PiecePatterns(-2,-1,1,false);
 	}
-	@Override
-	public boolean canMoveTo(Square square) {
-	    return square.isHighlighted();
-	}
-
+	
 	/*@Override
-	public void highlightPossibleMove() {
-	    Grid grid = board.getGrid();
-        Point pos = this.square.getPos();
-        
-        Square square = grid.getSquare(pos.x+1, pos.y+2);
-        this.tryHighlight(square);
-            
-        square = grid.getSquare(pos.x-1, pos.y+2);
-        this.tryHighlight(square);
-        
-        square = grid.getSquare(pos.x+1, pos.y-2);
-        this.tryHighlight(square);
-        
-        square = grid.getSquare(pos.x-1, pos.y-2);
-        this.tryHighlight(square);
-        
-        square = grid.getSquare(pos.x+2, pos.y+1);
-        this.tryHighlight(square);
-        
-        square = grid.getSquare(pos.x+2, pos.y-1);
-        this.tryHighlight(square);
-        
-        square = grid.getSquare(pos.x-2, pos.y+1);
-        this.tryHighlight(square);
-        
-        square = grid.getSquare(pos.x-2, pos.y-1);
-        this.tryHighlight(square);
-		
+	public boolean canMoveTo() {
+	    
 	}*/
 }

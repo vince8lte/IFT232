@@ -1,16 +1,7 @@
 package classes;
 
-import java.awt.FlowLayout;
-import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.Point;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
-import javax.swing.ImageIcon;
-import javax.swing.JPanel;
 
 import Piece.*;
 
@@ -34,8 +25,7 @@ public class Board {
     private int selectedY;				//Indique la position de la piece selectionner en Y
     
     
-	//private Player[] players;
-	//private Player activePlayer;
+
 	
 	public Board(){
 	    //FlowLayout layout = (FlowLayout)this.getLayout();
@@ -66,8 +56,50 @@ public class Board {
         });*/
 	}
 	
+	
+	public void highlightPossibleMoves()
+	{
+		PiecePatterns[] patterns = this.getSelectedPiece().getPattern();
+		int x, y;		//Contient le positionnement de la vérification
+		Piece tempPiece;
+		
+		//boucle sur tout les parttern de la piece
+		for ( int i =0 ; i<patterns.length ; i++)
+		{
+			x = selectedX;
+			y = selectedY;
+			int nbrSaut = 0; 	//Compteur de saut effectuer	
+			
+			//Vérifie toutes les possibilitées de mouvement selon un patter
+			do
+			{
+				x +=patterns[i].getDirectionX();
+				y += patterns[i].getDirectionY();
+				tempPiece = null;
+				
+				if(isInChess(x, y)){
+					tempPiece = getPiece(x, y);
+					if (tempPiece == null)
+					{
+						//highlighter la piece
+					}
+				}
+				
+				nbrSaut++;
+				
+			}while((tempPiece == null) && (nbrSaut<patterns[i].getDistanceMax()));
+		}
+	}
+	
+	
+	//****** Partie privée du code ******************//
+	
 	private Piece getPiece(int x, int y){
-		return echequier[x][y];
+		if(isInChess(x, y)){
+			return echequier[x][y];
+		}else{
+			return null;
+		}
 	}
 	
 	private Piece getSelectedPiece(){
@@ -75,6 +107,17 @@ public class Board {
 			return echequier[selectedX][selectedY];
 		}else{
 			return null;
+		}
+	}
+	
+	//S'assure que la position x et y fournis soient en tout temps dans les limites du board
+	private boolean isInChess(int x, int y){
+		
+		if((x >= 0) && (x < BOARD_SIZE) && (y >= 0) && (y < BOARD_SIZE)){
+			return true;
+		}
+		else{
+			return false;
 		}
 	}
 	
@@ -90,6 +133,10 @@ public class Board {
 		echequier[x][y] = echequier[selectedX][selectedY];
 		echequier[selectedX][selectedY] = null;
 	}
+	
+	
+	
+	
 	
 	
 	
@@ -147,6 +194,7 @@ public class Board {
 		return false;
 	}*/
 
+	/*
 	private void movePiece(Square square)
 	{
 		Piece movingPiece = selectedSquare.getPiece();
@@ -160,7 +208,7 @@ public class Board {
 			selectedSquare = null;
 			grid.resetSelectedSquare();
 		}
-	}
+	}*/
 	/*
 	
 	private void changeActivePlayer() 
@@ -177,27 +225,7 @@ public class Board {
 	    repaint();
 	}*/
 	
-	public void highlightPossibleMoves()
-	{
-		PiecePatterns[] patterns = this.selectedSquare.getPiece().getPattern();
-		Point initPos = selectedSquare.getPos();
-		Piece tempPiece;
-		for ( int i =0 ; i<patterns.length ; i++)
-		{
-			initPos = selectedSquare.getPos();
-			int j=0;
-			do
-			{
-				initPos.setLocation(initPos.getX()+patterns[i].getDirectionX(), initPos.getY()+patterns[i].getDirectionY());
-				tempPiece = grid.getSquare((int)initPos.getX(), (int)initPos.getY()).getPiece();
-				if (tempPiece == null)
-				{
-					//highlighter la piece
-				}
-				j++;
-			}while(tempPiece == null && j<patterns[i].getDistanceMax());
-		}
-	}
+	
 	
 	/*
 	@Override

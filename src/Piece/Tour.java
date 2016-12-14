@@ -9,8 +9,8 @@ import classes.Square;
 
 public class Tour extends PieceSpeciale {
 
-	public Tour(Player.Color color, Board board) {
-		super(color, board);
+	public Tour(Player.Color color) {
+		super(color);
         this.imgUrl = "ressources/pictures/tour";
         this.initPattern();
         if(this.getColor() == Player.Color.WHITE){
@@ -20,10 +20,11 @@ public class Tour extends PieceSpeciale {
         }
 	}
 
+	/*
 	@Override
 	public boolean canMoveTo(Square square) {
 	    return square.isHighlighted();
-	}
+	}*/
 	
 	@Override
 	protected void initPattern() {
@@ -34,34 +35,4 @@ public class Tour extends PieceSpeciale {
 		patterns[2] = new PiecePatterns(0,1,8,false);
 		patterns[3] = new PiecePatterns(0,-1,8,false);
 	}
-
-	/*@Override
-	public void highlightPossibleMove() {
-	    Grid grid = board.getGrid();
-        Point pos = this.square.getPos();
-        
-        // Mouvement en forme de croix , on arrete si la case n'est pas possible
-        // ou si la case est possible, mais qu'une piece est presente
-        
-        for (int i = 1;;i++){
-            Square square = grid.getSquare(pos.x+i, pos.y);
-            if (!this.tryHighlight(square)) break;
-            else if (square != null && !square.isEmpty()) break;
-        }
-        for (int i = 1;;i++){
-            Square square = grid.getSquare(pos.x-i, pos.y);
-            if (!this.tryHighlight(square)) break;
-            else if (square != null && !square.isEmpty()) break;
-        }
-        for (int i = 1;;i++){
-            Square square = grid.getSquare(pos.x, pos.y+i);
-            if (!this.tryHighlight(square)) break;
-            else if (square != null && !square.isEmpty()) break;
-        }
-        for (int i = 1;;i++){
-            Square square = grid.getSquare(pos.x, pos.y-i);
-            if (!this.tryHighlight(square)) break;
-            else if (square != null && !square.isEmpty()) break;
-        }
-    }*/
 }
