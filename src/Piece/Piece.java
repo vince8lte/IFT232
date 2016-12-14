@@ -40,8 +40,6 @@ public abstract class Piece
     	return this.patterns;
     }
     
-    //public abstract void highlightPossibleMove();
-    
     //public abstract boolean canMoveTo(Square x);
     
     protected abstract void initPattern();

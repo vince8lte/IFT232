@@ -6,9 +6,6 @@ import java.awt.geom.Point2D;
 import Piece.*;
 
 public class Board {
-	/**
-     * 
-     */
    // private static final long serialVersionUID = 1L;
 
     private final int BOARD_SIZE = 8;
@@ -24,8 +21,7 @@ public class Board {
     private int selectedX;				//Indique la position de la piece selectionner en X
     private int selectedY;				//Indique la position de la piece selectionner en Y
     
-    
-
+    private int phase;					//Indique la phase du board en cour
 	
 	public Board(){
 	    //FlowLayout layout = (FlowLayout)this.getLayout();
@@ -35,40 +31,29 @@ public class Board {
         selectedX = NOT_SELECTED;
         selectedY = NOT_SELECTED;
         
-        /*
-        players = new Player[2];
-        players[0] = new Player(Player.Color.BLACK);
-        players[1] = new Player(Player.Color.WHITE);
-        activePlayer = players[1];*/
+        phase = 0;
         
         //this.borderSize = new Point2D.Double(this.getWidth()*0.0625, this.getHeight()*0.0625);
         //this.squareSize = new Point2D.Double((this.getWidth()-borderSize.x*2.0)/8.0, this.getHeight()-borderSize.y*2.0/8.0);
-        /*
-        
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                int clickPosX = (int)((e.getX()-borderSize.x)/squareSize.x);
-                int clickPosY = (int)((e.getY()-borderSize.y)/squareSize.y);
-                click(grid.getSquare(clickPosX, clickPosY));
-                repaint();
-            }
-        });*/
 	}
-	
+
+	public int Action(int clickedX, int clickedY){
+		return phase;
+	}
 	
 	public void highlightPossibleMoves()
 	{
 		PiecePatterns[] patterns = this.getSelectedPiece().getPattern();
 		int x, y;		//Contient le positionnement de la vérification
 		Piece tempPiece;
+		int nbrSaut;
 		
 		//boucle sur tout les parttern de la piece
 		for ( int i =0 ; i<patterns.length ; i++)
 		{
 			x = selectedX;
 			y = selectedY;
-			int nbrSaut = 0; 	//Compteur de saut effectuer	
+			nbrSaut = 0; 	//Compteur de saut effectuer	
 			
 			//Vérifie toutes les possibilitées de mouvement selon un patter
 			do
@@ -210,29 +195,10 @@ public class Board {
 		}
 	}*/
 	/*
-	
-	private void changeActivePlayer() 
-	{
-	    if (activePlayer.getColor() == Player.Color.WHITE) activePlayer = players[0];
-	    else activePlayer = players[1];
-	}
-	*/
-	/*
 	public void resetGame()
 	{
 	    grid = new Grid(BOARD_SIZE,this);
 	    activePlayer = players[1];
 	    repaint();
 	}*/
-	
-	
-	
-	/*
-	@Override
-	public void componentHidden(ComponentEvent e) {}
-	@Override
-	public void componentMoved(ComponentEvent e) {}
-	@Override
-	public void componentShown(ComponentEvent e) {}
-	*/
 }

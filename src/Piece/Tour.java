@@ -2,10 +2,7 @@ package Piece;
 
 import java.awt.Point;
 
-import classes.Board;
-import classes.Grid;
 import classes.Player;
-import classes.Square;
 
 public class Tour extends PieceSpeciale {
 

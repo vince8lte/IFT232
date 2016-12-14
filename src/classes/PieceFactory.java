@@ -36,32 +36,32 @@ public class PieceFactory
         return PieceFactoryHolder.instance;
     }
     
-    public Piece create(PieceType piece, Player.Color color, Board board){
+    public Piece create(PieceType piece, Player.Color color){
         switch(piece)
         {
             case Pion:
             {
-                return new Pion(color, board);
+                return new Pion(color);
             }
             case Fou:
             {
-                return new Fou(color,board);
+                return new Fou(color);
             }
             case Cavalier:
             {
-                return new Cavalier(color,board);
+                return new Cavalier(color);
             }
             case Reine:
             {
-                return new Reine(color,board);
+                return new Reine(color);
             }
             case Roi:
             {
-                return new Roi(color,board);
+                return new Roi(color);
             }
             case Tour:
             {
-                return new Tour(color,board);
+                return new Tour(color);
             }
             default:
                 return null;
