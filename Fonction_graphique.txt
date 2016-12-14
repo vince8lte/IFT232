@@ -18,3 +18,63 @@ Fonction du graphisme
 	public boolean isHighlighted() {
 		return this.isHighlighted;
 	}
+
+public void paintComponent(Point2D.Double borderSize, Point2D.Double squareSize,Graphics g)
+    {
+        for (int i = 0; i < squares.length; ++i) {
+            for ( int j = 0; j < squares[i].length; ++j) {
+                Rectangle rec = new Rectangle();
+                rec.setRect(borderSize.x + squareSize.x*i, borderSize.y + squareSize.y*j, squareSize.x, squareSize.y);
+                squares[i][j].paintComponent(rec, g);
+            }
+        }
+
+
+
+    /*public void paintComponent(Rectangle rec, Graphics g) {
+    	Image scaledPiece = board.getScaledImage(imgUrl);
+        g.drawImage(scaledPiece, rec.x, rec.y, null);
+    }*/
+    
+    /*public boolean tryHighlight(Square square)
+    {
+        if (square != null)
+        {
+            if(square.isEmpty()) square.isHighlighted(true);
+            else if (this.getColor() != square.getPiece().getColor()) square.isHighlighted(true);
+            if (square.isHighlighted()) return true;
+        }
+        return false;
+    }*/
+
+
+
+   /*
+    @Override
+    protected void paintComponent(Graphics g) {        
+        super.paintComponent(g);
+        g.drawImage(scaledBackground, 0, 0, this);
+        grid.paintComponent(borderSize, squareSize, g);
+    }*/
+
+/*
+    @Override
+    public void componentResized(ComponentEvent e)
+    {
+    	this.borderSize = new Point2D.Double(this.getWidth()*0.0625, this.getHeight()*0.0625);
+        this.squareSize = new Point2D.Double((this.getWidth()-borderSize.x*2.0)/8.0, (this.getHeight()-borderSize.y*2.0)/8.0);
+
+        if (background == null) {
+            background = new ImageIcon("ressources/pictures/chessboard.jpg").getImage();
+        }
+        scaledBackground = background.getScaledInstance(this.getWidth(), this.getHeight(), Image.SCALE_FAST);
+    }
+    
+    public Image getScaledImage(String imgUrl) {
+    	Image image = new ImageIcon(imgUrl).getImage();
+    	Image scaledImage = image.getScaledInstance((int)(this.getWidth()*((squareSize.x)/this.getWidth())),
+                (int)(this.getHeight()*((squareSize.y)/this.getHeight())), Image.SCALE_FAST);
+    	Image newimg = new ImageIcon(scaledImage).getImage();
+    	return newimg;
+    }*/
+    }

@@ -76,6 +76,39 @@ public class Board {
 		}
 	}
 	
+	//Enregistre dans un string la partie courante
+	public String createSaveFile(){
+		String sauvegarde = "";
+		Piece pieceTempo = null;
+		
+		for(int i = 0; i < (BOARD_SIZE*BOARD_SIZE); i++){
+			pieceTempo = getPiece(i%8, i/8);
+			
+			if(pieceTempo != null){
+				sauvegarde += "[" + Integer.toString(i%8) + "," + Integer.toString(i%8) + "] ";
+				sauvegarde += pieceTempo.toString() + "/n";
+			}
+		}
+		
+		return sauvegarde;
+	}
+	
+	//Lit un fichier pour l'appliquer au board
+	public void LoadSaveFile(String loadFile){
+		
+		deleteBoard();
+	
+		//Hash le loadFile pour faire des appels à la factory
+		
+	}
+	
+	//Vide l'echequier
+	public void deleteBoard(){
+		for(int i = 0; i < (BOARD_SIZE*BOARD_SIZE); i++){
+			echequier[i%8][i/8] = null;
+		}
+	}
+	
 	
 	//****** Partie privée du code ******************//
 	
@@ -120,65 +153,6 @@ public class Board {
 	}
 	
 	
-	
-	
-	
-	
-	
-	/*
-	public void click(Square square) {
-		if(selectedSquare != null) {
-			movePiece(square);
-		}
-		else {
-			selectSquare(square);
-		}
-	}*/
-	
-	/*
-    @Override
-    protected void paintComponent(Graphics g) {        
-        super.paintComponent(g);
-        g.drawImage(scaledBackground, 0, 0, this);
-        grid.paintComponent(borderSize, squareSize, g);
-    }*/
-
-	/*
-    @Override
-    public void componentResized(ComponentEvent e)
-    {
-    	this.borderSize = new Point2D.Double(this.getWidth()*0.0625, this.getHeight()*0.0625);
-        this.squareSize = new Point2D.Double((this.getWidth()-borderSize.x*2.0)/8.0, (this.getHeight()-borderSize.y*2.0)/8.0);
-
-        if (background == null) {
-            background = new ImageIcon("ressources/pictures/chessboard.jpg").getImage();
-        }
-        scaledBackground = background.getScaledInstance(this.getWidth(), this.getHeight(), Image.SCALE_FAST);
-    }
-    
-    public Image getScaledImage(String imgUrl) {
-    	Image image = new ImageIcon(imgUrl).getImage();
-    	Image scaledImage = image.getScaledInstance((int)(this.getWidth()*((squareSize.x)/this.getWidth())),
-                (int)(this.getHeight()*((squareSize.y)/this.getHeight())), Image.SCALE_FAST);
-    	Image newimg = new ImageIcon(scaledImage).getImage();
-    	return newimg;
-    }*/
-/*
-	private boolean selectSquare(Square square)
-	{
-		Piece selectedPiece = square.getPiece();
-		if (selectedPiece == null) {
-			return false;
-		}
-		if (activePlayer.isPieceOwner(selectedPiece)) {
-			selectedSquare = square;
-			square.isSelected(true);
-			//selectedPiece.highlightPossibleMove();
-			return true;
-		}
-		return false;
-	}*/
-
 	/*
 	private void movePiece(Square square)
 	{
@@ -193,12 +167,5 @@ public class Board {
 			selectedSquare = null;
 			grid.resetSelectedSquare();
 		}
-	}*/
-	/*
-	public void resetGame()
-	{
-	    grid = new Grid(BOARD_SIZE,this);
-	    activePlayer = players[1];
-	    repaint();
 	}*/
 }
