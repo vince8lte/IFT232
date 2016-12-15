@@ -71,8 +71,10 @@ public class Board {
 	        {
 	        	if(canMovePiece(movementPatternFromMovingPiece, x, y)){
 	        		
-
+	        		//déplacement special pour le roque
 	        		if(isTryingToCastling(getPiece(x,y))){
+	        			
+	        			this.DoCastling(x,y);
 	        			
 	        		}else{
 		        		
@@ -203,7 +205,7 @@ public class Board {
 		int posX = selectedX;
 		int posY = selectedY;
 		int jumpCount = 0;			//Permet de ne jamais dépassé le nombre de saut d'un paterne
-		Piece piecePosFinale = getPiece(posX, posY);		//contient la piece à la position final
+		Piece finalPosPiece = getPiece(posX, posY);		//contient la piece à la position final
 		
 		do{
 			posX += pattern.getDirectionX();
@@ -218,7 +220,7 @@ public class Board {
 		}while(!result && (getPiece(posX, posY) != null));
 		
 		//Si l'usage ne tante pas de faire un roque, on s'assure que la piece ne
-		if(!isTryingToCastling(piecePosFinale)){
+		if(!isTryingToCastling(finalPosPiece)){
 			result = result && (jumpCount < pattern.getDistanceMax());
 		}
 		
@@ -227,13 +229,13 @@ public class Board {
 			
 			//Si le pattern est exclusivement pour les attaque
 			if(pattern.isAttackPattern()){
-				if(piecePosFinale == null){
+				if(finalPosPiece == null){
 					result = false;
 				}
 			}
 			//Si le pattern est exclusivement pour les déplacements
 			if(pattern.isMouvementPattern()){
-				if(piecePosFinale != null){
+				if(finalPosPiece != null){
 					result = false;
 				}
 			}
@@ -243,18 +245,21 @@ public class Board {
 	}
 	
 	//Verifie si l'usager tante d'effectuer le roque
-	private boolean isTryingToCastling(Piece pieceFinalPos){
+	private boolean isTryingToCastling(Piece finalPosPiece){
 		boolean result = false;
 		Piece SelectedPiece = getSelectedPiece();
 		
-		if((SelectedPiece != null) && (pieceFinalPos != null)){
+		if((SelectedPiece != null) && (finalPosPiece != null)){
 			//Verifie que les deux pieces soit de la même couleur, sinon ca ne sert à rien
-			if(SelectedPiece.getColor() == pieceFinalPos.getColor()){
+			if(SelectedPiece.getColor() == finalPosPiece.getColor()){
 			
 				//Verifie que les piec soit des instances de roi et tour
-				if(((SelectedPiece instanceof Roi) && (pieceFinalPos instanceof Tour)) 
-						||((SelectedPiece instanceof Tour) && (pieceFinalPos instanceof Roi))){
-					result = true;
+				if(((SelectedPiece instanceof Roi) && (finalPosPiece instanceof Tour)) 
+						||((SelectedPiece instanceof Tour) && (finalPosPiece instanceof Roi))){
+					
+					if(SelectedPiece.canSpecialMove() && finalPosPiece.canSpecialMove()){
+						result = true;
+					}
 				}
 			}
 		}
@@ -263,19 +268,38 @@ public class Board {
 	}
 	
 	
-	/*
-	public void movePiece(Square square)
-	{
-		Piece movingPiece = selectedSquare.getPiece();
-		if (movingPiece.canMoveTo(square)) {
-			selectedSquare.movePieceTo(square);
-			selectedSquare = null;
-			grid.resetSelectedSquare();
-			changeActivePlayer();
+	//Effectue le roque
+	private void DoCastling(int x, int y){
+		int kingX = selectedX;
+		int castleX = x;
+		Piece tempoPiece;
+		
+		if(getSelectedPiece() instanceof Tour){			
+			kingX = x;
+			castleX = selectedX;
 		}
-		else if (square == selectedSquare) {
-			selectedSquare = null;
-			grid.resetSelectedSquare();
+		
+		//Retire le mouvement spécial de la tour non utilisé
+		if(castleX == 0){
+			tempoPiece = getPiece(7,y);
+		}else{
+			tempoPiece = getPiece(0,y);
 		}
-	}*/
+		
+		//Retire le mouvement special de la tour non utilisé et de la piece d'arriver : la piece selectionner se fait au retour
+		if(tempoPiece != null){ tempoPiece.hasMoved(); }
+		getPiece(x,y).hasMoved();
+		
+		//Verifie si le grand roque doit être fait
+		if(castleX < kingX){
+			board[2][y] = board[kingX][y];	//Deplace le roi
+			board[3][y] = board[castleX][y];	//Deplace la tour
+		}else{
+			board[6][y] = board[kingX][y];	//Deplace le roi
+			board[5][y] = board[castleX][y];	//Deplace la tour
+		}
+
+		board[kingX][y] = null;
+		board[castleX][y] = null;
+	}
 }

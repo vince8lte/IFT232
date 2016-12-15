@@ -17,6 +17,10 @@ public abstract class Piece
     
     public void hasMoved(){}
     
+    public boolean canSpecialMove(){
+		return false;
+	}
+    
     public Piece(Player.Color color) {
         this.color = color;
     }
