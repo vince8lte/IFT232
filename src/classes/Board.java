@@ -1,7 +1,6 @@
 package classes;
 
 import java.awt.Image;
-import java.awt.geom.Point2D;
 
 import Piece.*;
 
@@ -10,12 +9,6 @@ public class Board {
 
     private final int BOARD_SIZE = 8;
     private final int NOT_SELECTED = -1;
-
-	
-    private Image background;
-    private Image scaledBackground;
-    private Point2D.Double borderSize;
-    private Point2D.Double squareSize;
     
     private Piece[][] echequier;		//Contient la position de toute les pieces de l'échiquier
     private int selectedX;				//Indique la position de la piece selectionner en X
@@ -33,8 +26,7 @@ public class Board {
         
         phase = 0;
         
-        //this.borderSize = new Point2D.Double(this.getWidth()*0.0625, this.getHeight()*0.0625);
-        //this.squareSize = new Point2D.Double((this.getWidth()-borderSize.x*2.0)/8.0, this.getHeight()-borderSize.y*2.0/8.0);
+        
 	}
 
 	public int Action(int clickedX, int clickedY){
