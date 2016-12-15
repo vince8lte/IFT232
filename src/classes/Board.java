@@ -1,6 +1,7 @@
 package classes;
 
 import java.awt.Image;
+import java.util.ArrayList;
 
 import Piece.*;
 
@@ -13,16 +14,23 @@ public class Board {
     private final int NOT_SELECTED = -1;
     
     private Piece[][] board;		//Contient la position de toute les pieces de l'ï¿½chiquier
+    private ArrayList<Piece> deadPiece; //Contient les pièces capturées
     private int selectedX;				//Indique la position de la piece selectionner en X
     private int selectedY;				//Indique la position de la piece selectionner en Y
+    
+    private int ghostPieceX;	//Indique la position de la piece fantome (pour la prise en passant)
+    private int ghostPieceY;	//Indique la position de la piece fantome (pour la prise en passant)
 
 	public Board(){
 	    //FlowLayout layout = (FlowLayout)this.getLayout();
         //layout.setVgap(0);
         
         board = new Piece[BOARD_SIZE][BOARD_SIZE];
+        deadPiece = new ArrayList<Piece>();
         selectedX = NOT_SELECTED;
         selectedY = NOT_SELECTED;
+        ghostPieceX = NOT_SELECTED;
+        ghostPieceY = NOT_SELECTED;
 	}
 	
 	public void selectPiece(int x, int y)
@@ -74,24 +82,39 @@ public class Board {
 	        		//déplacement special pour le roque
 	        		if(isTryingToCastling(getPiece(x,y))){
 	        			
-	        			this.DoCastling(x,y);
+	        			DoCastling(x,y);
 	        			
 	        		}else{
+	        			
+		        		if(getPiece(x,y) != null) {
+		        			deadPiece.add(getPiece(x,y));
+		        		}
 		        		
 		                board[x][y] = board[selectedX][selectedY];
 		                board[selectedX][selectedY] = null;
+		                
+		              	//Verification de la prise en passant
+		                doEnPassant(x, y);
+		                tryPutGhostPiece(x, y, selectedY);
+		                
+		                //Verification de la promotion
+		                if(canDoPromotion(x,y)){
+		                	getPromotablePiece(board[x][y].getColor());
+		                }
 	        		}
 	        		
 	        		movingPiece.hasMoved();
 	                
-	                unselectPiece(); 	       
+	                unselectPiece(); 
+	                unselectGhostPiece();
 	        	}
 	        }
-       
 	    }
-
 	}
 	
+	public void promote(int x, int y, String pieceName){
+		board[x][y] = PieceFactory.getInstance().givePromotatePiece(pieceName);
+	}
 	
 	public void highlightPossibleMoves()
 	{
@@ -180,11 +203,7 @@ public class Board {
 	}
 	
 	private Piece getSelectedPiece(){
-		if(pieceIsSelected()){
-			return board[selectedX][selectedY];
-		}else{
-			return null;
-		}
+		return getPiece(selectedX,selectedY);
 	}
 	
 	//S'assure que la position x et y fournis soient en tout temps dans les limites du board
@@ -196,6 +215,68 @@ public class Board {
 		else{
 			return false;
 		}
+	}
+	
+	private boolean canDoPromotion(int x, int y) {
+		Piece piece = getPiece(x, y);
+		if (piece instanceof Pion) {
+			if (piece.getColor() == Player.Color.WHITE && y == 7)
+				return true;
+			if (piece.getColor() == Player.Color.BLACK && y == 0)
+				return true;
+		}
+		return false;
+	}
+	
+	private ArrayList<Piece> getPromotablePiece(Player.Color color) {
+		
+		ArrayList<Piece> promotablePiece = new ArrayList<Piece>();
+		
+		for(Piece piece: deadPiece){
+			if(!(piece instanceof Pion) && (piece.getColor() == color)){
+				promotablePiece.add(piece);
+			}
+		}
+		
+		return promotablePiece;	
+	}
+	
+	private void unselectGhostPiece(){
+		ghostPieceX = NOT_SELECTED;
+		ghostPieceY = NOT_SELECTED;
+	}
+	
+	//Tante de placer une piece fantome si c'est nescessaire
+	private void tryPutGhostPiece(int finalPosX, int finalPosY, int startPosY){
+		Piece piece = getPiece(finalPosX, finalPosY);
+		int ghostPosY;
+		
+		if(piece instanceof Pion){
+			if(((finalPosY - startPosY)%2) == 0){
+				ghostPosY = finalPosY - ((startPosY - finalPosY)/Math.abs(startPosY - finalPosY));
+				board[finalPosX][ghostPosY] = PieceFactory.getInstance().giveGhostPiece(piece.getColor());
+				ghostPieceX = finalPosX;
+				ghostPieceY = ghostPosY;
+			}
+		}
+	}
+	
+	//Tante de faire une prise en passant
+	private void doEnPassant(int posX, int posY){
+		//Si une prise en passant est fait
+		if((posX == ghostPieceX) && (posY == ghostPieceY)){
+			if(posY == 1){
+				deadPiece.add(getPiece(posX,posY+1));
+				board[posX][posY+1] = null;
+			}else{
+				deadPiece.add(getPiece(posX,posY-1));
+				board[posX][posY-1] = null;
+			}
+		}
+		
+		//efface la piece, car elle n'a plus de raison d'exister
+		ghostPieceX = NOT_SELECTED;
+		ghostPieceY = NOT_SELECTED;
 	}
 	
 	//Cette method s'assure que la piece peut se déplacer jusqu'à la possition souhaiter

@@ -1,12 +1,6 @@
 package classes;
 
-import Piece.Cavalier;
-import Piece.Fou;
-import Piece.Piece;
-import Piece.Pion;
-import Piece.Reine;
-import Piece.Roi;
-import Piece.Tour;
+import Piece.*;
 
 public class PieceFactory
 {    
@@ -54,8 +48,22 @@ public class PieceFactory
             {
                 return new Roi(color);
             }
+	    	case "PieceFantome":
+	    	{
+	    		return new PieceFantome(color);
+	    	}
 	    	default:
                 return null;
     	}
+    }
+    
+    public Piece giveGhostPiece(Player.Color color){
+    	return new PieceFantome(color);
+    }
+    
+    public Piece givePromotatePiece(String strPiece){
+    	Piece promotedPiece = givePiece(strPiece);
+    	promotedPiece.hasMoved();
+    	return promotedPiece;
     }
 }
