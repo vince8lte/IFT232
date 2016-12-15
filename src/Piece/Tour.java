@@ -25,11 +25,11 @@ public class Tour extends PieceSpeciale {
 	
 	@Override
 	protected void initPattern() {
-		// TODO Auto-generated method stub
-		this.patterns= new PiecePatterns[4];
-		patterns[0] = new PiecePatterns(1,0,8,false);
-		patterns[1] = new PiecePatterns(-1,0,8,false);
-		patterns[2] = new PiecePatterns(0,1,8,false);
-		patterns[3] = new PiecePatterns(0,-1,8,false);
+		this.patterns= new PiecePattern[4];
+		
+		patterns[0] = new PiecePattern(1,0,8,false);
+		patterns[1] = new PiecePattern(-1,0,8,false);
+		patterns[2] = new PiecePattern(0,1,8,false);
+		patterns[3] = new PiecePattern(0,-1,8,false);
 	}
 }

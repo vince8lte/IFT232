@@ -7,7 +7,8 @@ public class Player {
 	
 	public enum Color {
 		WHITE,
-		BLACK
+		BLACK,
+		NONE
 	}
 	
 	public Player(Color color) {

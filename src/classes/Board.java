@@ -4,39 +4,68 @@ import java.awt.Image;
 
 import Piece.*;
 
+// Cette classe contient les informations spÃ©cifiques par rapport au board.
+// Cette classe contient les rÃ¨gles du jeu d'Ã©chec.
 public class Board {
    // private static final long serialVersionUID = 1L;
 
     private final int BOARD_SIZE = 8;
     private final int NOT_SELECTED = -1;
     
-    private Piece[][] echequier;		//Contient la position de toute les pieces de l'échiquier
+    private Piece[][] board;		//Contient la position de toute les pieces de l'ï¿½chiquier
     private int selectedX;				//Indique la position de la piece selectionner en X
     private int selectedY;				//Indique la position de la piece selectionner en Y
-    
-    private int phase;					//Indique la phase du board en cour
-	
+
 	public Board(){
 	    //FlowLayout layout = (FlowLayout)this.getLayout();
         //layout.setVgap(0);
         
-        echequier = new Piece[BOARD_SIZE][BOARD_SIZE];
+        board = new Piece[BOARD_SIZE][BOARD_SIZE];
         selectedX = NOT_SELECTED;
         selectedY = NOT_SELECTED;
-        
-        phase = 0;
-        
-        
 	}
+	
+	public void selectPiece(int x, int y)
+	{
+	    if (getPiece(x, y) != null)
+	    {
+	        selectedX = x;
+	        selectedY = y;	      
+	    }
+	}
+	
+	public void unselectPiece()
+	{
+	    selectedX = NOT_SELECTED;
+	    selectedY = NOT_SELECTED;
+	}
+	
+	   public boolean pieceIsSelected(){
+	        return ((selectedX != NOT_SELECTED) && (selectedY != NOT_SELECTED));
+	    }
+	
+	// Retourne la couleur de "l'equipe" de la piece (none, si une piece existe pas)
+	public Player.Color getTeamColorFromPiece(int x, int y)
+	{
+	    Piece piece = getPiece(x, y);
+	    
+	    if (piece != null)	        
+	        return (piece.getColor());
+	    else
+	        return Player.Color.NONE;
+	}
+	
+   public Player.Color getTeamColorFromSelectedPiece()
+    {
+       return getTeamColorFromPiece(selectedX, selectedY);
+    }
+	
 
-	public int Action(int clickedX, int clickedY){
-		return phase;
-	}
 	
 	public void highlightPossibleMoves()
 	{
 		PiecePatterns[] patterns = this.getSelectedPiece().getPattern();
-		int x, y;		//Contient le positionnement de la vérification
+		int x, y;		//Contient le positionnement de la vï¿½rification
 		Piece tempPiece;
 		int nbrSaut;
 		
@@ -47,7 +76,7 @@ public class Board {
 			y = selectedY;
 			nbrSaut = 0; 	//Compteur de saut effectuer	
 			
-			//Vérifie toutes les possibilitées de mouvement selon un patter
+			//Vï¿½rifie toutes les possibilitï¿½es de mouvement selon un patter
 			do
 			{
 				x +=patterns[i].getDirectionX();
@@ -96,24 +125,24 @@ public class Board {
 
 		//Vide l'echiquiers
 		for(int i = 0; i < (BOARD_SIZE*BOARD_SIZE); i++){
-			echequier[i%8][i/8] = null;
+			board[i%8][i/8] = null;
 		}
 		
-		//Parcour toute les lignes à charger
+		//Parcour toute les lignes ï¿½ charger
 		for(int i=0; i < Ligne.length; i++){
 			posSection = Ligne[1].split(",")[0];
 			posX = Integer.parseInt(posSection.split(",")[0]);
 			posY = Integer.parseInt(posSection.split(",")[1]);
-			echequier[posX][posY] = PieceFactory.getInstance().givePiece(Ligne[1].split(",")[1]);
+			board[posX][posY] = PieceFactory.getInstance().givePiece(Ligne[1].split(",")[1]);
 		}		
 	}
 	
 	
-	//****** Partie privée du code ******************//
+	//****** Partie privï¿½e du code ******************//
 	
 	private Piece getPiece(int x, int y){
 		if(isInChess(x, y)){
-			return echequier[x][y];
+			return board[x][y];
 		}else{
 			return null;
 		}
@@ -121,7 +150,7 @@ public class Board {
 	
 	private Piece getSelectedPiece(){
 		if(pieceIsSelected()){
-			return echequier[selectedX][selectedY];
+			return board[selectedX][selectedY];
 		}else{
 			return null;
 		}
@@ -139,21 +168,33 @@ public class Board {
 	}
 	
 	private boolean squareIsEmpty(int x, int y){
-		return (echequier[x][y] == null);
+		return (board[x][y] == null);
 	}
 	
-	private boolean pieceIsSelected(){
-		return ((selectedX != NOT_SELECTED) && (selectedY != NOT_SELECTED));
+	// Cette procedure deplace la piece presentement selectionne a lendroit specifie recu en parametre.
+	public void moveSelectedPieceTo(int x, int y){	
+	    if (pieceIsSelected())
+	    {
+	        Piece movingPiece = getPiece(selectedX, selectedY);
+	        PiecePattern movementPatternFromMovingPiece = movingPiece.getPattern(selectedX, selectedY, x, y);
+	        
+	        if (movementPatternFromMovingPiece != null)
+	        {
+                board[x][y] = board[selectedX][selectedY];
+                board[selectedX][selectedY] = null;
+                
+                unselectPiece(); 	            
+	        }
+       
+	    }
+
 	}
 	
-	private void movePiece(int x, int y){
-		echequier[x][y] = echequier[selectedX][selectedY];
-		echequier[selectedX][selectedY] = null;
-	}
+	private 
 	
 	
 	/*
-	private void movePiece(Square square)
+	public void movePiece(Square square)
 	{
 		Piece movingPiece = selectedSquare.getPiece();
 		if (movingPiece.canMoveTo(square)) {

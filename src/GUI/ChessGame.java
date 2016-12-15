@@ -11,8 +11,10 @@ import java.awt.event.MouseListener;
 import com.sun.glass.events.MouseEvent;
 
 import Action.*;
+import Piece.Piece;
 import classes.Board;
 import classes.Player;
+import classes.Player.Color;
 
 public class ChessGame implements ComponentListener {
     
@@ -20,7 +22,7 @@ public class ChessGame implements ComponentListener {
     private ChessGraphic graphic;
     
     Player[] joueur;
-    int joueurActuel;		//Indique le joueur � qui est le tour
+    int joueurActuel;		//Indique le joueur � qui est le tour
     
     public ChessGame() 
     {
@@ -38,7 +40,7 @@ public class ChessGame implements ComponentListener {
         window.addMouseListener(new MouseAdapter() { 
         	@Override
         	public void mouseClicked(MouseEvent e) { 
-                //on recup�re la position dans le board
+                //on recup�re la position dans le board
                 int clickPosX = (int)((e.getX()-borderSizeX)/squareSizeX);
                 int clickPosY = (int)((e.getY()-borderSizeY)/squareSizeY);
         		JoueUnCoup(e);
@@ -53,13 +55,36 @@ public class ChessGame implements ComponentListener {
     	joueurActuel = (joueurActuel + 1) % 2;
     }
     
-    private void JoueUnCoup(int clickedX, int clickedY){
-    	
+    private void play(int x, int y){
+        if (board.pieceIsSelected())
+        {            
+            Color teamColorPieceRecipient = board.getTeamColorFromPiece(x, y);
+            
+            // S'il n'existe pas une pièce destinataire OU 
+            // Si la pièce présentement sélectionné et la pièce destinataire ne sont pas de la même équipe
+            if ((teamColorPieceRecipient == Color.NONE) || 
+                (teamColorPieceRecipient != board.getTeamColorFromSelectedPiece()))
+            {
+                // Si le déplacement de la pièce a fonctionné
+                //if (board.moveSelectedPieceTo(x, y))
+                  //  graphic.refresh
+                
+            }
+        }
+        else
+        {
+            
+        }
+        if (board.getSelectedPiece())
+    	if (board.pieceExists(X, Y))
+    	{
+    	    board.
+    	}
     	switch(board.Action(clickedX, clickedY)){
            
-           //action effectuer lors du d�but du tour
+           //action effectuer lors du d�but du tour
     		case 0:
-        	   
+        	   //
         	break;
         
         	//Action effectuer lors de la selection d'une piece

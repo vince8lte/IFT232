@@ -16,21 +16,21 @@ public class Pion extends PieceSpeciale {
 		}
 	}
 	protected void initPattern() {
-		// TODO Auto-generated method stub
-		this.patterns= new PiecePatterns[4];
+		this.patterns= new PiecePattern[4];
+		
 		if(this.getColor() ==Player.Color.BLACK)
 		{
-			patterns[0] = new PiecePatterns(1,-1,1,true);
-			patterns[1] = new PiecePatterns(-1,-1,1,true);
-			patterns[2] = new PiecePatterns(0,-2,1,false);
-			patterns[3] = new PiecePatterns(0,-1,1,false);
+			patterns[0] = new PiecePattern(1,-1,1,true);
+			patterns[1] = new PiecePattern(-1,-1,1,true);
+			patterns[2] = new PiecePattern(0,-2,1,false);
+			patterns[3] = new PiecePattern(0,-1,1,false);
 		}
 		else
 		{
-			patterns[0] = new PiecePatterns(1,1,1,true);
-			patterns[1] = new PiecePatterns(-1,1,1,true);
-			patterns[2] = new PiecePatterns(0,2,1,false);
-			patterns[3] = new PiecePatterns(0,1,1,false);
+			patterns[0] = new PiecePattern(1,1,1,true);
+			patterns[1] = new PiecePattern(-1,1,1,true);
+			patterns[2] = new PiecePattern(0,2,1,false);
+			patterns[3] = new PiecePattern(0,1,1,false);
 		}
 
 	}
@@ -57,7 +57,7 @@ public class Pion extends PieceSpeciale {
 		if(this.canSpecialMove)
 		{
 			this.canSpecialMove = false;
-			PiecePatterns [] patternTemp= new PiecePatterns[3];
+			PiecePattern[] patternTemp= new PiecePattern[3];
 			patternTemp[0] = patterns[0];
 			patternTemp[1] = patterns[1];
 			patternTemp[2] =patterns[3];
