@@ -1,21 +1,21 @@
 package Piece;
 
-import java.awt.Point;
-
-import classes.Player;
+import classes.Player.Color;
 
 public class Reine extends Piece {
 
-	public Reine(Player.Color color) {
-		super(color);
-        this.imgUrl = "ressources/pictures/reine";
-        this.initPattern();
-        if(this.getColor() == Player.Color.WHITE){
-        	this.imgUrl += "b.png";
-        }else{
-        	this.imgUrl += "n.png";
-        }
+    private final String IMG_URL = "ressources/pictures/reine";
+    
+	public Reine(Color color) {
+	    super(color);
+        this.initPattern();        
 	}
+	
+    @Override
+    protected String getImgURL()
+    {
+        return IMG_URL;
+    }
 	
 	@Override
 	protected void initPattern() {

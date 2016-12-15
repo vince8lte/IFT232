@@ -1,12 +1,12 @@
 package Piece;
 
-import classes.Player;
+import classes.Player.Color;
 
 public abstract class PieceSpeciale extends Piece {
 	boolean canSpecialMove;
 	
-	public PieceSpeciale(Player.Color color) {
-		super(color);
+	public PieceSpeciale(Color color) {
+	    super(color);
 		canSpecialMove = true;
 	}
 	

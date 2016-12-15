@@ -1,24 +1,28 @@
 package Piece;
 
-import java.awt.Point;
-
-import classes.Player;
+import classes.Player.Color;
 
 public class Pion extends PieceSpeciale {
 
-	public Pion(Player.Color color) {
-		super(color);
-		this.imgUrl = "ressources/pictures/pion";
-		if(this.getColor() == Player.Color.WHITE){
-			this.imgUrl += "b.png";
-		}else{
-			this.imgUrl += "n.png";
-		}
+    private final String IMG_URL = "ressources/pictures/pion";
+    
+	public Pion(Color color) 
+	{
+	    super(color);
+	    this.initPattern();
 	}
+	
+	@Override
+	protected String getImgURL()
+	{
+	    return IMG_URL;
+	}
+	
+	@Override
 	protected void initPattern() {
-		this.patterns= new PiecePattern[3];
+		this.patterns = new PiecePattern[3];
 		
-		if(this.getColor() ==Player.Color.BLACK)
+		if (this.getColor() == Color.BLACK)
 		{
 			patterns[0] = new PiecePattern(1,-1,1,true,false);
 			patterns[1] = new PiecePattern(-1,-1,1,true,false);
@@ -39,7 +43,7 @@ public class Pion extends PieceSpeciale {
 		if(this.canSpecialMove)
 		{
 			this.canSpecialMove = false;
-			//Modifie le pattern de déplacement
+			//Modifie le pattern de dï¿½placement
 			this.patterns[2] = new PiecePattern(0,this.patterns[2].getDirectionX(),1,false,true);
 		}
 		

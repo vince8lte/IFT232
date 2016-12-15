@@ -1,27 +1,26 @@
 package Piece;
 
-import java.awt.Point;
-
-import classes.Player;
+import classes.Player.Color;
 
 public class Cavalier extends Piece {
+    
+    private final String IMG_URL = "ressources/pictures/cavalier";
 
-	public Cavalier(Player.Color color) {
-		super(color);
-		
-        this.imgUrl = "ressources/pictures/cavalier";
+	public Cavalier(Color color) {
+	    super(color);
         this.initPattern();
-        
-        if(this.getColor() == Player.Color.WHITE){
-        	this.imgUrl += "b.png";
-        }else{
-        	this.imgUrl += "n.png";
-        }
 	}
+	
+   @Override
+    protected String getImgURL()
+    {
+        return IMG_URL;
+    }
 
+   @Override
 	protected void initPattern() {
-		// TODO Auto-generated method stub
 		this.patterns= new PiecePattern[8];
+		
 		patterns[0] = new PiecePattern(1,2,1,true,true);
 		patterns[1] = new PiecePattern(1,-2,1,true,true);
 		patterns[2] = new PiecePattern(-1,2,1,true,true);

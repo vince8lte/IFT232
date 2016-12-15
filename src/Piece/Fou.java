@@ -1,25 +1,24 @@
 package Piece;
 
-import java.awt.Point;
-
-import classes.Player;
+import classes.Player.Color;
 
 public class Fou extends Piece {
+    
+    private final String IMG_URL = "ressources/pictures/fou";
 
-	public Fou(Player.Color color) {
-		super(color);
+	public Fou(Color color) {
+	    super(color);
 		this.initPattern();
-		this.imgUrl = "ressources/pictures/fou";
-		if(this.getColor() == Player.Color.WHITE){
-			this.imgUrl += "b.png";
-		}else{
-			this.imgUrl += "n.png";
-		}
 	}
+	
+   @Override
+    protected String getImgURL()
+    {
+        return IMG_URL;
+    }
 
 	@Override
 	protected void initPattern() {
-		// TODO Auto-generated method stub
 		this.patterns= new PiecePattern[4];
 		patterns[0] = new PiecePattern(1,1,8,true,true);
 		patterns[1] = new PiecePattern(1,-1,8,true,true);

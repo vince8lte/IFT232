@@ -2,14 +2,14 @@ package classes;
 
 import java.awt.Image;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
+import GraphicsInterface.IRenderable;
 import Piece.*;
 
 // Cette classe contient les informations sp√©cifiques par rapport au board.
 // Cette classe contient les r√®gles du jeu d'√©chec.
 public class Board {
-   // private static final long serialVersionUID = 1L;
-
     private final int BOARD_SIZE = 8;
     private final int NOT_SELECTED = -1;
     
@@ -21,16 +21,16 @@ public class Board {
     private int ghostPieceX;	//Indique la position de la piece fantome (pour la prise en passant)
     private int ghostPieceY;	//Indique la position de la piece fantome (pour la prise en passant)
 
-	public Board(){
-	    //FlowLayout layout = (FlowLayout)this.getLayout();
-        //layout.setVgap(0);
-        
+	public Board(){        
         board = new Piece[BOARD_SIZE][BOARD_SIZE];
         deadPiece = new ArrayList<Piece>();
         selectedX = NOT_SELECTED;
         selectedY = NOT_SELECTED;
+
         ghostPieceX = NOT_SELECTED;
         ghostPieceY = NOT_SELECTED;
+        
+        board[0][0] = new Pion(Player.Color.WHITE);
 	}
 	
 	public void selectPiece(int x, int y)
@@ -48,9 +48,27 @@ public class Board {
 	    selectedY = NOT_SELECTED;
 	}
 	
-	   public boolean pieceIsSelected(){
-	        return ((selectedX != NOT_SELECTED) && (selectedY != NOT_SELECTED));
-	    }
+   public boolean pieceIsSelected(){
+        return ((selectedX != NOT_SELECTED) && (selectedY != NOT_SELECTED));
+   }
+   
+   // Retourne si la pi√®ce de la position en x et en y est la m√™me pi√®ce que la pi√®ce pr√©sentemment s√©lectionn√©
+   public boolean equalsPieceSelected(int x, int y)
+   {
+       return (getPiece(x, y) == getSelectedPiece());
+   }
+   
+   // Retourne le board sous la forme d'√©num√©r√© (on ne retourne pas les pointeurs de Pieces, ce n'est pas n√©cessaire)
+   public LinkedList<IRenderable> getBoard()
+   {
+       LinkedList<IRenderable> pieces = new LinkedList<IRenderable>();
+       
+       for (int x = 0; x < board.length; ++x)
+           for (int y = 0; y < board[x].length; ++y)
+               pieces.add(getPiece(x, y));                   
+                  
+       return pieces;
+   }
 	
 	// Retourne la couleur de "l'equipe" de la piece (none, si une piece existe pas)
 	public Player.Color getTeamColorFromPiece(int x, int y)
@@ -69,13 +87,13 @@ public class Board {
     }
    
    // Cette procedure deplace la piece presentement selectionne a lendroit specifie recu en parametre.
-	public void moveSelectedPieceTo(int x, int y){	
+	public boolean moveSelectedPieceTo(int x, int y){	
 	    if (pieceIsSelected())
 	    {
 	        Piece movingPiece = getSelectedPiece();
 	        PiecePattern movementPatternFromMovingPiece = movingPiece.getPattern(selectedX, selectedY, x, y);
 	        
-	        if (movementPatternFromMovingPiece != null)
+	        if (movementPatternFromMovingPiece != null && canMovePiece(movementPatternFromMovingPiece, x, y))
 	        {
 	        	if(canMovePiece(movementPatternFromMovingPiece, x, y)){
 	        		
@@ -287,12 +305,12 @@ public class Board {
 		int posY = selectedY;
 		int jumpCount = 0;			//Permet de ne jamais dÈpassÈ le nombre de saut d'un paterne
 		Piece finalPosPiece = getPiece(posX, posY);		//contient la piece ‡ la position final
-		
+
 		do{
 			posX += pattern.getDirectionX();
 			posY += pattern.getDirectionY();
 			
-			++jumpCount;		//Permet le dÈpacement du nombre de bond pour faire la vÈrification du roque
+			++jumpCount;		//Permet le dÔøΩpacement du nombre de bond pour faire la vÔøΩrification du roque
 			
 			if((posX == finalPosX) && (posY == finalPosY)){
 				result = true;
@@ -305,7 +323,7 @@ public class Board {
 			result = result && (jumpCount < pattern.getDistanceMax());
 		}
 		
-		//Si le pattern ne peut pas bouger et attaquer en mÍme temps (gËre l'exeption du pion)
+		//Si le pattern ne peut pas bouger et attaquer en mÔøΩme temps (gÔøΩre l'exeption du pion)
 		if(!(pattern.isAttackPattern() && pattern.isMouvementPattern()) && result){
 			
 			//Si le pattern est exclusivement pour les attaque
@@ -314,7 +332,7 @@ public class Board {
 					result = false;
 				}
 			}
-			//Si le pattern est exclusivement pour les dÈplacements
+			//Si le pattern est exclusivement pour les dÔøΩplacements
 			if(pattern.isMouvementPattern()){
 				if(finalPosPiece != null){
 					result = false;
