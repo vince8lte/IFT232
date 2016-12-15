@@ -59,12 +59,41 @@ public class Board {
     {
        return getTeamColorFromPiece(selectedX, selectedY);
     }
-	
+   
+   // Cette procedure deplace la piece presentement selectionne a lendroit specifie recu en parametre.
+	public void moveSelectedPieceTo(int x, int y){	
+	    if (pieceIsSelected())
+	    {
+	        Piece movingPiece = getSelectedPiece();
+	        PiecePattern movementPatternFromMovingPiece = movingPiece.getPattern(selectedX, selectedY, x, y);
+	        
+	        if (movementPatternFromMovingPiece != null)
+	        {
+	        	if(canMovePiece(movementPatternFromMovingPiece, x, y)){
+	        		
 
+	        		if(isTryingToCastling(getPiece(x,y))){
+	        			
+	        		}else{
+		        		
+		                board[x][y] = board[selectedX][selectedY];
+		                board[selectedX][selectedY] = null;
+	        		}
+	        		
+	        		movingPiece.hasMoved();
+	                
+	                unselectPiece(); 	       
+	        	}
+	        }
+       
+	    }
+
+	}
+	
 	
 	public void highlightPossibleMoves()
 	{
-		PiecePatterns[] patterns = this.getSelectedPiece().getPattern();
+		PiecePattern[] patterns = this.getSelectedPiece().getPatterns();
 		int x, y;		//Contient le positionnement de la vï¿½rification
 		Piece tempPiece;
 		int nbrSaut;
@@ -167,30 +196,71 @@ public class Board {
 		}
 	}
 	
-	private boolean squareIsEmpty(int x, int y){
-		return (board[x][y] == null);
+	//Cette method s'assure que la piece peut se déplacer jusqu'à la possition souhaiter
+	private boolean canMovePiece(PiecePattern pattern, int finalPosX, int finalPosY){
+		
+		boolean result = false;
+		int posX = selectedX;
+		int posY = selectedY;
+		int jumpCount = 0;			//Permet de ne jamais dépassé le nombre de saut d'un paterne
+		Piece piecePosFinale = getPiece(posX, posY);		//contient la piece à la position final
+		
+		do{
+			posX += pattern.getDirectionX();
+			posY += pattern.getDirectionY();
+			
+			++jumpCount;		//Permet le dépacement du nombre de bond pour faire la vérification du roque
+			
+			if((posX == finalPosX) && (posY == finalPosY)){
+				result = true;
+			}
+			
+		}while(!result && (getPiece(posX, posY) != null));
+		
+		//Si l'usage ne tante pas de faire un roque, on s'assure que la piece ne
+		if(!isTryingToCastling(piecePosFinale)){
+			result = result && (jumpCount < pattern.getDistanceMax());
+		}
+		
+		//Si le pattern ne peut pas bouger et attaquer en même temps (gère l'exeption du pion)
+		if(!(pattern.isAttackPattern() && pattern.isMouvementPattern()) && result){
+			
+			//Si le pattern est exclusivement pour les attaque
+			if(pattern.isAttackPattern()){
+				if(piecePosFinale == null){
+					result = false;
+				}
+			}
+			//Si le pattern est exclusivement pour les déplacements
+			if(pattern.isMouvementPattern()){
+				if(piecePosFinale != null){
+					result = false;
+				}
+			}
+		}
+		
+		return result;
 	}
 	
-	// Cette procedure deplace la piece presentement selectionne a lendroit specifie recu en parametre.
-	public void moveSelectedPieceTo(int x, int y){	
-	    if (pieceIsSelected())
-	    {
-	        Piece movingPiece = getPiece(selectedX, selectedY);
-	        PiecePattern movementPatternFromMovingPiece = movingPiece.getPattern(selectedX, selectedY, x, y);
-	        
-	        if (movementPatternFromMovingPiece != null)
-	        {
-                board[x][y] = board[selectedX][selectedY];
-                board[selectedX][selectedY] = null;
-                
-                unselectPiece(); 	            
-	        }
-       
-	    }
-
+	//Verifie si l'usager tante d'effectuer le roque
+	private boolean isTryingToCastling(Piece pieceFinalPos){
+		boolean result = false;
+		Piece SelectedPiece = getSelectedPiece();
+		
+		if((SelectedPiece != null) && (pieceFinalPos != null)){
+			//Verifie que les deux pieces soit de la même couleur, sinon ca ne sert à rien
+			if(SelectedPiece.getColor() == pieceFinalPos.getColor()){
+			
+				//Verifie que les piec soit des instances de roi et tour
+				if(((SelectedPiece instanceof Roi) && (pieceFinalPos instanceof Tour)) 
+						||((SelectedPiece instanceof Tour) && (pieceFinalPos instanceof Roi))){
+					result = true;
+				}
+			}
+		}
+		
+		return result;
 	}
-	
-	private 
 	
 	
 	/*
