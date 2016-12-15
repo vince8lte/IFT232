@@ -1,14 +1,14 @@
 package classes;
 
 import java.awt.Image;
+import java.util.LinkedList;
 
+import GraphicsInterface.IRenderable;
 import Piece.*;
 
 // Cette classe contient les informations sp√©cifiques par rapport au board.
 // Cette classe contient les r√®gles du jeu d'√©chec.
 public class Board {
-   // private static final long serialVersionUID = 1L;
-
     private final int BOARD_SIZE = 8;
     private final int NOT_SELECTED = -1;
     
@@ -16,13 +16,13 @@ public class Board {
     private int selectedX;				//Indique la position de la piece selectionner en X
     private int selectedY;				//Indique la position de la piece selectionner en Y
 
-	public Board(){
-	    //FlowLayout layout = (FlowLayout)this.getLayout();
-        //layout.setVgap(0);
-        
+	public Board(){        
         board = new Piece[BOARD_SIZE][BOARD_SIZE];
         selectedX = NOT_SELECTED;
         selectedY = NOT_SELECTED;
+        
+        board[0][0] = new Pion(Player.Color.WHITE);
+        // LOADER LE BOARD
 	}
 	
 	public void selectPiece(int x, int y)
@@ -40,9 +40,27 @@ public class Board {
 	    selectedY = NOT_SELECTED;
 	}
 	
-	   public boolean pieceIsSelected(){
-	        return ((selectedX != NOT_SELECTED) && (selectedY != NOT_SELECTED));
-	    }
+   public boolean pieceIsSelected(){
+        return ((selectedX != NOT_SELECTED) && (selectedY != NOT_SELECTED));
+   }
+   
+   // Retourne si la pi√®ce de la position en x et en y est la m√™me pi√®ce que la pi√®ce pr√©sentemment s√©lectionn√©
+   public boolean equalsPieceSelected(int x, int y)
+   {
+       return (getPiece(x, y) == getSelectedPiece());
+   }
+   
+   // Retourne le board sous la forme d'√©num√©r√© (on ne retourne pas les pointeurs de Pieces, ce n'est pas n√©cessaire)
+   public LinkedList<IRenderable> getBoard()
+   {
+       LinkedList<IRenderable> pieces = new LinkedList<IRenderable>();
+       
+       for (int x = 0; x < board.length; ++x)
+           for (int y = 0; y < board[x].length; ++y)
+               pieces.add(getPiece(x, y));                   
+                  
+       return pieces;
+   }
 	
 	// Retourne la couleur de "l'equipe" de la piece (none, si une piece existe pas)
 	public Player.Color getTeamColorFromPiece(int x, int y)
@@ -61,33 +79,29 @@ public class Board {
     }
    
    // Cette procedure deplace la piece presentement selectionne a lendroit specifie recu en parametre.
-	public void moveSelectedPieceTo(int x, int y){	
+	public boolean moveSelectedPieceTo(int x, int y){	
 	    if (pieceIsSelected())
 	    {
 	        Piece movingPiece = getSelectedPiece();
 	        PiecePattern movementPatternFromMovingPiece = movingPiece.getPattern(selectedX, selectedY, x, y);
 	        
-	        if (movementPatternFromMovingPiece != null)
+	        if (movementPatternFromMovingPiece != null && canMovePiece(movementPatternFromMovingPiece, x, y))
 	        {
-	        	if(canMovePiece(movementPatternFromMovingPiece, x, y)){
-	        		
+                board[x][y] = board[selectedX][selectedY];
+                board[selectedX][selectedY] = null;	        		
 
-	        		if(isTryingToCastling(getPiece(x,y))){
-	        			
-	        		}else{
-		        		
-		                board[x][y] = board[selectedX][selectedY];
-		                board[selectedX][selectedY] = null;
-	        		}
-	        		
-	        		movingPiece.hasMoved();
-	                
-	                unselectPiece(); 	       
-	        	}
-	        }
-       
+                movingPiece.hasMoved();                 
+                unselectPiece();          
+                
+                return true;
+        		//if(isTryingToCastling(getPiece(x,y))){ APPREND A CODER SUR PAPIER PATRICK - JEAN
+        		//}else{}		        	
+	        } 
+	        else
+	            return false;
 	    }
-
+	    else
+	        return false;
 	}
 	
 	
@@ -177,13 +191,13 @@ public class Board {
 		}
 	}
 	
-	private Piece getSelectedPiece(){
-		if(pieceIsSelected()){
-			return board[selectedX][selectedY];
-		}else{
-			return null;
-		}
-	}
+   private Piece getSelectedPiece(){
+       if(pieceIsSelected()){
+           return board[selectedX][selectedY];
+       }else{
+           return null;
+       }
+   }
 	
 	//S'assure que la position x et y fournis soient en tout temps dans les limites du board
 	private boolean isInChess(int x, int y){
@@ -196,20 +210,20 @@ public class Board {
 		}
 	}
 	
-	//Cette method s'assure que la piece peut se dÈplacer jusqu'‡ la possition souhaiter
+	//Cette method s'assure que la piece peut se dÔøΩplacer jusqu'ÔøΩ la possition souhaiter
 	private boolean canMovePiece(PiecePattern pattern, int finalPosX, int finalPosY){
 		
 		boolean result = false;
 		int posX = selectedX;
 		int posY = selectedY;
-		int jumpCount = 0;			//Permet de ne jamais dÈpassÈ le nombre de saut d'un paterne
-		Piece piecePosFinale = getPiece(posX, posY);		//contient la piece ‡ la position final
+		int jumpCount = 0;			//Permet de ne jamais dÔøΩpassÔøΩ le nombre de saut d'un paterne
+		Piece piecePosFinale = getPiece(posX, posY);		//contient la piece ÔøΩ la position final
 		
 		do{
 			posX += pattern.getDirectionX();
 			posY += pattern.getDirectionY();
 			
-			++jumpCount;		//Permet le dÈpacement du nombre de bond pour faire la vÈrification du roque
+			++jumpCount;		//Permet le dÔøΩpacement du nombre de bond pour faire la vÔøΩrification du roque
 			
 			if((posX == finalPosX) && (posY == finalPosY)){
 				result = true;
@@ -222,7 +236,7 @@ public class Board {
 			result = result && (jumpCount < pattern.getDistanceMax());
 		}
 		
-		//Si le pattern ne peut pas bouger et attaquer en mÍme temps (gËre l'exeption du pion)
+		//Si le pattern ne peut pas bouger et attaquer en mÔøΩme temps (gÔøΩre l'exeption du pion)
 		if(!(pattern.isAttackPattern() && pattern.isMouvementPattern()) && result){
 			
 			//Si le pattern est exclusivement pour les attaque
@@ -231,7 +245,7 @@ public class Board {
 					result = false;
 				}
 			}
-			//Si le pattern est exclusivement pour les dÈplacements
+			//Si le pattern est exclusivement pour les dÔøΩplacements
 			if(pattern.isMouvementPattern()){
 				if(piecePosFinale != null){
 					result = false;
@@ -248,7 +262,7 @@ public class Board {
 		Piece SelectedPiece = getSelectedPiece();
 		
 		if((SelectedPiece != null) && (pieceFinalPos != null)){
-			//Verifie que les deux pieces soit de la mÍme couleur, sinon ca ne sert ‡ rien
+			//Verifie que les deux pieces soit de la mÔøΩme couleur, sinon ca ne sert ÔøΩ rien
 			if(SelectedPiece.getColor() == pieceFinalPos.getColor()){
 			
 				//Verifie que les piec soit des instances de roi et tour

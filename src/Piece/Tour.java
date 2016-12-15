@@ -1,20 +1,20 @@
 package Piece;
 
-import java.awt.Point;
-
-import classes.Player;
+import classes.Player.Color;
 
 public class Tour extends PieceSpeciale {
 
-	public Tour(Player.Color color) {
-		super(color);
-        this.imgUrl = "ressources/pictures/tour";
+    private final String IMG_URL = "ressources/pictures/tour";
+    
+	public Tour(Color color) {
+	    super(color);
         this.initPattern();
-        if(this.getColor() == Player.Color.WHITE){
-        	this.imgUrl += "b.png";
-        }else{
-        	this.imgUrl += "n.png";
-        }
+	}
+	
+	@Override
+	protected String getImgURL()
+	{
+	    return IMG_URL;
 	}
 	
 	@Override

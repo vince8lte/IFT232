@@ -1,22 +1,23 @@
 package Piece;
 
-import java.awt.Point;
+import classes.Player.Color;
 
-import classes.Player;
+public class Roi extends PieceSpeciale {
 
-public class Roi extends PieceSpeciale{
-
-	public Roi(Player.Color color) {
-		super(color);
-        this.imgUrl = "ressources/pictures/roi";
+    private final String IMG_URL = "ressources/pictures/roi";
+    
+	public Roi(Color color) {
+	    super(color);
         this.initPattern();
-        if(this.getColor() == Player.Color.WHITE){
-        	this.imgUrl += "b.png";
-        }else{
-        	this.imgUrl += "n.png";
-        }
+	}
+	
+	@Override
+	protected String getImgURL()
+	{
+	    return IMG_URL;
 	}
 
+	@Override
 	protected void initPattern() {
 		this.patterns= new PiecePattern[8];
 		

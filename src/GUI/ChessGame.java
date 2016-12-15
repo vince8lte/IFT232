@@ -1,61 +1,31 @@
 package GUI;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseListener;
-
-import com.sun.glass.events.MouseEvent;
-
-import Action.*;
-import Piece.Piece;
 import classes.Board;
 import classes.Player;
 import classes.Player.Color;
 
-public class ChessGame implements ComponentListener {
+public class ChessGame {
     
     private Board board;
     private ChessGraphic graphic;
+
+    private Player[] players; // Joueurs du jeu
+    private int currentPlayerIndex; // Index du joueur qui joue actuellement
     
-    Player[] joueur;
-    int joueurActuel;		//Indique le joueur � qui est le tour
-    
-    public ChessGame() 
+    public ChessGame(int playersCount) 
     {
-    	this.board = new Board();
-    	
-    	this.graphic = new ChessGraphic(this.board);
-    	
-    	this.joueur = new Player[2];
-    	this.joueur[0] = new Player(Player.Color.WHITE);
-    	this.joueur[1] = new Player(Player.Color.BLACK);
-    	this.joueurActuel = 0;
-    	
- 
-/*
-        window.addMouseListener(new MouseAdapter() { 
-        	@Override
-        	public void mouseClicked(MouseEvent e) { 
-                //on recup�re la position dans le board
-                int clickPosX = (int)((e.getX()-borderSizeX)/squareSizeX);
-                int clickPosY = (int)((e.getY()-borderSizeY)/squareSizeY);
-        		JoueUnCoup(e);
-        	}
-        });*/
+        this.board = new Board();               
+        this.players = new Player[playersCount]; 
+        
+        this.graphic = new ChessGraphic(this, board.getBoard());
+    }
+           
+    // Change de tour du joueur
+    private void changeActivePlayer(){
+        currentPlayerIndex = ((currentPlayerIndex + 1) % players.length);
     }
     
-    
-    
-    //Passe au tour suivant
-    private void TourSuivant(){
-    	joueurActuel = (joueurActuel + 1) % 2;
-    }
-    
-    private void play(int x, int y){
+    public void play(int x, int y){
         if (board.pieceIsSelected())
         {            
             Color teamColorPieceRecipient = board.getTeamColorFromPiece(x, y);
@@ -66,64 +36,27 @@ public class ChessGame implements ComponentListener {
                 (teamColorPieceRecipient != board.getTeamColorFromSelectedPiece()))
             {
                 // Si le déplacement de la pièce a fonctionné
-                //if (board.moveSelectedPieceTo(x, y))
-                  //  graphic.refresh
-                
+                if (board.moveSelectedPieceTo(x, y))
+                {
+                    changeActivePlayer();
+                    graphic.paintGUI();
+                }                
             }
+            // Si la case sélectionné est la pièce présentement sélectionné
+            else if (board.equalsPieceSelected(x, y))
+                board.unselectPiece();
         }
         else
         {
+            Color teamColorPieceRecipient = board.getTeamColorFromPiece(x, y);
             
+            // Si la case sélectionné contient une pièce
+            // et que cette pièce est de la même couleur que le joueur
+            if (teamColorPieceRecipient == players[currentPlayerIndex].getColor())
+            {
+                board.selectPiece(x, y);                
+                graphic.paintGUI();            
+            }            
         }
-        if (board.getSelectedPiece())
-    	if (board.pieceExists(X, Y))
-    	{
-    	    board.
-    	}
-    	switch(board.Action(clickedX, clickedY)){
-           
-           //action effectuer lors du d�but du tour
-    		case 0:
-        	   //
-        	break;
-        
-        	//Action effectuer lors de la selection d'une piece
-    		case 1:
-    			board.highlightPossibleMoves();
-        	break;
-        	   
-        	//Action effetuer lors de la fin du tour
-    		case 2:
-    			TourSuivant();
-        	break;
-           
-       }
-            
-            //SwingUtilities.updateComponentTreeUI(window);
-            //repaint();
     }
-
-	@Override
-	public void componentResized(ComponentEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void componentMoved(ComponentEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void componentShown(ComponentEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void componentHidden(ComponentEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
 }
