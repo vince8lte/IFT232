@@ -24,7 +24,7 @@ public class ChessGame {
             this.players[playerIndex] = Player.createPlayer(Color.values()[playerIndex]);
         
         this.graphic = new ChessGraphic(this, board.getBoard());
-        loadBoard();
+        loadDefaultBoard();
     }
            
     // Change de tour du joueur
@@ -32,11 +32,16 @@ public class ChessGame {
         currentPlayerIndex = ((currentPlayerIndex + 1) % players.length);
     }
     
-    public void loadBoard()
+    public void loadDefaultBoard()
+    {
+        loadBoard("ressources/grid.txt"); 
+    }
+    
+    public void loadBoard(String filePath)
     {
         try
         {
-            FileReader fileReader = new FileReader("ressources/grid.txt"); 
+            FileReader fileReader = new FileReader(filePath); 
             BufferedReader br = new BufferedReader(fileReader); 
             
             board.loadBoard(br);

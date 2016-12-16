@@ -51,9 +51,9 @@ public class ChessGraphic extends JFrame {
         this.getJMenuBar().add(menu);
         
         //Cr�e tout les boutons du menu
-    //  this.createMenuTool(window.getJMenuBar().getMenu(0), "Restart game", new RestartAction(board),KeyEvent.VK_R);
-        //this.createMenuTool(window.getJMenuBar().getMenu(0), "Load from file", new LoadAction(window, board),KeyEvent.VK_L);
-    //  this.createMenuTool(window.getJMenuBar().getMenu(0), "Save game to file", new SaveAction(window, board),KeyEvent.VK_S);
+        this.createMenuTool(this.getJMenuBar().getMenu(0), "Recommencer la partie", KeyEvent.VK_R);
+        this.createMenuTool(this.getJMenuBar().getMenu(0), "Charger une partie", KeyEvent.VK_L);
+        this.createMenuTool(this.getJMenuBar().getMenu(0), "Sauvegarder la partie", KeyEvent.VK_S);
 
     }
     
@@ -72,7 +72,7 @@ public class ChessGraphic extends JFrame {
         panel.repaint();
     }
 
-    public void createMenuTool(JMenu menu, String itemName, ActionListener action, int keyCode){
+    public void createMenuTool(JMenu menu, String itemName, int keyCode){
 
         JMenuItem menuItem;
         
@@ -81,7 +81,7 @@ public class ChessGraphic extends JFrame {
     	menu.add(menuItem);
     }
     
-    public void createMenuTool(JMenu menu, String itemName, ActionListener action){
+    public void createMenuTool(JMenu menu, String itemName){
 
         JMenuItem menuItem;
         
