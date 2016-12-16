@@ -8,6 +8,7 @@ import java.util.LinkedList;
 
 import GraphicsInterface.IRenderable;
 import Piece.*;
+import classes.Player.Color;
 
 // Cette classe contient les informations spÃ©cifiques par rapport au board.
 // Cette classe contient les rÃ¨gles du jeu d'Ã©chec.
@@ -21,13 +22,23 @@ public class Board {
     
     private int ghostPieceX;	//Indique la position de la piece fantome (pour la prise en passant)
     private int ghostPieceY;	//Indique la position de la piece fantome (pour la prise en passant)
+    
+    private int whiteKingX;
+    private int whiteKingY;
+    private int blackKingX;
+    private int blackKingY;
 
 	public Board(){        
-        board = new Piece[BOARD_SIZE][BOARD_SIZE];
-        selectedX = NOT_SELECTED;
-        selectedY = NOT_SELECTED;
-        ghostPieceX = NOT_SELECTED;
-        ghostPieceY = NOT_SELECTED;
+		this.board = new Piece[BOARD_SIZE][BOARD_SIZE];
+        this.selectedX = NOT_SELECTED;
+        this.selectedY = NOT_SELECTED;
+        this.ghostPieceX = NOT_SELECTED;
+        this.ghostPieceY = NOT_SELECTED;
+        
+        this.whiteKingX = 4;
+        this.whiteKingY = 0;
+        this.blackKingX = 4;
+        this.blackKingY = 7;
 	}
 	
 	public void loadBoard(BufferedReader fileToRead)
@@ -148,13 +159,28 @@ public class Board {
         			board[x][y-1] = null;
         		}
         		
-	            board[x][y] = getSelectedPiece();
+	            board[x][y] = movingPiece;
 	            board[selectedX][selectedY] = null;
 	            
-
-	            //Gestion de la prise en passant
-	            unselectGhostPiece();
-                tryPutGhostPiece(x, y, selectedY);
+	            if(kingIsCheck(color)){
+	            	board[selectedX][selectedY] = movingPiece;
+	            	if((ghostPiece != null) && (y==2)){
+	            		board[x][y] = ghostPiece;
+	            		board[x][y+1] = catchedPiece;
+	            	}
+	            	else if((ghostPiece != null) && (y==5)){
+	            		board[x][y] = ghostPiece;
+	            		board[x][y-1] = catchedPiece;
+	            	}
+	            	else{
+	            		board[x][y] = catchedPiece;
+	            	}
+	            	System.out.println("cant move by check");
+	            }else{
+		            //Gestion de la prise en passant
+		            unselectGhostPiece();
+	                tryPutGhostPiece(x, y, selectedY);
+	            }
         	}
 
             movingPiece.hasMoved();                 
@@ -192,6 +218,11 @@ public class Board {
 				tempPiece = null;
 				
 				tempPiece = getPiece(x, y);
+				
+				if(tempPiece instanceof Fantome){
+					tempPiece = null;
+				}
+				
 				if (tempPiece == null)
 				{
 					if(patterns[i].isMouvementPattern()){
@@ -342,65 +373,119 @@ public class Board {
 	
 	
 	//Effectue le roque
-		private void DoCastling(int x, int y){
-			int kingX = selectedX;
-			int castleX = x;
-			Piece tempoPiece;
-			
-			if(getSelectedPiece() instanceof Tour){			
-				kingX = x;
-				castleX = selectedX;
-			}
-			
-			//Retire le mouvement spécial de la tour non utilisé
-			if(castleX == 0){
-				tempoPiece = getPiece(7,y);
-			}else{
-				tempoPiece = getPiece(0,y);
-			}
-			
-			//Retire le mouvement special de la tour non utilisé et de la piece d'arriver : la piece selectionner se fait au retour
-			if(tempoPiece != null){ tempoPiece.hasMoved(); }
-			getPiece(x,y).hasMoved();
-			
-			//Verifie si le grand roque doit être fait
-			if(castleX < kingX){
-				board[2][y] = board[kingX][y];	//Deplace le roi
-				board[3][y] = board[castleX][y];	//Deplace la tour
-			}else{
-				board[6][y] = board[kingX][y];	//Deplace le roi
-				board[5][y] = board[castleX][y];	//Deplace la tour
-			}
-
+	private void DoCastling(int x, int y){
+		int kingX = selectedX;
+		int castleX = x;
+		Piece tempoPiece;
+		
+		if(getSelectedPiece() instanceof Tour){			
+			kingX = x;
+			castleX = selectedX;
+		}
+		
+		//Retire le mouvement spécial de la tour non utilisé
+		if(castleX == 0){
+			tempoPiece = getPiece(7,y);
+		}else{
+			tempoPiece = getPiece(0,y);
+		}
+		
+		//Retire le mouvement special de la tour non utilisé et de la piece d'arriver : la piece selectionner se fait au retour
+		if(tempoPiece != null){ tempoPiece.hasMoved(); }
+		getPiece(x,y).hasMoved();
+		
+		//Verifie si le grand roque doit être fait
+		if(castleX < kingX){
+			board[2][y] = board[kingX][y];	//Deplace le roi
 			board[kingX][y] = null;
-			board[castleX][y] = null;
+			board[3][y] = board[castleX][y];	//Deplace la tour
+			kingX = 2;
+		}else{
+			board[6][y] = board[kingX][y];	//Deplace le roi
+			board[kingX][y] = null;
+			board[5][y] = board[castleX][y];	//Deplace la tour
+			kingX = 6;
+		}
+
+		board[castleX][y] = null;
+		
+		//Met a jour la référence du roi
+		if(getPiece(kingX,y).getColor() == Color.WHITE){
+			this.whiteKingX = kingX;
+		}else{
+			this.blackKingX = kingX;
+		}
+	}
+	
+	
+	private void unselectGhostPiece(){
+		System.out.println("supprime la piece fantome");
+		
+		if(getPiece(ghostPieceX, ghostPieceY) instanceof Fantome){
+			board[ghostPieceX][ghostPieceY] = null;
 		}
 		
+		ghostPieceX = NOT_SELECTED;
+		ghostPieceY = NOT_SELECTED;
+	}
+	
+	//Tante de placer une piece fantome si c'est nescessaire
+	private void tryPutGhostPiece(int finalPosX, int finalPosY, int startPosY){
+		Piece piece = getPiece(finalPosX, finalPosY);
+		int ghostPosY;
 		
-		private void unselectGhostPiece(){
-			System.out.println("supprime la piece fantome");
-			
-			if(getPiece(ghostPieceX, ghostPieceY) instanceof Fantome){
-				board[ghostPieceX][ghostPieceY] = null;
+		if(piece instanceof Pion){
+			if(((finalPosY - startPosY)%2) == 0){
+				ghostPosY = finalPosY - ((finalPosY - startPosY)/Math.abs(finalPosY - startPosY));
+				board[finalPosX][ghostPosY] = PieceFactory.getInstance().giveGhostPiece(piece.getColor());
+				System.out.println("ghost at" + finalPosX +","+ghostPosY);
+				ghostPieceX = finalPosX;
+				ghostPieceY = ghostPosY;
 			}
-			
-			ghostPieceX = NOT_SELECTED;
-			ghostPieceY = NOT_SELECTED;
 		}
+	}
+	
+	private boolean kingIsCheck(Player.Color color){
+		if(color == Color.WHITE){
+			return accecibleByEnnemy(whiteKingX, whiteKingY, Color.BLACK);
+		}else{
+			return accecibleByEnnemy(blackKingX, blackKingY, Color.WHITE);
+		}
+	}
+	
+	//Verifie si une position peut être attaquer par une piece
+	private boolean accecibleByEnnemy(int x, int y, Player.Color color){
 		
-		//Tante de placer une piece fantome si c'est nescessaire
-		private void tryPutGhostPiece(int finalPosX, int finalPosY, int startPosY){
-			Piece piece = getPiece(finalPosX, finalPosY);
-			int ghostPosY;
+		boolean isAccecible = false;
+		boolean	FindPiece;
+		int PosX, PosY, jumpCount; 
+		PiecePattern tempoPattern;
+		
+		for(PiecePattern pattern: PatternFactory.getInstance().getAllPattern()){
+			PosX = x;
+			PosY = y;
+			jumpCount = 0;
+			FindPiece = false;
 			
-			if(piece instanceof Pion){
-				if(((finalPosY - startPosY)%2) == 0){
-					ghostPosY = finalPosY - ((finalPosY - startPosY)/Math.abs(finalPosY - startPosY));
-					board[finalPosX][ghostPosY] = PieceFactory.getInstance().giveGhostPiece(piece.getColor());
-					System.out.println("ghost at" + finalPosX +","+ghostPosY);
-					ghostPieceX = finalPosX;
-					ghostPieceY = ghostPosY;
+			do
+			{
+				PosX += pattern.getDirectionX();
+				PosY += pattern.getDirectionY();
+				
+				if((getPiece(PosX,PosY) != null) && !(getPiece(PosX,PosY) instanceof Fantome)){
+					FindPiece = true;
+					if(getPiece(PosX,PosY).getColor() == color){
+						tempoPattern = getPiece(PosX,PosY).getPattern(PosX - x, PosY - y);
+						if((tempoPattern!= null) && (jumpCount < tempoPattern.getDistanceMax())){
+							isAccecible = true;
+						}
+					}
 				}
-			}
+				
+				jumpCount++;
+			}while(!isAccecible && (jumpCount < pattern.getDistanceMax()) && !FindPiece);
 		}
+		
+		return isAccecible;
+	}
 }

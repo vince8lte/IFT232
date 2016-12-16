@@ -6,6 +6,7 @@ public class Fantome extends Piece{
 	
 	public Fantome(Color color){
 		super(color,"");
+		this.patterns = null;
 	}
 
 }
