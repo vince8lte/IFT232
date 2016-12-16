@@ -10,5 +10,9 @@ public abstract class PieceSpeciale extends Piece {
 		canSpecialMove = true;
 	}
 	
+	@Override
+	public boolean canSpecialMove(){
+    	return false;
+    }
 	
 }

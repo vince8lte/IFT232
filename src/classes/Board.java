@@ -110,9 +110,8 @@ public class Board {
    {
        LinkedList<IRenderable> pieces = new LinkedList<IRenderable>();
        
-       for (int x = 0; x < board.length; ++x)
-           for (int y = 0; y < board[x].length; ++y)
-               pieces.add(getPiece(y, x));                   
+       for (int i = 0; i < (board.length*board.length); ++i)
+               pieces.add(getPiece(i%8, i/8));                   
                   
        return pieces;
    }
@@ -144,15 +143,18 @@ public class Board {
 	}
 	
 	
-	public void highlightPossibleMoves()
+	//Renvoie le highlight des mouvements possible
+	public LinkedList<IRenderable> getHighlightedMoves()
 	{
+		LinkedList<IRenderable> highlight = new LinkedList<IRenderable>();
+		
 		PiecePattern[] patterns = this.getSelectedPiece().getPatterns();
 		int x, y;		//Contient le positionnement de la v�rification
 		Piece tempPiece;
 		int nbrSaut;
 		
 		//boucle sur tout les parttern de la piece
-		for ( int i =0 ; i<patterns.length ; i++)
+		for ( int i =0 ; i < patterns.length ; i++)
 		{
 			x = selectedX;
 			y = selectedY;
@@ -165,18 +167,50 @@ public class Board {
 				y += patterns[i].getDirectionY();
 				tempPiece = null;
 				
-				if(isInChess(x, y)){
-					tempPiece = getPiece(x, y);
-					if (tempPiece == null)
-					{
-						//highlighter la piece
+				tempPiece = getPiece(x, y);
+				if (tempPiece == null)
+				{
+					if(patterns[i].isMouvementPattern()){
+						highlight.add(tempPiece);
 					}
 				}
+				else
+				{
+					if((patterns[i].isAttackPattern()) && (tempPiece.getColor() != getSelectedPiece().getColor())){
+						highlight.add(tempPiece);
+					}
+				}				
 				
 				nbrSaut++;
 				
 			}while((tempPiece == null) && (nbrSaut<patterns[i].getDistanceMax()));
+			
+			//Exeption pour le roque, compliquer mais le plus simple possible
+			if(getSelectedPiece().canSpecialMove() && !(getSelectedPiece() instanceof Pion)){
+				if((selectedX != 0) && (getPiece(4,selectedY) != null) && (getPiece(7,selectedY) != null)){
+					if((board[5][selectedY] == null) && (board[6][selectedY] == null) && 
+							getPiece(4,selectedY).canSpecialMove() && getPiece(7,selectedY).canSpecialMove()){
+						if(selectedX == 4){
+							highlight.add(getPiece(7,selectedY));
+						}else{
+							highlight.add(getPiece(4,selectedY));
+						}
+					}
+				}
+				else if((selectedX != 7) && (getPiece(0,selectedY) != null) && (getPiece(4,selectedY) != null)){
+					if((board[1][selectedY] == null) && (board[2][selectedY] == null) && (board[3][selectedY] == null) && 
+							getPiece(0,selectedY).canSpecialMove() && getPiece(4,selectedY).canSpecialMove()){
+						if(selectedX == 4){
+							highlight.add(getPiece(0,selectedY));
+						}else{
+							highlight.add(getPiece(4,selectedY));
+						}
+					}
+				}
+			}
 		}
+		
+		return highlight;
 	}
 	
 	

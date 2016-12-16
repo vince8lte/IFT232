@@ -21,6 +21,10 @@ public abstract class Piece implements IRenderable
         this.color = color;
     }
     
+    public boolean canSpecialMove(){
+    	return false;
+    }
+    
     public Color getColor()
     {
         return this.color;
