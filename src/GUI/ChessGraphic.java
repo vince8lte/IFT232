@@ -116,9 +116,10 @@ public class ChessGraphic extends JFrame {
         game.play(clickPosX, clickPosY);
     }
     
-    public void setBoard(LinkedList<IRenderable> board)
+    public void setBoard(LinkedList<IRenderable> board, IRenderable[][] highlightedSquares)
     {
-        panel.setBoard(board);
+        panel.setBoard(board, highlightedSquares);
+        panel.repaint();
     }
     
     public void paintGUI()

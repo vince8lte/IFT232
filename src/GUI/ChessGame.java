@@ -2,6 +2,7 @@ package GUI;
 
 import java.io.BufferedReader;
 
+import GraphicsInterface.IRenderable;
 import classes.Board;
 import java.io.*;
 import classes.Player;
@@ -27,7 +28,7 @@ public class ChessGame {
         loadDefaultBoard();
     }
            
-    // Change de tour du joueur est met à jour les informations à afficher sur le titre de la fenetre
+    // Change de tour du joueur est met ï¿½ jour les informations ï¿½ afficher sur le titre de la fenetre
     private void changeActivePlayer(){
         currentPlayerIndex = ((currentPlayerIndex + 1) % players.length);
     }
@@ -53,7 +54,7 @@ public class ChessGame {
             currentPlayerIndex = 0;
             showGameStatus();
             board.loadBoard(br);
-            graphic.setBoard(board.getBoard());
+            graphic.setBoard(board.getBoard(), board.getHighlightedSquares());
             graphic.paintGUI();
         }
         catch (Exception e){}
@@ -83,19 +84,19 @@ public class ChessGame {
 		        	System.out.println("Reussi");
 		            changeActivePlayer();
 		            showGameStatus();
-		            graphic.setBoard(board.getBoard());
-		            graphic.paintGUI();
+		            graphic.setBoard(board.getBoard(), board.getHighlightedSquares());
 		        }
         	}
         	else
         	{
                 board.unselectPiece();
+                graphic.setBoard(board.getBoard(), new IRenderable[0][0]);
             }
         }
         else
         {
         	if(board.selectPiece(x, y, players[currentPlayerIndex].getColor())){
-        		graphic.paintGUI();
+        	    graphic.setBoard(board.getBoard(), board.getHighlightedSquares());
         	}          
         }
     }

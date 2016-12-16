@@ -88,7 +88,6 @@ public abstract class Piece implements IRenderable
     public void render(Rectangle container, Rectangle parentContainer, Graphics g)
     {
         Image scaledImage = ImgUtils.getScaledImage(this.getImgURL(), container, parentContainer);
-        
         g.drawImage(scaledImage, (int)container.getX(), (int)container.getY(), null);
     }   
 }

@@ -28,11 +28,13 @@ public class ChessGraphicPanel extends JPanel implements ComponentListener
     private Image scaledBackground;    
     
     private LinkedList<IRenderable> board;
+    private IRenderable[][] highlightedSquares;
     
     public ChessGraphicPanel(ChessGraphic parent, LinkedList<IRenderable> board)
     {
         this.setSize(400, 400);
         this.board = board;
+        this.highlightedSquares = new IRenderable[8][8];
         
         this.borderSize = new Point2D.Double(this.getWidth() * BORDER_MULTIPLICATOR, this.getHeight() * BORDER_MULTIPLICATOR);
         this.squareSize = new Point2D.Double((this.getWidth()-borderSize.x*2.0)/8.0, (this.getHeight()-borderSize.y*2.0)/8.0);
@@ -51,9 +53,10 @@ public class ChessGraphicPanel extends JPanel implements ComponentListener
         
     }
     
-    public void setBoard(LinkedList<IRenderable> board)
+    public void setBoard(LinkedList<IRenderable> board, IRenderable[][] highlightedSquares)
     {
         this.board = board;
+        this.highlightedSquares = highlightedSquares;
     }
     
     @Override
@@ -65,6 +68,22 @@ public class ChessGraphicPanel extends JPanel implements ComponentListener
        Rectangle currentContainer = null;
        
        g.drawImage(scaledBackground, 0, 0, this);
+       
+       for (int y = 0; y < this.highlightedSquares.length; y++) {
+           for (int x = 0; x < this.highlightedSquares[y].length; x++) {
+               IRenderable currentSquare = this.highlightedSquares[y][x];
+               
+               if (currentSquare != null) {
+                   currentContainer = new Rectangle();
+                   
+                   currentContainer.setRect(x * squareSize.getX() + borderSize.getX(),
+                                            y * squareSize.getY() + borderSize.getY(),
+                                            squareSize.getX(), squareSize.getY());   
+                   
+                   currentSquare.render(currentContainer, window, g);                
+               }
+           }
+       }
        
        for (int currentPieceIndex = 0; currentPieceIndex < this.board.size(); ++currentPieceIndex)
        {

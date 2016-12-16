@@ -1,14 +1,16 @@
 package classes;
 
+import java.awt.Color;
 import java.awt.Image;
+import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import GraphicsInterface.IRenderable;
 import Piece.*;
-import classes.Player.Color;
 
 // Cette classe contient les informations spÃ©cifiques par rapport au board.
 // Cette classe contient les rÃ¨gles du jeu d'Ã©chec.
@@ -43,7 +45,7 @@ public class Board {
 	
 	public void loadBoard(BufferedReader fileToRead)
 	{
-		// Effacer toutes les pieces du board présent avant de continuer
+		// Effacer toutes les pieces du board prï¿½sent avant de continuer
 		for (int x = 0; x < board.length; ++x)
 			for (int y = 0; y < board[x].length; ++y)
 				board[x][y] = null;
@@ -128,9 +130,47 @@ public class Board {
        LinkedList<IRenderable> pieces = new LinkedList<IRenderable>();
        
        for (int i = 0; i < (board.length*board.length); ++i)
-               pieces.add(getPiece(i%8, i/8));                   
+               pieces.add(getPiece(i%8, i/8));
                   
        return pieces;
+   }
+   
+   public IRenderable[][] getHighlightedSquares() {
+       IRenderable[][] highlightedSquares = new IRenderable[8][8];
+       
+       if (this.pieceIsSelected()) {
+           Piece piece = this.getSelectedPiece();
+           PiecePattern[] patterns = piece.getPatterns();
+           Point piecePos = new Point(selectedX, selectedY);
+           highlightedSquares[piecePos.y][piecePos.x] = new HighlightedSquare(Color.BLUE);
+           for (PiecePattern pattern : patterns) {
+               for (int i = 1; i <= pattern.getDistanceMax(); i++) {
+                   int posX = piecePos.x + pattern.getDirectionX() * i;
+                   int posY = piecePos.y + pattern.getDirectionY() * i;
+                   if (posX >= 0 && posX <= 7 && posY >= 0 && posY <= 7) {
+                       if (highlightedSquares[posY][posX] == null) {
+                           highlightedSquares[posY][posX] = new HighlightedSquare(Color.BLUE);
+                       }
+                       if (this.getPiece(posX, posY) == null) {
+                           if (!pattern.isMouvementPattern()) {
+                               highlightedSquares[posY][posX] = null;
+                           }
+                       }
+                       else {
+                           if (this.getPiece(posX, posY).getColor() == piece.getColor() || !pattern.isAttackPattern()) {
+                               highlightedSquares[posY][posX] = null;
+                           }
+                           else {
+                               highlightedSquares[posY][posX] = new HighlightedSquare(Color.RED);
+                           }
+                           break;
+                       }
+                   }
+               }
+           }
+       }
+       
+       return highlightedSquares;
    }
    
    // Cette procedure deplace la piece presentement selectionne a lendroit specifie recu en parametre.
@@ -140,7 +180,7 @@ public class Board {
         Piece ghostPiece = null;
         PiecePattern movementPatternFromMovingPiece = movingPiece.getPattern(x - selectedX, y - selectedY);
         if ((movementPatternFromMovingPiece != null) && canMovePiece(movementPatternFromMovingPiece, x, y, color))
-        {        	        	
+        {
         	if(isTryingToCastling(getPiece(x,y))){
         		DoCastling(x, y);
         	} else{
@@ -320,7 +360,7 @@ public class Board {
 				
 			}while(!result && (getPiece(posX, posY) == null));
 			
-			//Si l'usage ne tante pas de faire un roque, on s'assure que la piece n'est pas hors de porté et l'arriver n'est pas une
+			//Si l'usage ne tante pas de faire un roque, on s'assure que la piece n'est pas hors de portï¿½ et l'arriver n'est pas une
 			//piece de meme couleur
 			if(!isTryingToCastling(piecePosFinale)){
 				if(result && (piecePosFinale != null)){
@@ -383,18 +423,18 @@ public class Board {
 			castleX = selectedX;
 		}
 		
-		//Retire le mouvement spécial de la tour non utilisé
+		//Retire le mouvement spï¿½cial de la tour non utilisï¿½
 		if(castleX == 0){
 			tempoPiece = getPiece(7,y);
 		}else{
 			tempoPiece = getPiece(0,y);
 		}
 		
-		//Retire le mouvement special de la tour non utilisé et de la piece d'arriver : la piece selectionner se fait au retour
+		//Retire le mouvement special de la tour non utilisï¿½ et de la piece d'arriver : la piece selectionner se fait au retour
 		if(tempoPiece != null){ tempoPiece.hasMoved(); }
 		getPiece(x,y).hasMoved();
 		
-		//Verifie si le grand roque doit être fait
+		//Verifie si le grand roque doit ï¿½tre fait
 		if(castleX < kingX){
 			board[2][y] = board[kingX][y];	//Deplace le roi
 			board[kingX][y] = null;
@@ -409,8 +449,8 @@ public class Board {
 
 		board[castleX][y] = null;
 		
-		//Met a jour la référence du roi
-		if(getPiece(kingX,y).getColor() == Color.WHITE){
+		//Met a jour la rï¿½fï¿½rence du roi
+		if(getPiece(kingX,y).getColor() == Player.Color.WHITE){
 			this.whiteKingX = kingX;
 		}else{
 			this.blackKingX = kingX;
@@ -446,14 +486,14 @@ public class Board {
 	}
 	
 	private boolean kingIsCheck(Player.Color color){
-		if(color == Color.WHITE){
-			return accecibleByEnnemy(whiteKingX, whiteKingY, Color.BLACK);
+		if(color == Player.Color.WHITE){
+			return accecibleByEnnemy(whiteKingX, whiteKingY, Player.Color.BLACK);
 		}else{
-			return accecibleByEnnemy(blackKingX, blackKingY, Color.WHITE);
+			return accecibleByEnnemy(blackKingX, blackKingY, Player.Color.WHITE);
 		}
 	}
 	
-	//Verifie si une position peut être attaquer par une piece
+	//Verifie si une position peut ï¿½tre attaquer par une piece
 	private boolean accecibleByEnnemy(int x, int y, Player.Color color){
 		
 		boolean isAccecible = false;
