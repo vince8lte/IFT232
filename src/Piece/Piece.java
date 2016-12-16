@@ -10,7 +10,6 @@ import classes.Player.Color;
 
 public abstract class Piece implements IRenderable
 {
-    protected String imgURL;
     protected PiecePattern[] patterns;
     protected Color color;
     

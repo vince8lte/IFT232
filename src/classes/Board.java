@@ -20,8 +20,7 @@ public class Board {
         board = new Piece[BOARD_SIZE][BOARD_SIZE];
         selectedX = NOT_SELECTED;
         selectedY = NOT_SELECTED;
-        
-        board[0][0] = new Pion(Player.Color.WHITE);
+       
         // LOADER LE BOARD
 	}
 	
@@ -57,7 +56,7 @@ public class Board {
        
        for (int x = 0; x < board.length; ++x)
            for (int y = 0; y < board[x].length; ++y)
-               pieces.add(getPiece(x, y));                   
+               pieces.add(getPiece(y, x));                   
                   
        return pieces;
    }

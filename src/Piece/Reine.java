@@ -14,7 +14,12 @@ public class Reine extends Piece {
     @Override
     protected String getImgURL()
     {
-        return IMG_URL;
+        if (color == Color.BLACK)
+            return IMG_URL + "n.png";
+        else if (color == Color.WHITE)
+            return IMG_URL + "b.png";
+        else
+            return "";
     }
 	
 	@Override

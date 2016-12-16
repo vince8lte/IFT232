@@ -17,6 +17,9 @@ public class ChessGame {
         this.board = new Board();               
         this.players = new Player[playersCount]; 
         
+        for (int playerIndex = 0; playerIndex < this.players.length; ++playerIndex)
+            this.players[playerIndex] = Player.createPlayer(Color.values()[playerIndex]);
+        
         this.graphic = new ChessGraphic(this, board.getBoard());
     }
            
