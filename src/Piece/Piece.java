@@ -12,13 +12,12 @@ public abstract class Piece implements IRenderable
 {
     protected PiecePattern[] patterns;
     protected Color color;
+    protected String imgPiece;   
     
-    protected abstract void initPattern();     
-    protected abstract String getImgURL();
-    
-    protected Piece(Color color)
+    protected Piece(Color color, String imgPiece)
     {
         this.color = color;
+        this.imgPiece = imgPiece;
     }
     
     public boolean canSpecialMove(){
@@ -71,7 +70,21 @@ public abstract class Piece implements IRenderable
     public PiecePattern[] getPatterns()
     {
         return this.patterns;
-    }   
+    } 
+    
+    public String getImgURL(){
+	    if (color == Color.BLACK)
+	        return this.imgPiece + "n.png";
+	    else if (color == Color.WHITE)
+	        return this.imgPiece + "b.png";
+	    else
+	        return "";
+    }
+    
+    @Override
+    public String toString(){
+		return this.getClass().getName() + ", " + this.color.toString();
+    }
     
     @Override
     public void render(Rectangle container, Rectangle parentContainer, Graphics g)
