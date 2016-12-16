@@ -38,24 +38,22 @@ public abstract class Piece implements IRenderable
     // Si, parmi tous les mouvements possibles, s'il y en a un qui correspond à "un vers la droite",
     // alors il va retourner celui là. Sinon, il va retourner null ce qui veut dire que le mouvement
     // n'est pas autorisée.
-    public PiecePattern getPattern(int sourceX, int sourceY, int recipientX, int recipientY)
+    public PiecePattern getPattern(int deltaX, int deltaY)
     {
-        int patternIndex = 0;        
-        int differenceX = (recipientX - sourceX);
-        int differenceY = (recipientX - sourceY);
+        int patternIndex = 0;
         
         boolean foundPattern = false;
         
-        if (differenceX != 0)
-            differenceX = (Math.abs(differenceX) / differenceX); // S'assure que differenceX va soit être 1, -1 ou 0
+        if (deltaX != 0)
+            deltaX = (deltaX / Math.abs(deltaX)); // S'assure que differenceX va soit être 1, -1 ou 0
         
-        if (differenceY != 0)
-            differenceY = ((Math.abs(differenceY) / differenceY) / -1); // S'assure que differenceY va soi être 1, -1 ou 0. On divise par -1 a la fin, car lorsque le y est a 0, il est completement en haut...                        
+        if (deltaY != 0)
+            deltaY = (deltaY / Math.abs(deltaY)); // S'assure que differenceY va soi être 1, -1 ou 0. On divise par -1 a la fin, car lorsque le y est a 0, il est completement en haut...                        
         
         while (!foundPattern && patternIndex < this.patterns.length)
         {
-            foundPattern = ((patterns[patternIndex].getDirectionX() == differenceX) && 
-                            (patterns[patternIndex].getDirectionY() == differenceY)); 
+            foundPattern = ((patterns[patternIndex].getDirectionX() == deltaX) && 
+                            (patterns[patternIndex].getDirectionY() == deltaY)); 
             
             ++patternIndex;
         }
@@ -83,7 +81,7 @@ public abstract class Piece implements IRenderable
     
     @Override
     public String toString(){
-		return this.getClass().getName() + ", " + this.color.toString();
+		return this.getClass().getSimpleName() + "," + this.color.toString();
     }
     
     @Override

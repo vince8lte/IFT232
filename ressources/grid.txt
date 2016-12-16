@@ -10,11 +10,11 @@
 2,1,Pion,WHITE
 2,6,Pion,BLACK
 2,7,Fou,BLACK
-3,0,Roi,WHITE
+4,0,Roi,WHITE
 3,1,Pion,WHITE
 3,6,Pion,BLACK
 3,7,Reine,BLACK
-4,0,Reine,WHITE
+3,0,Reine,WHITE
 4,1,Pion,WHITE
 4,6,Pion,BLACK
 4,7,Roi,BLACK

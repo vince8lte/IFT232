@@ -22,8 +22,8 @@ public class Pion extends PieceSpeciale {
 		if(this.canSpecialMove)
 		{
 			this.canSpecialMove = false;
-			//Modifie le pattern de d�placement
-			this.patterns[2] = new PiecePattern(0,this.patterns[2].getDirectionX(),1,false,true);
+			//Modifie le pattern de deSSplacement
+			this.patterns[2] = new PiecePattern(0,this.patterns[2].getDirectionY(),1,false,true);
 		}
 		
 	}

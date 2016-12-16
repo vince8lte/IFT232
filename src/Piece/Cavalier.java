@@ -19,18 +19,16 @@ public class Cavalier extends Piece {
     // alors il va retourner celui là. Sinon, il va retourner null ce qui veut dire que le mouvement
     // n'est pas autorisée.
 	@Override
-    public PiecePattern getPattern(int sourceX, int sourceY, int recipientX, int recipientY)
+    public PiecePattern getPattern(int deltaX, int deltaY)
     {
-        int patternIndex = 0;        
-        int differenceX = (recipientX - sourceX);
-        int differenceY = (recipientX - sourceY);
+        int patternIndex = 0;
         
         boolean foundPattern = false;                       
         
-        while (!foundPattern && patternIndex < this.patterns.length)
+        while (!foundPattern && (patternIndex < this.patterns.length))
         {
-            foundPattern = ((patterns[patternIndex].getDirectionX() == differenceX) && 
-                            (patterns[patternIndex].getDirectionY() == differenceY)); 
+            foundPattern = ((patterns[patternIndex].getDirectionX() == deltaX) && 
+                            (patterns[patternIndex].getDirectionY() == deltaY)); 
             
             ++patternIndex;
         }

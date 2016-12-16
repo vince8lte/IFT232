@@ -83,7 +83,9 @@ public class Board {
 	    if (getPiece(x, y) != null && (getPiece(x,y).getColor() == color))
 	    {
 	        selectedX = x;
-	        selectedY = y;	   
+	        selectedY = y;	 
+	        
+	        System.out.println(getPiece(x,y).toString());
 	        return true;
 	    }
 	    return false;
@@ -93,6 +95,8 @@ public class Board {
 	{
 	    selectedX = NOT_SELECTED;
 	    selectedY = NOT_SELECTED;
+	    
+	    System.out.println("unselected Piece");
 	}
 	
    public boolean pieceIsSelected(){
@@ -118,28 +122,22 @@ public class Board {
    
    // Cette procedure deplace la piece presentement selectionne a lendroit specifie recu en parametre.
 	public boolean moveSelectedPieceTo(int x, int y, Player.Color color){	
-	    if (pieceIsSelected())
-	    {
-	        Piece movingPiece = getSelectedPiece();
-	        PiecePattern movementPatternFromMovingPiece = movingPiece.getPattern(selectedX, selectedY, x, y);
-	        
-	        if (movementPatternFromMovingPiece != null && canMovePiece(movementPatternFromMovingPiece, x, y))
-	        {
-                board[x][y] = board[selectedX][selectedY];
-                board[selectedX][selectedY] = null;	        		
+        Piece movingPiece = getSelectedPiece();
+        PiecePattern movementPatternFromMovingPiece = movingPiece.getPattern(x - selectedX, y - selectedY);
+        if ((movementPatternFromMovingPiece != null) && canMovePiece(movementPatternFromMovingPiece, x, y, color))
+        {
+            board[x][y] = board[selectedX][selectedY];
+            board[selectedX][selectedY] = null;	        		
 
-                movingPiece.hasMoved();                 
-                unselectPiece();          
-                
-                return true;
-        		//if(isTryingToCastling(getPiece(x,y))){ APPREND A CODER SUR PAPIER PATRICK - JEAN
-        		//}else{}		        	
-	        } 
-	        else
-	            return false;
-	    }
-	    else
-	        return false;
+            movingPiece.hasMoved();                 
+            unselectPiece();          
+            
+            return true;
+    		//if(isTryingToCastling(getPiece(x,y))){ APPREND A CODER SUR PAPIER PATRICK - JEAN
+    		//}else{}		        	
+        } 
+        else
+            return false;
 	}
 	
 	
@@ -244,47 +242,61 @@ public class Board {
 	}
 	
 	//Cette method s'assure que la piece peut se dï¿½placer jusqu'ï¿½ la possition souhaiter
-	private boolean canMovePiece(PiecePattern pattern, int finalPosX, int finalPosY){
+	private boolean canMovePiece(PiecePattern pattern, int finalPosX, int finalPosY, Player.Color color){
 		
 		boolean result = false;
 		int posX = selectedX;
 		int posY = selectedY;
 		int jumpCount = 0;			//Permet de ne jamais dï¿½passï¿½ le nombre de saut d'un paterne
-		Piece piecePosFinale = getPiece(posX, posY);		//contient la piece ï¿½ la position final
+		Piece piecePosFinale = getPiece(finalPosX, finalPosY);		//contient la piece ï¿½ la position final
 		
-		do{
-			posX += pattern.getDirectionX();
-			posY += pattern.getDirectionY();
+		System.out.println(pattern.toString());
+		
+		if(pattern != null){
+			do{
+				posX += pattern.getDirectionX();
+				posY += pattern.getDirectionY();
+				
+				++jumpCount;		//Permet le dï¿½pacement du nombre de bond pour faire la vï¿½rification du roque
+				
+				if((posX == finalPosX) && (posY == finalPosY)){
+					result = true;
+				}
+				
+			}while(!result && (getPiece(posX, posY) == null));
 			
-			++jumpCount;		//Permet le dï¿½pacement du nombre de bond pour faire la vï¿½rification du roque
+			System.out.println("jump is accepted "+ result);
+			System.out.println("jump effectuer "+ jumpCount);
 			
-			if((posX == finalPosX) && (posY == finalPosY)){
-				result = true;
+			//Si l'usage ne tante pas de faire un roque, on s'assure que la piece n'est pas hors de porté et l'arriver n'est pas une
+			//piece de meme couleur
+			if(!isTryingToCastling(piecePosFinale)){
+				if(result && (piecePosFinale != null)){
+					result = (piecePosFinale.getColor() != color);
+				}
+				
+				result = result && (jumpCount <= pattern.getDistanceMax());
 			}
 			
-		}while(!result && (getPiece(posX, posY) != null));
-		
-		//Si l'usage ne tante pas de faire un roque, on s'assure que la piece ne
-		if(!isTryingToCastling(piecePosFinale)){
-			result = result && (jumpCount <= pattern.getDistanceMax());
-		}
-		
-		//Si le pattern ne peut pas bouger et attaquer en mï¿½me temps (gï¿½re l'exeption du pion)
-		if(!(pattern.isAttackPattern() && pattern.isMouvementPattern()) && result){
-			
-			//Si le pattern est exclusivement pour les attaque
-			if(pattern.isAttackPattern()){
-				if(piecePosFinale == null){
-					result = false;
+			//Si le pattern ne peut pas bouger et attaquer en meme temps (gere l'exeption du pion)
+			if(!(pattern.isAttackPattern() && pattern.isMouvementPattern()) && result){
+				
+				//Si le pattern est exclusivement pour les attaque
+				if(pattern.isAttackPattern()){
+					if(piecePosFinale == null){
+						result = false;
+					}
+				}
+				//Si le pattern est exclusivement pour les dï¿½placements
+				if(pattern.isMouvementPattern()){
+					if(piecePosFinale != null){
+						result = false;
+					}
 				}
 			}
-			//Si le pattern est exclusivement pour les dï¿½placements
-			if(pattern.isMouvementPattern()){
-				if(piecePosFinale != null){
-					result = false;
-				}
-			}
 		}
+		
+		System.out.println("sortie "+ result);
 		
 		return result;
 	}

@@ -37,4 +37,9 @@ public class PiecePattern {
 	public boolean isMouvementPattern() {
 		return isMovementPattern;
 	}
+	
+	@Override
+	public String toString(){
+		return "["+directionX+","+directionY+","+distanceMax+","+isAttackPattern+","+isMovementPattern+"]";
+	}
 }

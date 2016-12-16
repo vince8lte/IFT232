@@ -76,9 +76,11 @@ public class ChessGame {
         {      
             // Si la case selectionne est la piece presentement selectionne
         	if(!board.equalsPieceSelected(x, y)){
+        		System.out.println("tante de bouger une piece");
 		        // Si le déplacement de la pièce a fonctionné
 		        if (board.moveSelectedPieceTo(x, y, players[currentPlayerIndex].getColor()))
 		        {
+		        	System.out.println("Reussi");
 		            changeActivePlayer();
 		            showGameStatus();
 		            graphic.setBoard(board.getBoard());
