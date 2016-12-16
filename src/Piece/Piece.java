@@ -2,44 +2,32 @@ package Piece;
 
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.Point;
 import java.awt.Rectangle;
 
-import classes.Player;
+import GraphicsInterface.IRenderable;
+import Utils.ImgUtils;
+import classes.Player.Color;
 
-public abstract class Piece
+public abstract class Piece implements IRenderable
 {
-	protected Player.Color color;
-    protected String imgUrl;
+    protected String imgURL;
     protected PiecePattern[] patterns;
+    protected Color color;
     
-    protected abstract void initPattern();
+    protected abstract void initPattern();     
+    protected abstract String getImgURL();
     
-    public void hasMoved(){}
-    
-    public boolean canSpecialMove(){
-		return false;
-	}
-    
-    public Piece(Player.Color color) {
+    protected Piece(Color color)
+    {
         this.color = color;
     }
     
-    public String getImgUrl() {
-        return imgUrl;
-    }
-    
-    public Player.Color getColor() {
-    	return this.color;
-    }
-    
-    public String toString()
+    public Color getColor()
     {
-        String text = "";
-        text += getClass().getSimpleName()+" ";
-        text += this.getColor().name();
-        return text;
+        return this.color;
     }
+    
+    public void hasMoved(){}
     
     // Retourne le pattern associé au mouvement de la pièce
     // Exemple: On reçoit srcX comme 3, src Y comme 5, recptX comme 4, recptY comme 5
@@ -80,9 +68,13 @@ public abstract class Piece
     public PiecePattern[] getPatterns()
     {
         return this.patterns;
-    }
+    }   
     
-    
-    
-    
+    @Override
+    public void render(Rectangle container, Rectangle parentContainer, Graphics g)
+    {
+        Image scaledImage = ImgUtils.getScaledImage(this.getImgURL(), container, parentContainer);
+        
+        g.drawImage(scaledImage, (int)container.getX(), (int)container.getY(), null);
+    }   
 }
