@@ -126,15 +126,17 @@ public class Board {
         PiecePattern movementPatternFromMovingPiece = movingPiece.getPattern(x - selectedX, y - selectedY);
         if ((movementPatternFromMovingPiece != null) && canMovePiece(movementPatternFromMovingPiece, x, y, color))
         {
-            board[x][y] = board[selectedX][selectedY];
-            board[selectedX][selectedY] = null;	        		
+        	if(isTryingToCastling(getPiece(x,y))){
+        		DoCastling(x, y);
+        	} else{
+	            board[x][y] = board[selectedX][selectedY];
+	            board[selectedX][selectedY] = null;	
+        	}
 
             movingPiece.hasMoved();                 
             unselectPiece();          
             
-            return true;
-    		//if(isTryingToCastling(getPiece(x,y))){ APPREND A CODER SUR PAPIER PATRICK - JEAN
-    		//}else{}		        	
+            return true;        	
         } 
         else
             return false;
@@ -241,16 +243,14 @@ public class Board {
 		}
 	}
 	
-	//Cette method s'assure que la piece peut se dï¿½placer jusqu'ï¿½ la possition souhaiter
+	//Cette method s'assure que la piece peut se deplacer jusqu'a la possition souhaiter
 	private boolean canMovePiece(PiecePattern pattern, int finalPosX, int finalPosY, Player.Color color){
 		
 		boolean result = false;
 		int posX = selectedX;
 		int posY = selectedY;
-		int jumpCount = 0;			//Permet de ne jamais dï¿½passï¿½ le nombre de saut d'un paterne
-		Piece piecePosFinale = getPiece(finalPosX, finalPosY);		//contient la piece ï¿½ la position final
-		
-		System.out.println(pattern.toString());
+		int jumpCount = 0;			//Permet de ne jamais depace le nombre de saut d'un paterne
+		Piece piecePosFinale = getPiece(finalPosX, finalPosY);		//contient la piece a la position final
 		
 		if(pattern != null){
 			do{
@@ -264,9 +264,6 @@ public class Board {
 				}
 				
 			}while(!result && (getPiece(posX, posY) == null));
-			
-			System.out.println("jump is accepted "+ result);
-			System.out.println("jump effectuer "+ jumpCount);
 			
 			//Si l'usage ne tante pas de faire un roque, on s'assure que la piece n'est pas hors de porté et l'arriver n'est pas une
 			//piece de meme couleur
@@ -296,8 +293,6 @@ public class Board {
 			}
 		}
 		
-		System.out.println("sortie "+ result);
-		
 		return result;
 	}
 	
@@ -322,19 +317,38 @@ public class Board {
 	}
 	
 	
-	/*
-	public void movePiece(Square square)
-	{
-		Piece movingPiece = selectedSquare.getPiece();
-		if (movingPiece.canMoveTo(square)) {
-			selectedSquare.movePieceTo(square);
-			selectedSquare = null;
-			grid.resetSelectedSquare();
-			changeActivePlayer();
+	//Effectue le roque
+		private void DoCastling(int x, int y){
+			int kingX = selectedX;
+			int castleX = x;
+			Piece tempoPiece;
+			
+			if(getSelectedPiece() instanceof Tour){			
+				kingX = x;
+				castleX = selectedX;
+			}
+			
+			//Retire le mouvement spécial de la tour non utilisé
+			if(castleX == 0){
+				tempoPiece = getPiece(7,y);
+			}else{
+				tempoPiece = getPiece(0,y);
+			}
+			
+			//Retire le mouvement special de la tour non utilisé et de la piece d'arriver : la piece selectionner se fait au retour
+			if(tempoPiece != null){ tempoPiece.hasMoved(); }
+			getPiece(x,y).hasMoved();
+			
+			//Verifie si le grand roque doit être fait
+			if(castleX < kingX){
+				board[2][y] = board[kingX][y];	//Deplace le roi
+				board[3][y] = board[castleX][y];	//Deplace la tour
+			}else{
+				board[6][y] = board[kingX][y];	//Deplace le roi
+				board[5][y] = board[castleX][y];	//Deplace la tour
+			}
+
+			board[kingX][y] = null;
+			board[castleX][y] = null;
 		}
-		else if (square == selectedSquare) {
-			selectedSquare = null;
-			grid.resetSelectedSquare();
-		}
-	}*/
 }
