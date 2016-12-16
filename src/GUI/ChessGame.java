@@ -36,7 +36,7 @@ public class ChessGame {
                 (teamColorPieceRecipient != board.getTeamColorFromSelectedPiece()))
             {
                 // Si le déplacement de la pièce a fonctionné
-                if (board.moveSelectedPieceTo(x, y, players[currentPlayerIndex].getColor()))
+                if (board.moveSelectedPieceTo(x, y))
                 {
                     changeActivePlayer();
                     graphic.paintGUI();
