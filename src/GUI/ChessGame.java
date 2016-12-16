@@ -44,8 +44,22 @@ public class ChessGame {
             FileReader fileReader = new FileReader(filePath); 
             BufferedReader br = new BufferedReader(fileReader); 
             
+            currentPlayerIndex = 0;
             board.loadBoard(br);
             graphic.setBoard(board.getBoard());
+            graphic.paintGUI();
+        }
+        catch (Exception e){}
+    }
+    
+    public void saveBoard(String filePath)
+    {
+        try
+        {
+            FileWriter fileWriter = new FileWriter(filePath); 
+            BufferedWriter bw = new BufferedWriter(fileWriter); 
+            
+            board.saveBoard(bw);
         }
         catch (Exception e){}
     }
@@ -64,6 +78,7 @@ public class ChessGame {
                 if (board.moveSelectedPieceTo(x, y))
                 {
                     changeActivePlayer();
+                    graphic.setBoard(board.getBoard());
                     graphic.paintGUI();
                 }                
             }
