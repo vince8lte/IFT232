@@ -18,11 +18,16 @@ public class Board {
     private Piece[][] board;		//Contient la position de toute les pieces de l'�chiquier
     private int selectedX;				//Indique la position de la piece selectionner en X
     private int selectedY;				//Indique la position de la piece selectionner en Y
+    
+    private int ghostPieceX;	//Indique la position de la piece fantome (pour la prise en passant)
+    private int ghostPieceY;	//Indique la position de la piece fantome (pour la prise en passant)
 
 	public Board(){        
         board = new Piece[BOARD_SIZE][BOARD_SIZE];
         selectedX = NOT_SELECTED;
         selectedY = NOT_SELECTED;
+        ghostPieceX = NOT_SELECTED;
+        ghostPieceY = NOT_SELECTED;
 	}
 	
 	public void loadBoard(BufferedReader fileToRead)
@@ -85,7 +90,6 @@ public class Board {
 	        selectedX = x;
 	        selectedY = y;	 
 	        
-	        System.out.println(getPiece(x,y).toString());
 	        return true;
 	    }
 	    return false;
@@ -95,8 +99,6 @@ public class Board {
 	{
 	    selectedX = NOT_SELECTED;
 	    selectedY = NOT_SELECTED;
-	    
-	    System.out.println("unselected Piece");
 	}
 	
    public boolean pieceIsSelected(){
@@ -123,14 +125,36 @@ public class Board {
    // Cette procedure deplace la piece presentement selectionne a lendroit specifie recu en parametre.
 	public boolean moveSelectedPieceTo(int x, int y, Player.Color color){	
         Piece movingPiece = getSelectedPiece();
+        Piece catchedPiece = null;
+        Piece ghostPiece = null;
         PiecePattern movementPatternFromMovingPiece = movingPiece.getPattern(x - selectedX, y - selectedY);
         if ((movementPatternFromMovingPiece != null) && canMovePiece(movementPatternFromMovingPiece, x, y, color))
-        {
+        {        	        	
         	if(isTryingToCastling(getPiece(x,y))){
         		DoCastling(x, y);
         	} else{
-	            board[x][y] = board[selectedX][selectedY];
-	            board[selectedX][selectedY] = null;	
+        		catchedPiece = getPiece(x,y);
+        		
+        		if((catchedPiece instanceof Fantome) && (y==2)){
+        			System.out.println("prise");
+        			ghostPiece = catchedPiece;
+        			catchedPiece = getPiece(x,y+1);
+        			board[x][y+1] = null;
+        		}
+        		else if((catchedPiece instanceof Fantome) && (y==5)){
+        			System.out.println("prise");
+        			ghostPiece = catchedPiece;
+        			catchedPiece = getPiece(x,y-1);
+        			board[x][y-1] = null;
+        		}
+        		
+	            board[x][y] = getSelectedPiece();
+	            board[selectedX][selectedY] = null;
+	            
+
+	            //Gestion de la prise en passant
+	            unselectGhostPiece();
+                tryPutGhostPiece(x, y, selectedY);
         	}
 
             movingPiece.hasMoved();                 
@@ -350,5 +374,33 @@ public class Board {
 
 			board[kingX][y] = null;
 			board[castleX][y] = null;
+		}
+		
+		
+		private void unselectGhostPiece(){
+			System.out.println("supprime la piece fantome");
+			
+			if(getPiece(ghostPieceX, ghostPieceY) instanceof Fantome){
+				board[ghostPieceX][ghostPieceY] = null;
+			}
+			
+			ghostPieceX = NOT_SELECTED;
+			ghostPieceY = NOT_SELECTED;
+		}
+		
+		//Tante de placer une piece fantome si c'est nescessaire
+		private void tryPutGhostPiece(int finalPosX, int finalPosY, int startPosY){
+			Piece piece = getPiece(finalPosX, finalPosY);
+			int ghostPosY;
+			
+			if(piece instanceof Pion){
+				if(((finalPosY - startPosY)%2) == 0){
+					ghostPosY = finalPosY - ((finalPosY - startPosY)/Math.abs(finalPosY - startPosY));
+					board[finalPosX][ghostPosY] = PieceFactory.getInstance().giveGhostPiece(piece.getColor());
+					System.out.println("ghost at" + finalPosX +","+ghostPosY);
+					ghostPieceX = finalPosX;
+					ghostPieceY = ghostPosY;
+				}
+			}
 		}
 }

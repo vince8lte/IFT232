@@ -1,12 +1,6 @@
 package classes;
 
-import Piece.Cavalier;
-import Piece.Fou;
-import Piece.Piece;
-import Piece.Pion;
-import Piece.Reine;
-import Piece.Roi;
-import Piece.Tour;
+import Piece.*;
 
 public class PieceFactory
 {    
@@ -48,8 +42,16 @@ public class PieceFactory
             {
                 return new Roi(color);
             }
+	    	case "Fantome":
+	    	{
+	    		return new Fantome(color);
+	    	}
 	    	default:
                 return null;
     	}
+    }
+    
+    public Piece giveGhostPiece(Player.Color color){
+    	return new Fantome(color);
     }
 }
