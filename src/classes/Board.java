@@ -105,7 +105,6 @@ public class Board {
 	    {
 	        Piece movingPiece = getSelectedPiece();
 	        Piece catchedPiece;
-	        Piece ghostPiece = null;
 	        PiecePattern movementPatternFromMovingPiece = movingPiece.getPattern(selectedX, selectedY, x, y);
 	        
 	        if (movementPatternFromMovingPiece != null && canMovePiece(movementPatternFromMovingPiece, x, y))
@@ -116,28 +115,19 @@ public class Board {
         			DoCastling(x,y);
         			
         		}else{
+        			board[finalPosX][ghostPosY] = PieceFactory.getInstance().giveGhostPiece(piece.getColor());
         			
 	        		catchedPiece = board[x][y];
-	        		
-	        		//Gere la prise en passant
-	        		if((catchedPiece instanceof PieceFantome) && (y==6)){
-	        			ghostPiece = catchedPiece;
-	        			catchedPiece = board[x][y-1];
-	        			board[x][y-1] = null;
-	        		}
-	        		else if((catchedPiece instanceof PieceFantome) && (y==1)){
-	        			ghostPiece = catchedPiece;
-	        			catchedPiece = board[x][y+1];
-	        			board[x][y+1] = null;
-	        		}
-	        		
         			board[x][y] = movingPiece;
 	                board[selectedX][selectedY] = null;
 	                
+	              	//Verification de la prise en passant
+	                doEnPassant(x, y);
+	                tryPutGhostPiece(x, y, selectedY);
 	                
 	                //Si l'action met le roi en echec, undo
         			if(accecibleByEnnemy(0,0,color)){ //<-----------------------------------------place la position du roi
-        				board[selectedX][selectedY] = movingPiece;
+        				//Il faut undo le déplacement
         			}else{ 
 	        			if(catchedPiece != null) {
 	        				deadPiece.add(catchedPiece);
@@ -147,8 +137,6 @@ public class Board {
 		                if(canDoPromotion(x,y)){
 		                	getPromotablePiece(board[x][y].getColor());
 		                }
-		                
-		                tryPutGhostPiece(x, y, selectedY);
         			}
     			}
     		}
@@ -305,6 +293,20 @@ public class Board {
 				board[finalPosX][ghostPosY] = PieceFactory.getInstance().giveGhostPiece(piece.getColor());
 				ghostPieceX = finalPosX;
 				ghostPieceY = ghostPosY;
+			}
+		}
+	}
+	
+	//Tante de faire une prise en passant
+	private void doEnPassant(int posX, int posY){
+		//Si une prise en passant est fait
+		if((posX == ghostPieceX) && (posY == ghostPieceY)){
+			if(posY == 1){
+				deadPiece.add(getPiece(posX,posY+1));
+				board[posX][posY+1] = null;
+			}else{
+				deadPiece.add(getPiece(posX,posY-1));
+				board[posX][posY-1] = null;
 			}
 		}
 	}
