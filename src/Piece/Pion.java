@@ -29,13 +29,13 @@ public class Pion extends PieceSpeciale {
 		
 		if (this.getColor() == Color.BLACK)
 		{
-			patterns[0] = new PiecePattern(1,-1,1,true,false);
+			patterns[0] = new PiecePattern(0,-1,1,false,false);
 			patterns[1] = new PiecePattern(-1,-1,1,true,false);
 			patterns[2] = new PiecePattern(0,-1,2,false,true);
 		}
 		else
 		{
-			patterns[0] = new PiecePattern(1,1,1,true,false);
+			patterns[0] = new PiecePattern(0,1,1,false,false);
 			patterns[1] = new PiecePattern(-1,1,1,true,false);
 			patterns[2] = new PiecePattern(0,1,2,false,true);
 		}

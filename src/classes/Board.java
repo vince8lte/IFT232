@@ -2,6 +2,7 @@ package classes;
 
 import java.awt.Image;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 
@@ -26,6 +27,11 @@ public class Board {
 	
 	public void loadBoard(BufferedReader fileToRead)
 	{
+		// Effacer toutes les pieces du board présent avant de continuer
+		for (int x = 0; x < board.length; ++x)
+			for (int y = 0; y < board[x].length; ++y)
+				board[x][y] = null;
+		
 	    try
         {
 	        String ligne;
@@ -74,6 +80,33 @@ public class Board {
         {
             e.printStackTrace();
         }       
+	}
+	
+	public void saveBoard(BufferedWriter fileToWrite)
+	{
+		try
+		{
+			for (int x = 0; x < board.length; ++x)
+				for (int y = 0; y < board[x].length; ++y)
+				{
+					Piece currentPiece = getPiece(x, y);		
+					
+					if (currentPiece != null)
+					{
+						String currentPieceInfos = Integer.toString(x) + "," + 
+								   Integer.toString(y) + "," + 
+								   currentPiece.getClass().getSimpleName() + "," +
+								   currentPiece.getColor().toString();
+		
+						fileToWrite.write(currentPieceInfos);
+						fileToWrite.newLine();								
+					}
+				}
+			
+			fileToWrite.close();			
+		}
+		catch (Exception e)
+		{}
 	}
 	
 	public void selectPiece(int x, int y)
@@ -284,7 +317,7 @@ public class Board {
 		
 		//Si l'usage ne tante pas de faire un roque, on s'assure que la piece ne
 		if(!isTryingToCastling(piecePosFinale)){
-			result = result && (jumpCount < pattern.getDistanceMax());
+			result = result && (jumpCount <= pattern.getDistanceMax());
 		}
 		
 		//Si le pattern ne peut pas bouger et attaquer en mï¿½me temps (gï¿½re l'exeption du pion)

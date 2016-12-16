@@ -47,7 +47,7 @@ public abstract class Piece implements IRenderable
             differenceX = (Math.abs(differenceX) / differenceX); // S'assure que differenceX va soit être 1, -1 ou 0
         
         if (differenceY != 0)
-            differenceY = (Math.abs(differenceY) / differenceY); // S'assure que differenceY va soi être 1, -1 ou 0                        
+            differenceY = ((Math.abs(differenceY) / differenceY) / -1); // S'assure que differenceY va soi être 1, -1 ou 0. On divise par -1 a la fin, car lorsque le y est a 0, il est completement en haut...                        
         
         while (!foundPattern && patternIndex < this.patterns.length)
         {
