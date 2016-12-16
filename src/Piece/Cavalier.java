@@ -1,34 +1,17 @@
 package Piece;
 
+import GUI.PatternFactory;
 import classes.Player.Color;
 
 public class Cavalier extends Piece {
     
-    private final String IMG_URL = "ressources/pictures/cavalier";
+    private final String KNIGHT_IMG = "ressources/pictures/cavalier";
 
 	public Cavalier(Color color) {
 	    super(color);
-        this.initPattern();
-	}
-	
-   @Override
-    protected String getImgURL()
-    {
-        return IMG_URL;
-    }
-
-   @Override
-	protected void initPattern() {
-		this.patterns= new PiecePattern[8];
-		
-		patterns[0] = new PiecePattern(1,2,1,true,true);
-		patterns[1] = new PiecePattern(1,-2,1,true,true);
-		patterns[2] = new PiecePattern(-1,2,1,true,true);
-		patterns[3] = new PiecePattern(-1,-2,1,true,true);
-		patterns[4] = new PiecePattern(2,1,1,true,true);
-		patterns[5] = new PiecePattern(2,-1,1,true,true);
-		patterns[6] = new PiecePattern(-2,1,1,true,true);
-		patterns[7] = new PiecePattern(-2,-1,1,true,true);
+	    this.IMG_URL = KNIGHT_IMG;
+        this.patterns = PatternFactory.getInstance().getKnightPattern();
+	    
 	}
 	
 	// Retourne le pattern associé au mouvement de la pièce
