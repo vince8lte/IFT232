@@ -1,23 +1,40 @@
 package Piece;
 
-import GUI.PatternFactory;
 import classes.Player.Color;
 
 public class Pion extends PieceSpeciale {
 
-    private final String PAWN_IMGL = "ressources/pictures/pion";
+    private final String IMG_URL = "ressources/pictures/pion";
     
 	public Pion(Color color) 
 	{
 	    super(color);
-	    this.IMG_URL = PAWN_IMGL;
-	    if (this.getColor() == Color.BLACK)
+	    this.initPattern();
+	}
+	
+	@Override
+	protected String getImgURL()
+	{
+	    return IMG_URL;
+	}
+	
+	@Override
+	protected void initPattern() {
+		this.patterns = new PiecePattern[3];
+		
+		if (this.getColor() == Color.BLACK)
 		{
-	    	this.patterns= PatternFactory.getInstance().getBlackPawnPattern();
+			patterns[0] = new PiecePattern(1,-1,1,true,false);
+			patterns[1] = new PiecePattern(-1,-1,1,true,false);
+			patterns[2] = new PiecePattern(0,-1,2,false,true);
 		}
-	    else{
-	    	this.patterns= PatternFactory.getInstance().getWhitePawnPattern();
-	    }
+		else
+		{
+			patterns[0] = new PiecePattern(1,1,1,true,false);
+			patterns[1] = new PiecePattern(-1,1,1,true,false);
+			patterns[2] = new PiecePattern(0,1,2,false,true);
+		}
+
 	}
 
 	@Override

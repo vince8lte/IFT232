@@ -1,12 +1,19 @@
 package Piece;
 
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Rectangle;
+
 import classes.Player;
 
 public abstract class Piece
 {
 	protected Player.Color color;
-    protected String IMG_URL;
+    protected String imgUrl;
     protected PiecePattern[] patterns;
+    
+    protected abstract void initPattern();
     
     public void hasMoved(){}
     
@@ -19,7 +26,7 @@ public abstract class Piece
     }
     
     public String getImgUrl() {
-        return IMG_URL;
+        return imgUrl;
     }
     
     public Player.Color getColor() {
