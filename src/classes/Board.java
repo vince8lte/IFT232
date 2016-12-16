@@ -1,6 +1,8 @@
 package classes;
 
 import java.awt.Image;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.LinkedList;
 
 import GraphicsInterface.IRenderable;
@@ -20,8 +22,58 @@ public class Board {
         board = new Piece[BOARD_SIZE][BOARD_SIZE];
         selectedX = NOT_SELECTED;
         selectedY = NOT_SELECTED;
-       
-        // LOADER LE BOARD
+	}
+	
+	public void loadBoard(BufferedReader fileToRead)
+	{
+	    try
+        {
+	        String ligne;
+	        
+            ligne = fileToRead.readLine();
+	    
+            while (ligne != null)
+            {
+                final int posX = 0;
+                final int posY = 1;
+                final int pieceType = 2;
+                final int pieceColor = 3;
+                
+                String[] infos = ligne.split(",");
+                
+                switch (infos[pieceType])
+                {
+                    case "Pion":
+                        board[Integer.parseInt(infos[posX])][Integer.parseInt(infos[posY])] = new Pion(Player.Color.valueOf(infos[pieceColor]));
+                        break;
+                    case "Fou":
+                        board[Integer.parseInt(infos[posX])][Integer.parseInt(infos[posY])] = new Fou(Player.Color.valueOf(infos[pieceColor]));
+                        break;
+                    case "Reine":
+                        board[Integer.parseInt(infos[posX])][Integer.parseInt(infos[posY])] = new Reine(Player.Color.valueOf(infos[pieceColor]));
+                        break;
+                    case "Roi":
+                        board[Integer.parseInt(infos[posX])][Integer.parseInt(infos[posY])] = new Roi(Player.Color.valueOf(infos[pieceColor]));
+                        break;
+                    case "Cavalier":
+                        board[Integer.parseInt(infos[posX])][Integer.parseInt(infos[posY])] = new Cavalier(Player.Color.valueOf(infos[pieceColor]));
+                        break;
+                    case "Tour":
+                        board[Integer.parseInt(infos[posX])][Integer.parseInt(infos[posY])] = new Tour(Player.Color.valueOf(infos[pieceColor]));
+                        break;
+                    default:
+                        break;
+                }
+                
+                ligne = fileToRead.readLine();	                
+            }
+            
+            fileToRead.close(); 
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }       
 	}
 	
 	public void selectPiece(int x, int y)

@@ -1,6 +1,9 @@
 package GUI;
 
+import java.io.BufferedReader;
+
 import classes.Board;
+import java.io.*;
 import classes.Player;
 import classes.Player.Color;
 
@@ -21,11 +24,25 @@ public class ChessGame {
             this.players[playerIndex] = Player.createPlayer(Color.values()[playerIndex]);
         
         this.graphic = new ChessGraphic(this, board.getBoard());
+        loadBoard();
     }
            
     // Change de tour du joueur
     private void changeActivePlayer(){
         currentPlayerIndex = ((currentPlayerIndex + 1) % players.length);
+    }
+    
+    public void loadBoard()
+    {
+        try
+        {
+            FileReader fileReader = new FileReader("ressources/grid.txt"); 
+            BufferedReader br = new BufferedReader(fileReader); 
+            
+            board.loadBoard(br);
+            graphic.paintGUI();
+        }
+        catch (Exception e){}
     }
     
     public void play(int x, int y){
