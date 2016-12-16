@@ -44,13 +44,13 @@ public class ChessGraphic extends JFrame {
         this.panel = new ChessGraphicPanel(this, board);
                        
         this.setSize(800, 600);
-        this.setTitle("Chess Game");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.setResizable(true);
         this.getContentPane().add(this.panel, BorderLayout.CENTER);
         this.setVisible(true);
         this.addComponentListener(this.panel);
+        this.showGameStatus("New game");
         
         menu = new JMenu("File");
         menu.setMnemonic(KeyEvent.VK_F);
@@ -105,6 +105,10 @@ public class ChessGraphic extends JFrame {
   		      } 
         	}
         });
+    }
+    
+    public void showGameStatus(String stausName){
+    	setTitle("Chess Game " + stausName);
     }
     
     public void play(int clickPosX, int clickPosY)

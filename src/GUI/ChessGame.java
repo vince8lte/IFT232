@@ -22,14 +22,20 @@ public class ChessGame {
         
         for (int playerIndex = 0; playerIndex < this.players.length; ++playerIndex)
             this.players[playerIndex] = Player.createPlayer(Color.values()[playerIndex]);
-        
+
         this.graphic = new ChessGraphic(this, board.getBoard());
         loadDefaultBoard();
     }
            
-    // Change de tour du joueur
+    // Change de tour du joueur est met � jour les informations � afficher sur le titre de la fenetre
     private void changeActivePlayer(){
         currentPlayerIndex = ((currentPlayerIndex + 1) % players.length);
+    }
+    
+    private void showGameStatus(){
+		String ColorTurn = players[currentPlayerIndex].getColor().toString();
+        
+        graphic.showGameStatus("turn of " + ColorTurn + " player");
     }
     
     public void loadDefaultBoard()
@@ -45,6 +51,7 @@ public class ChessGame {
             BufferedReader br = new BufferedReader(fileReader); 
             
             currentPlayerIndex = 0;
+            showGameStatus();
             board.loadBoard(br);
             graphic.setBoard(board.getBoard());
             graphic.paintGUI();
@@ -66,37 +73,28 @@ public class ChessGame {
     
     public void play(int x, int y){
         if (board.pieceIsSelected())
-        {            
-            Color teamColorPieceRecipient = board.getTeamColorFromPiece(x, y);
-            
-            // S'il n'existe pas une pièce destinataire OU 
-            // Si la pièce présentement sélectionné et la pièce destinataire ne sont pas de la même équipe
-            if ((teamColorPieceRecipient == Color.NONE) || 
-                (teamColorPieceRecipient != board.getTeamColorFromSelectedPiece()))
-            {
-                // Si le déplacement de la pièce a fonctionné
-                if (board.moveSelectedPieceTo(x, y))
-                {
-                    changeActivePlayer();
-                    graphic.setBoard(board.getBoard());
-                    graphic.paintGUI();
-                }                
-            }
-            // Si la case sélectionné est la pièce présentement sélectionné
-            else if (board.equalsPieceSelected(x, y))
+        {      
+            // Si la case selectionne est la piece presentement selectionne
+        	if(!board.equalsPieceSelected(x, y)){
+		        // Si le déplacement de la pièce a fonctionné
+		        if (board.moveSelectedPieceTo(x, y, players[currentPlayerIndex].getColor()))
+		        {
+		            changeActivePlayer();
+		            showGameStatus();
+		            graphic.setBoard(board.getBoard());
+		            graphic.paintGUI();
+		        }
+        	}
+        	else
+        	{
                 board.unselectPiece();
+            }
         }
         else
         {
-            Color teamColorPieceRecipient = board.getTeamColorFromPiece(x, y);
-            
-            // Si la case sélectionné contient une pièce
-            // et que cette pièce est de la même couleur que le joueur
-            if (teamColorPieceRecipient == players[currentPlayerIndex].getColor())
-            {
-                board.selectPiece(x, y);                
-                graphic.paintGUI();            
-            }            
+        	if(board.selectPiece(x, y, players[currentPlayerIndex].getColor())){
+        		graphic.paintGUI();
+        	}          
         }
     }
 }

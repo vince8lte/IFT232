@@ -40,36 +40,11 @@ public class Board {
 	    
             while (ligne != null)
             {
-                final int posX = 0;
-                final int posY = 1;
-                final int pieceType = 2;
-                final int pieceColor = 3;
-                
-                String[] infos = ligne.split(",");
-                
-                switch (infos[pieceType])
-                {
-                    case "Pion":
-                        board[Integer.parseInt(infos[posX])][Integer.parseInt(infos[posY])] = new Pion(Player.Color.valueOf(infos[pieceColor]));
-                        break;
-                    case "Fou":
-                        board[Integer.parseInt(infos[posX])][Integer.parseInt(infos[posY])] = new Fou(Player.Color.valueOf(infos[pieceColor]));
-                        break;
-                    case "Reine":
-                        board[Integer.parseInt(infos[posX])][Integer.parseInt(infos[posY])] = new Reine(Player.Color.valueOf(infos[pieceColor]));
-                        break;
-                    case "Roi":
-                        board[Integer.parseInt(infos[posX])][Integer.parseInt(infos[posY])] = new Roi(Player.Color.valueOf(infos[pieceColor]));
-                        break;
-                    case "Cavalier":
-                        board[Integer.parseInt(infos[posX])][Integer.parseInt(infos[posY])] = new Cavalier(Player.Color.valueOf(infos[pieceColor]));
-                        break;
-                    case "Tour":
-                        board[Integer.parseInt(infos[posX])][Integer.parseInt(infos[posY])] = new Tour(Player.Color.valueOf(infos[pieceColor]));
-                        break;
-                    default:
-                        break;
-                }
+            	String[] infos = ligne.split(",");
+            	int posX = Integer.parseInt(infos[0]);
+            	int posY = Integer.parseInt(infos[1]);
+            	
+            	board[posX][posY] = PieceFactory.getInstance().givePiece(infos[2], Player.Color.valueOf(infos[3]));
                 
                 ligne = fileToRead.readLine();	                
             }
@@ -86,36 +61,32 @@ public class Board {
 	{
 		try
 		{
-			for (int x = 0; x < board.length; ++x)
-				for (int y = 0; y < board[x].length; ++y)
+			for (int i = 0; i < (board.length * board.length); ++i){
+				Piece currentPiece = getPiece(i%8, i/8);		
+				
+				if (currentPiece != null)
 				{
-					Piece currentPiece = getPiece(x, y);		
-					
-					if (currentPiece != null)
-					{
-						String currentPieceInfos = Integer.toString(x) + "," + 
-								   Integer.toString(y) + "," + 
-								   currentPiece.getClass().getSimpleName() + "," +
-								   currentPiece.getColor().toString();
-		
-						fileToWrite.write(currentPieceInfos);
-						fileToWrite.newLine();								
-					}
+					String currentPieceInfos = Integer.toString(i%8) + "," + Integer.toString(i/8) + "," + currentPiece.toString();
+	
+					fileToWrite.write(currentPieceInfos);
+					fileToWrite.newLine();								
 				}
-			
+			}
 			fileToWrite.close();			
 		}
 		catch (Exception e)
 		{}
 	}
 	
-	public void selectPiece(int x, int y)
+	public boolean selectPiece(int x, int y, Player.Color color)
 	{
-	    if (getPiece(x, y) != null)
+	    if (getPiece(x, y) != null && (getPiece(x,y).getColor() == color))
 	    {
 	        selectedX = x;
-	        selectedY = y;	      
+	        selectedY = y;	   
+	        return true;
 	    }
+	    return false;
 	}
 	
 	public void unselectPiece()
@@ -145,25 +116,9 @@ public class Board {
                   
        return pieces;
    }
-	
-	// Retourne la couleur de "l'equipe" de la piece (none, si une piece existe pas)
-	public Player.Color getTeamColorFromPiece(int x, int y)
-	{
-	    Piece piece = getPiece(x, y);
-	    
-	    if (piece != null)	        
-	        return (piece.getColor());
-	    else
-	        return Player.Color.NONE;
-	}
-	
-   public Player.Color getTeamColorFromSelectedPiece()
-    {
-       return getTeamColorFromPiece(selectedX, selectedY);
-    }
    
    // Cette procedure deplace la piece presentement selectionne a lendroit specifie recu en parametre.
-	public boolean moveSelectedPieceTo(int x, int y){	
+	public boolean moveSelectedPieceTo(int x, int y, Player.Color color){	
 	    if (pieceIsSelected())
 	    {
 	        Piece movingPiece = getSelectedPiece();
@@ -222,46 +177,6 @@ public class Board {
 				
 			}while((tempPiece == null) && (nbrSaut<patterns[i].getDistanceMax()));
 		}
-	}
-	
-	//Enregistre dans un string la partie courante
-	public String createSaveFile(){
-		String sauvegarde = "";
-		Piece pieceTempo = null;
-		
-		for(int i = 0; i < (BOARD_SIZE*BOARD_SIZE); i++){
-			pieceTempo = getPiece(i%8, i/8);
-			
-			if(pieceTempo != null){
-				sauvegarde +=Integer.toString(i%8) + "," + Integer.toString(i%8) + "|";
-				sauvegarde += pieceTempo.toString() + "\n";
-			}
-		}
-		
-		return sauvegarde;
-	}
-	
-	//Lit un fichier pour l'appliquer au board
-	public void LoadSaveFile(String loadFile){
-		
-		//Distingue toute les lignes
-		String[] Ligne = loadFile.split("\n");
-		String posSection;
-		int posX;
-		int posY;		
-
-		//Vide l'echiquiers
-		for(int i = 0; i < (BOARD_SIZE*BOARD_SIZE); i++){
-			board[i%8][i/8] = null;
-		}
-		
-		//Parcour toute les lignes � charger
-		for(int i=0; i < Ligne.length; i++){
-			posSection = Ligne[1].split(",")[0];
-			posX = Integer.parseInt(posSection.split(",")[0]);
-			posY = Integer.parseInt(posSection.split(",")[1]);
-			board[posX][posY] = PieceFactory.getInstance().givePiece(Ligne[1].split(",")[1]);
-		}		
 	}
 	
 	

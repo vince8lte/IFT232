@@ -22,13 +22,7 @@ public class PieceFactory
         return PieceFactoryHolder.instance;
     }
     
-    public Piece givePiece(String strPiece){
-    	  	
-    	//Inspecte le string pour déterminer la couleur de la nouvelle piece
-    	Player.Color color = Player.Color.BLACK;
-    	if(strPiece.split(",")[1] == "WHITE"){
-    		color = Player.Color.WHITE;
-    	}
+    public Piece givePiece(String strPiece, Player.Color color){
     	
     	switch(strPiece.split(",")[0])
     	{
