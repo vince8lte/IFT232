@@ -40,7 +40,7 @@ public class ChessGame {
             BufferedReader br = new BufferedReader(fileReader); 
             
             board.loadBoard(br);
-            graphic.paintGUI();
+            graphic.setBoard(board.getBoard());
         }
         catch (Exception e){}
     }
