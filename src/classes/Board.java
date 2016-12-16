@@ -4,6 +4,7 @@ import java.awt.Image;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import GUI.PatternFactory;
 import GraphicsInterface.IRenderable;
 import Piece.*;
 
@@ -20,6 +21,13 @@ public class Board {
     
     private int ghostPieceX;	//Indique la position de la piece fantome (pour la prise en passant)
     private int ghostPieceY;	//Indique la position de la piece fantome (pour la prise en passant)
+    
+    //Concerve la position des roi (pour la verification d'echec)
+    private int whiteKingX;
+    private int whiteKingY;
+    private int blackKingX;
+    private int blackKingY;
+    
 
 	public Board(){        
         board = new Piece[BOARD_SIZE][BOARD_SIZE];
@@ -29,6 +37,11 @@ public class Board {
 
         ghostPieceX = NOT_SELECTED;
         ghostPieceY = NOT_SELECTED;
+        
+        whiteKingX = 4;
+        whiteKingY = 0;
+        blackKingX = 4;
+        blackKingY = 7;
         
         board[0][0] = new Pion(Player.Color.WHITE);
 	}
@@ -65,7 +78,7 @@ public class Board {
        
        for (int x = 0; x < board.length; ++x)
            for (int y = 0; y < board[x].length; ++y)
-               pieces.add(getPiece(x, y));                   
+               pieces.add((IRenderable) getPiece(x, y));                   
                   
        return pieces;
    }
@@ -87,48 +100,53 @@ public class Board {
     }
    
    // Cette procedure deplace la piece presentement selectionne a lendroit specifie recu en parametre.
-	public boolean moveSelectedPieceTo(int x, int y){	
+	public boolean moveSelectedPieceTo(int x, int y, Player.Color color){			
 	    if (pieceIsSelected())
 	    {
 	        Piece movingPiece = getSelectedPiece();
+	        Piece catchedPiece;
 	        PiecePattern movementPatternFromMovingPiece = movingPiece.getPattern(selectedX, selectedY, x, y);
 	        
 	        if (movementPatternFromMovingPiece != null && canMovePiece(movementPatternFromMovingPiece, x, y))
-	        {
-	        	if(canMovePiece(movementPatternFromMovingPiece, x, y)){
-	        		
-	        		//déplacement special pour le roque
-	        		if(isTryingToCastling(getPiece(x,y))){
-	        			
-	        			DoCastling(x,y);
-	        			
-	        		}else{
-	        			
-		        		if(getPiece(x,y) != null) {
-		        			deadPiece.add(getPiece(x,y));
+	        {	        		
+        		//déplacement special pour le roque
+        		if(isTryingToCastling(getPiece(x,y))){
+        			
+        			DoCastling(x,y);
+        			
+        		}else{
+        			board[finalPosX][ghostPosY] = PieceFactory.getInstance().giveGhostPiece(piece.getColor());
+        			
+	        		catchedPiece = board[x][y];
+        			board[x][y] = movingPiece;
+	                board[selectedX][selectedY] = null;
+	                
+	              	//Verification de la prise en passant
+	                doEnPassant(x, y);
+	                tryPutGhostPiece(x, y, selectedY);
+	                
+	                //Si l'action met le roi en echec, undo
+        			if(accecibleByEnnemy(0,0,color)){ //<-----------------------------------------place la position du roi
+        				//Il faut undo le déplacement
+        			}else{ 
+	        			if(catchedPiece != null) {
+	        				deadPiece.add(catchedPiece);
 		        		}
 		        		
-		                board[x][y] = board[selectedX][selectedY];
-		                board[selectedX][selectedY] = null;
-		                
-		              	//Verification de la prise en passant
-		                doEnPassant(x, y);
-		                tryPutGhostPiece(x, y, selectedY);
-		                
-		                //Verification de la promotion
+		        		//Verification de la promotion
 		                if(canDoPromotion(x,y)){
 		                	getPromotablePiece(board[x][y].getColor());
 		                }
-	        		}
-	        		
-	        		movingPiece.hasMoved();
-	                
-	                unselectPiece(); 
-	                unselectGhostPiece();
-	        	}
-	        }
-	    }
-	}
+        			}
+    			}
+    		}
+    		
+    		movingPiece.hasMoved();
+            
+            unselectPiece(); 
+            unselectGhostPiece();
+    	}
+    }
 	
 	public void promote(int x, int y, String pieceName){
 		board[x][y] = PieceFactory.getInstance().givePromotatePiece(pieceName);
@@ -291,10 +309,6 @@ public class Board {
 				board[posX][posY-1] = null;
 			}
 		}
-		
-		//efface la piece, car elle n'a plus de raison d'exister
-		ghostPieceX = NOT_SELECTED;
-		ghostPieceY = NOT_SELECTED;
 	}
 	
 	//Cette method s'assure que la piece peut se déplacer jusqu'à la possition souhaiter
@@ -401,4 +415,48 @@ public class Board {
 		board[kingX][y] = null;
 		board[castleX][y] = null;
 	}
+	
+	
+	//Verifie si une position peut être attaquer par une piece
+	private boolean accecibleByEnnemy(int x, int y, Player.Color color){
+		
+		boolean isAccecible = false;
+		boolean	FindPiece;
+		int PosX, PosY, jumpCount; 
+		PiecePattern tempoPattern;
+		
+		for(PiecePattern pattern: PatternFactory.getInstance().getAllPattern()){
+			PosX = x;
+			PosY = y;
+			jumpCount = 0;
+			FindPiece = false;
+			
+			do
+			{
+				PosX += pattern.getDirectionX();
+				PosY += pattern.getDirectionY();
+				
+				if(getPiece(PosX,PosY) != null){
+					FindPiece = true;
+					if(getPiece(PosX,PosY).getColor() == color){
+						tempoPattern = getPiece(PosX,PosY).getPattern(PosX, PosY, x, y);
+					
+						if((tempoPattern!= null) && (jumpCount < tempoPattern.getDistanceMax())){
+							isAccecible = true;
+						}
+					}
+				}
+				
+				jumpCount++;
+			}while(!isAccecible && (jumpCount < pattern.getDistanceMax()) && !FindPiece);
+		}
+		
+		return isAccecible;
+	}
+	
+	
+	
+	
+	
+	
 }
