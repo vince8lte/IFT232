@@ -182,8 +182,9 @@ public class Board {
         if ((movementPatternFromMovingPiece != null) && canMovePiece(movementPatternFromMovingPiece, x, y, color))
         {
         	if(isTryingToCastling(getPiece(x,y))){
-        		DoCastling(x, y);
-        	} else{
+        		return DoCastling(x, y);
+        	}
+        	else{
         		catchedPiece = getPiece(x,y);
         		
         		if((catchedPiece instanceof Fantome) && (y==2)){
@@ -202,6 +203,16 @@ public class Board {
 	            board[x][y] = movingPiece;
 	            board[selectedX][selectedY] = null;
 	            
+	            if(movingPiece instanceof Roi){
+	            	if(movingPiece.getColor() == Player.Color.BLACK){
+	                    this.blackKingX = x;
+	                    this.blackKingY = y;
+	            	}else{
+	            		this.whiteKingX = x;
+	                    this.whiteKingY = y;
+	            	}
+	            }
+	            
 	            if(kingIsCheck(color)){
 	            	board[selectedX][selectedY] = movingPiece;
 	            	if((ghostPiece != null) && (y==2)){
@@ -214,6 +225,15 @@ public class Board {
 	            	}
 	            	else{
 	            		board[x][y] = catchedPiece;
+	            		if(movingPiece instanceof Roi){
+	    	            	if(movingPiece.getColor() == Player.Color.BLACK){
+	    	                    this.blackKingX = selectedX;
+	    	                    this.blackKingY = selectedY;
+	    	            	}else{
+	    	            		this.whiteKingX = selectedX;
+	    	                    this.whiteKingY = selectedY;
+	    	            	}
+	    	            }
 	            	}
 	            	System.out.println("cant move by check");
 	            }else{
@@ -413,7 +433,7 @@ public class Board {
 	
 	
 	//Effectue le roque
-	private void DoCastling(int x, int y){
+	private boolean DoCastling(int x, int y){
 		int kingX = selectedX;
 		int castleX = x;
 		Piece tempoPiece;
@@ -430,31 +450,42 @@ public class Board {
 			tempoPiece = getPiece(0,y);
 		}
 		
+		
 		//Retire le mouvement special de la tour non utilis� et de la piece d'arriver : la piece selectionner se fait au retour
-		if(tempoPiece != null){ tempoPiece.hasMoved(); }
-		getPiece(x,y).hasMoved();
-		
-		//Verifie si le grand roque doit �tre fait
-		if(castleX < kingX){
-			board[2][y] = board[kingX][y];	//Deplace le roi
-			board[kingX][y] = null;
-			board[3][y] = board[castleX][y];	//Deplace la tour
-			kingX = 2;
-		}else{
-			board[6][y] = board[kingX][y];	//Deplace le roi
-			board[kingX][y] = null;
-			board[5][y] = board[castleX][y];	//Deplace la tour
-			kingX = 6;
-		}
+		if(tempoPiece != null){ 
 
-		board[castleX][y] = null;
+			if (getSelectedPiece().canSpecialMove() && tempoPiece.canSpecialMove()){
+	
+				tempoPiece.hasMoved();
+			
+				getPiece(x,y).hasMoved();
+				
+				//Verifie si le grand roque doit �tre fait
+				if(castleX < kingX){
+					board[2][y] = board[kingX][y];	//Deplace le roi
+					board[kingX][y] = null;
+					board[3][y] = board[castleX][y];	//Deplace la tour
+					kingX = 2;
+				}else{
+					board[6][y] = board[kingX][y];	//Deplace le roi
+					board[kingX][y] = null;
+					board[5][y] = board[castleX][y];	//Deplace la tour
+					kingX = 6;
+				}
 		
-		//Met a jour la r�f�rence du roi
-		if(getPiece(kingX,y).getColor() == Player.Color.WHITE){
-			this.whiteKingX = kingX;
-		}else{
-			this.blackKingX = kingX;
+				board[castleX][y] = null;
+				
+				//Met a jour la r�f�rence du roi
+				if(getPiece(kingX,y).getColor() == Player.Color.WHITE){
+					this.whiteKingX = kingX;
+				}else{
+					this.blackKingX = kingX;
+				}
+				
+				return true;
+			}
 		}
+		return false;
 	}
 	
 	
