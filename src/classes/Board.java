@@ -260,7 +260,7 @@ public class Board {
 	    	            	}
 	    	            }
 	            	}
-	            	System.out.println("cant move by check");
+	            	return false;
 	            }else{
 		            //Gestion de la prise en passant
 		            unselectGhostPiece();
@@ -275,6 +275,89 @@ public class Board {
         } 
         else
             return false;
+	}
+	
+	public boolean isCheckmate(Player.Color color){
+		
+		boolean canEscape = true;
+		int posX, posY, kingX, kingY, iPattern, dirX, dirY, jumpCount;
+		PiecePattern ennemyPattern = null;
+		PiecePattern[] patterns;
+		Player.Color ennemyColor;
+		
+		if(kingIsCheck(color)){
+			
+			patterns = PatternFactory.getInstance().getAllPattern();
+			iPattern =0;
+			
+			if(color == Player.Color.WHITE){
+				kingX = whiteKingX;
+				kingY = whiteKingY;
+				ennemyColor = Player.Color.BLACK;
+			}else{
+				kingX = blackKingX;
+				kingY = blackKingY;
+				ennemyColor = Player.Color.WHITE;
+			}
+			
+			//Repère la piece qui met le roi en echec
+			do{
+				jumpCount = 0;
+				posX = kingX;
+				posY = kingY;
+				dirX = patterns[iPattern].getDirectionX();
+				dirY = patterns[iPattern].getDirectionY();
+				
+				do{
+					++jumpCount;
+					posX += dirX;
+					posY += dirY;
+					if((getPiece(posX,posY) != null) && !(getPiece(posX,posY) instanceof Fantome)){
+						if(!(getPiece(posX,posY).getColor() == color)){
+							ennemyPattern = getPiece(posX,posY).getPattern(-(dirX), -(dirY));
+						}
+					}
+				}while((getPiece(posX,posY) == null) && isInChess(posX,posY));
+				++iPattern;
+			}while(ennemyPattern == null);
+			
+			//Tente de defendre le roi, par bloquage
+			while((jumpCount > 1) && (!accecibleByEnnemy(posX, posY, color))){
+				--jumpCount;
+				posX += ennemyPattern.getDirectionX();
+				posY += ennemyPattern.getDirectionY();
+			}
+			
+			canEscape = accecibleByEnnemy(posX, posY, color);
+			
+			
+		
+			//Si aucune pièce peut bloquer la pièce ennemie, on tente de bouger le roi
+			if(!canEscape){
+				for(int x = -1; x < 2; ++x){
+					for(int y = -1; y < 2; ++y){
+						if(!canEscape && isInChess(kingX + x, kingY + y) && (getPiece(kingX + x, kingY + y) == null)){
+							if(!accecibleByEnnemy(kingX + x, kingY + y, ennemyColor)){
+								canEscape = true;
+							}
+						}
+					}
+				}
+			}
+			
+			
+			//Verifie qu'un roque peut le sauvé
+			if(!canEscape && getPiece(kingX,kingY).canSpecialMove()){
+				if((getPiece(0,kingY).canSpecialMove()) && (board[1][kingY] == null) && (board[2][kingY] == null) && (board[3][kingY] == null)){
+					canEscape = true;
+				}
+				if((getPiece(7,kingY).canSpecialMove()) && (board[6][kingY] == null) && (board[5][kingY] == null)){
+					canEscape = true;
+				}
+			}
+			
+		}
+		return !canEscape;
 	}
 	
 	
@@ -423,6 +506,7 @@ public class Board {
 				}
 		
 				board[castleX][y] = null;
+				unselectPiece();
 				
 				//Met a jour la rï¿½fï¿½rence du roi
 				if(getPiece(kingX,y).getColor() == Player.Color.WHITE){
@@ -438,9 +522,7 @@ public class Board {
 	}
 	
 	
-	private void unselectGhostPiece(){
-		System.out.println("supprime la piece fantome");
-		
+	private void unselectGhostPiece(){		
 		if(getPiece(ghostPieceX, ghostPieceY) instanceof Fantome){
 			board[ghostPieceX][ghostPieceY] = null;
 		}
@@ -480,7 +562,7 @@ public class Board {
 		boolean	FindPiece;
 		int PosX, PosY, jumpCount; 
 		PiecePattern tempoPattern;
-		
+			
 		for(PiecePattern pattern: PatternFactory.getInstance().getAllPattern()){
 			PosX = x;
 			PosY = y;
@@ -495,9 +577,16 @@ public class Board {
 				if((getPiece(PosX,PosY) != null) && !(getPiece(PosX,PosY) instanceof Fantome)){
 					FindPiece = true;
 					if(getPiece(PosX,PosY).getColor() == color){
-						tempoPattern = getPiece(PosX,PosY).getPattern(PosX - x, PosY - y);
+						tempoPattern = getPiece(PosX,PosY).getPattern(-(PosX - x), -(PosY - y));
 						if((tempoPattern!= null) && (jumpCount < tempoPattern.getDistanceMax())){
-							isAccecible = true;
+							if(!(getPiece(PosX,PosY) instanceof Roi) || ((getPiece(PosX,PosY) instanceof Roi) && (getPiece(x,y) != null))){
+								if(tempoPattern.isAttackPattern() && (getPiece(x,y) != null)){
+									isAccecible = true;
+								}
+								else if(tempoPattern.isMouvementPattern() && (getPiece(x,y) == null)){
+									isAccecible = true;
+								}
+							}
 						}
 					}
 				}

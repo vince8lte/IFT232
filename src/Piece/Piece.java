@@ -41,27 +41,30 @@ public abstract class Piece implements IRenderable
     public PiecePattern getPattern(int deltaX, int deltaY)
     {
         int patternIndex = 0;
-        
         boolean foundPattern = false;
         
-        if (deltaX != 0)
-            deltaX = (deltaX / Math.abs(deltaX)); // S'assure que differenceX va soit être 1, -1 ou 0
+        if(deltaX == 0 || deltaY == 0 || (Math.abs(deltaX) == Math.abs(deltaY))){
         
-        if (deltaY != 0)
-            deltaY = (deltaY / Math.abs(deltaY)); // S'assure que differenceY va soi être 1, -1 ou 0. On divise par -1 a la fin, car lorsque le y est a 0, il est completement en haut...                        
-        
-        while (!foundPattern && patternIndex < this.patterns.length)
-        {
-            foundPattern = ((patterns[patternIndex].getDirectionX() == deltaX) && 
-                            (patterns[patternIndex].getDirectionY() == deltaY)); 
-            
-            ++patternIndex;
+		    if (deltaX != 0)
+		        deltaX = (deltaX / Math.abs(deltaX)); // S'assure que differenceX va soit être 1, -1 ou 0
+		    
+		    if (deltaY != 0)
+		        deltaY = (deltaY / Math.abs(deltaY)); // S'assure que differenceY va soi être 1, -1 ou 0. On divise par -1 a la fin, car lorsque le y est a 0, il est completement en haut...                        
+		    
+		    while (!foundPattern && patternIndex < this.patterns.length)
+		    {
+		        foundPattern = ((patterns[patternIndex].getDirectionX() == deltaX) && 
+		                        (patterns[patternIndex].getDirectionY() == deltaY)); 
+		        
+		        ++patternIndex;
+		    }
         }
+		    
+	    if (foundPattern)
+	        return patterns[--patternIndex];
+	    else
+	        return null;
         
-        if (foundPattern)
-            return patterns[--patternIndex];
-        else
-            return null;
     }
     
     // Retourne tous les mouvements possibles d'une pièce.

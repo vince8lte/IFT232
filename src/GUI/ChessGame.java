@@ -15,11 +15,13 @@ public class ChessGame {
 
     private Player[] players; // Joueurs du jeu
     private int currentPlayerIndex; // Index du joueur qui joue actuellement
+    private boolean endGame;
     
     public ChessGame(int playersCount) 
     {
         this.board = new Board();               
         this.players = new Player[playersCount]; 
+        this.endGame = false;
         
         for (int playerIndex = 0; playerIndex < this.players.length; ++playerIndex)
             this.players[playerIndex] = Player.createPlayer(Color.values()[playerIndex]);
@@ -37,6 +39,10 @@ public class ChessGame {
 		String ColorTurn = players[currentPlayerIndex].getColor().toString();
         
         graphic.showGameStatus("turn of " + ColorTurn + " player");
+    }
+    
+    private void showEndOfGame(){
+    	graphic.showGameStatus("Checkmate " + players[currentPlayerIndex].getColor().toString() + " have lost.");
     }
     
     public void loadDefaultBoard()
@@ -73,31 +79,35 @@ public class ChessGame {
     }
     
     public void play(int x, int y){
-        if (board.pieceIsSelected())
-        {      
-            // Si la case selectionne est la piece presentement selectionne
-        	if(!board.equalsPieceSelected(x, y)){
-        		System.out.println("tante de bouger une piece");
-		        // Si le déplacement de la pièce a fonctionné
-		        if (board.moveSelectedPieceTo(x, y, players[currentPlayerIndex].getColor()))
-		        {
-		        	System.out.println("Reussi");
-		            changeActivePlayer();
-		            showGameStatus();
-		            graphic.setBoard(board.getBoard(), board.getHighlightedSquares());
-		        }
-        	}
-        	else
-        	{
-                board.unselectPiece();
-                graphic.setBoard(board.getBoard(), new IRenderable[0][0]);
-            }
-        }
-        else
-        {
-        	if(board.selectPiece(x, y, players[currentPlayerIndex].getColor())){
-        	    graphic.setBoard(board.getBoard(), board.getHighlightedSquares());
-        	}          
-        }
+    	if(!endGame){
+	        if (board.pieceIsSelected())
+	        {      
+	            // Si la case selectionne est la piece presentement selectionne
+	        	if(!board.equalsPieceSelected(x, y)){
+			        // Si le déplacement de la pièce a fonctionné
+			        if (board.moveSelectedPieceTo(x, y, players[currentPlayerIndex].getColor()))
+			        {
+			            changeActivePlayer();
+			            showGameStatus();
+			            graphic.setBoard(board.getBoard(), board.getHighlightedSquares());
+			            if(board.isCheckmate(players[currentPlayerIndex].getColor())){
+			            	endGame = true;
+			            	showEndOfGame();
+			            }
+			        }
+	        	}
+	        	else
+	        	{
+	                board.unselectPiece();
+	                graphic.setBoard(board.getBoard(), new IRenderable[0][0]);
+	            }
+	        }
+	        else
+	        {
+	        	if(board.selectPiece(x, y, players[currentPlayerIndex].getColor())){
+	        	    graphic.setBoard(board.getBoard(), board.getHighlightedSquares());
+	        	}          
+	        }
+	    }
     }
 }
