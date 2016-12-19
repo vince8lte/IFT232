@@ -42,4 +42,28 @@ public class PiecePattern {
 	public String toString(){
 		return "["+directionX+","+directionY+","+distanceMax+","+isAttackPattern+","+isMovementPattern+"]";
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PiecePattern other = (PiecePattern) obj;
+		if (directionX != other.directionX)
+			return false;
+		if (directionY != other.directionY)
+			return false;
+		if (distanceMax != other.distanceMax)
+			return false;
+		if (isAttackPattern != other.isAttackPattern)
+			return false;
+		if (isMovementPattern != other.isMovementPattern)
+			return false;
+		return true;
+	}
+	
+	
 }

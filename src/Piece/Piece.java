@@ -3,6 +3,7 @@ package Piece;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.util.Arrays;
 
 import GraphicsInterface.IRenderable;
 import Utils.ImgUtils;
@@ -20,7 +21,28 @@ public abstract class Piece implements IRenderable
         this.imgPiece = imgPiece;
     }
     
-    public boolean canSpecialMove(){
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Piece other = (Piece) obj;
+		if (color != other.color)
+			return false;
+		if (imgPiece == null) {
+			if (other.imgPiece != null)
+				return false;
+		} else if (!imgPiece.equals(other.imgPiece))
+			return false;
+		if (!Arrays.equals(patterns, other.patterns))
+			return false;
+		return true;
+	}
+
+	public boolean canSpecialMove(){
     	return false;
     }
     

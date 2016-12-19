@@ -1,7 +1,5 @@
 package classes;
 
-import Piece.Piece;
-
 public class Player {
 	private Color color;
 	

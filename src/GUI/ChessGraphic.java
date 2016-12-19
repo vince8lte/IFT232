@@ -28,102 +28,102 @@ import java.util.LinkedList;
 import GraphicsInterface.IRenderable;
 
 public class ChessGraphic extends JFrame {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	private ChessGame game;
 	private ChessGraphicPanel panel;
 
-    public ChessGraphic(ChessGame game, LinkedList<IRenderable> board){
-    	JMenu menu = null;
-    	JMenuItem restartGameItem = null;
-    	JMenuItem loadGameItem = null;
-    	JMenuItem saveGameItem = null;
-    	
-        this.game = game;       
-        this.panel = new ChessGraphicPanel(this, board);
-                       
-        this.setSize(800, 600);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setLocationRelativeTo(null);
-        this.setResizable(true);
-        this.getContentPane().add(this.panel, BorderLayout.CENTER);
-        this.setVisible(true);
-        this.addComponentListener(this.panel);
-        this.showGameStatus("New game");
-        
-        menu = new JMenu("File");
-        menu.setMnemonic(KeyEvent.VK_F);
-        
-        this.setJMenuBar(new JMenuBar());
-        this.getJMenuBar().add(menu);
-        
-        //Cr�e tout les boutons du menu
-        restartGameItem = new JMenuItem("Recommencer la partie", KeyEvent.VK_R);
-        loadGameItem = new JMenuItem("Charger une partie", KeyEvent.VK_L);
-        saveGameItem = new JMenuItem("Sauvegarder la partie", KeyEvent.VK_S);
-        
-        menu.add(restartGameItem);
-        menu.add(loadGameItem);
-        menu.add(saveGameItem);
-        
-        restartGameItem.addActionListener(new ActionListener() {
-        	@Override
-        	public void actionPerformed(ActionEvent e) { 
-        	    game.loadDefaultBoard();
-        	}
-        });
-        
-        loadGameItem.addActionListener(new ActionListener() {
-        	@Override
-        	public void actionPerformed(ActionEvent e) { 
-    		  JFileChooser fileChooser = new JFileChooser();
-    	      
-    		  fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
-    	      
-    		  int result = fileChooser.showOpenDialog(panel.getParent());
-		       
-    		  if (result == JFileChooser.APPROVE_OPTION) {
-		            File selectedFile = fileChooser.getSelectedFile();
-		            game.loadBoard(selectedFile.getPath());    	            
-		      } 
-        	}
-        });
-        
-        saveGameItem.addActionListener(new ActionListener() {
-        	@Override
-        	public void actionPerformed(ActionEvent e) { 
-      		  JFileChooser fileChooser = new JFileChooser();
-    	      
-      		  fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
-      	      
-      		  int result = fileChooser.showSaveDialog(panel.getParent());
-  		       
-      		  if (result == JFileChooser.APPROVE_OPTION) {
-  		            File selectedFile = fileChooser.getSelectedFile();
-  		            game.saveBoard(selectedFile.getPath());    	            
-  		      } 
-        	}
-        });
-    }
-    
-    public void showGameStatus(String stausName){
-    	setTitle("Chess Game " + stausName);
-    }
-    
-    public void play(int clickPosX, int clickPosY)
-    {
-        game.play(clickPosX, clickPosY);
-    }
-    
-    public void setBoard(LinkedList<IRenderable> board, IRenderable[][] highlightedSquares)
-    {
-        panel.setBoard(board, highlightedSquares);
-        panel.repaint();
-    }
-    
-    public void paintGUI()
-    {
-        panel.repaint();
-    }
+	public ChessGraphic(ChessGame game, LinkedList<IRenderable> board){
+		JMenu menu = null;
+		JMenuItem restartGameItem = null;
+		JMenuItem loadGameItem = null;
+		JMenuItem saveGameItem = null;
+
+		this.game = game;       
+		this.panel = new ChessGraphicPanel(this, board);
+
+		this.setSize(800, 600);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setLocationRelativeTo(null);
+		this.setResizable(true);
+		this.getContentPane().add(this.panel, BorderLayout.CENTER);
+		this.setVisible(true);
+		this.addComponentListener(this.panel);
+		this.showGameStatus("New game");
+
+		menu = new JMenu("File");
+		menu.setMnemonic(KeyEvent.VK_F);
+
+		this.setJMenuBar(new JMenuBar());
+		this.getJMenuBar().add(menu);
+
+		//Cr�e tout les boutons du menu
+		restartGameItem = new JMenuItem("Recommencer la partie", KeyEvent.VK_R);
+		loadGameItem = new JMenuItem("Charger une partie", KeyEvent.VK_L);
+		saveGameItem = new JMenuItem("Sauvegarder la partie", KeyEvent.VK_S);
+
+		menu.add(restartGameItem);
+		menu.add(loadGameItem);
+		menu.add(saveGameItem);
+
+		restartGameItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) { 
+				game.loadDefaultBoard();
+			}
+		});
+
+		loadGameItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) { 
+				JFileChooser fileChooser = new JFileChooser();
+
+				fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+
+				int result = fileChooser.showOpenDialog(panel.getParent());
+
+				if (result == JFileChooser.APPROVE_OPTION) {
+					File selectedFile = fileChooser.getSelectedFile();
+					game.loadBoard(selectedFile.getPath());    	            
+				} 
+			}
+		});
+
+		saveGameItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) { 
+				JFileChooser fileChooser = new JFileChooser();
+
+				fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+
+				int result = fileChooser.showSaveDialog(panel.getParent());
+
+				if (result == JFileChooser.APPROVE_OPTION) {
+					File selectedFile = fileChooser.getSelectedFile();
+					game.saveBoard(selectedFile.getPath());    	            
+				} 
+			}
+		});
+	}
+
+	public void showGameStatus(String stausName){
+		setTitle("Chess Game " + stausName);
+	}
+
+	public void play(int clickPosX, int clickPosY)
+	{
+		game.play(clickPosX, clickPosY);
+	}
+
+	public void setBoard(LinkedList<IRenderable> board, IRenderable[][] highlightedSquares)
+	{
+		panel.setBoard(board, highlightedSquares);
+		panel.repaint();
+	}
+
+	public void paintGUI()
+	{
+		panel.repaint();
+	}
 }

@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 
 import GraphicsInterface.IRenderable;
@@ -360,9 +361,36 @@ public class Board {
 		return !canEscape;
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Board other = (Board) obj;
+		if (BOARD_SIZE != other.BOARD_SIZE)
+			return false;
+		if (blackKingX != other.blackKingX)
+			return false;
+		if (blackKingY != other.blackKingY)
+			return false;
+		if (!Arrays.deepEquals(board, other.board))
+			return false;
+		if (selectedX != other.selectedX)
+			return false;
+		if (selectedY != other.selectedY)
+			return false;
+		if (whiteKingX != other.whiteKingX)
+			return false;
+		if (whiteKingY != other.whiteKingY)
+			return false;
+		return true;
+	}
 	
 	//****** Partie priv�e du code ******************//
-	
+
 	private Piece getPiece(int x, int y){
 		if(isInChess(x, y)){
 			return board[x][y];
@@ -521,7 +549,6 @@ public class Board {
 		return false;
 	}
 	
-	
 	private void unselectGhostPiece(){		
 		if(getPiece(ghostPieceX, ghostPieceY) instanceof Fantome){
 			board[ghostPieceX][ghostPieceY] = null;
@@ -597,4 +624,6 @@ public class Board {
 		
 		return isAccecible;
 	}
+
+	
 }
