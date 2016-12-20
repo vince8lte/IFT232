@@ -5,7 +5,7 @@ import java.awt.Rectangle;
 
 import javax.swing.ImageIcon;
 
-public class ImgUtils
+public final class ImgUtils
 {
     public static Image getScaledImage(String imgUrl, Rectangle container, Rectangle biggerContainer) {
         Image image = new ImageIcon(imgUrl).getImage();

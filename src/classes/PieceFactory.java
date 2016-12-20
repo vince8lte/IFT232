@@ -17,7 +17,6 @@ public class PieceFactory
     }
     
     public Piece givePiece(String strPiece, Player.Color color){
-    	
     	switch(strPiece.split(",")[0])
     	{
 	    	case "Pion":{
